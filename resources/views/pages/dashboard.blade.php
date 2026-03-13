@@ -12,6 +12,90 @@
             </div>
         </div>
 
+        {{-- ═══ CALCULATOR SECTION ═══ --}}
+<section id="calculator" class="section section-dark">
+    <div class="container">
+        <div class="section-header text-center">
+            <span class="section-tag section-tag-light">Kalkulator Budget</span>
+            <h2 class="section-title text-white">Hitung Kemampuan<br/>Beli Rumah Kamu</h2>
+            <p class="section-desc text-light">Isi data finansial untuk mengetahui range harga rumah yang sesuai dengan kemampuan kamu.</p>
+        </div>
+
+        <div class="calculator-card">
+            <form id="calculatorForm" class="calculator-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="penghasilan">Penghasilan Keluarga/Bulan</label>
+                        <div class="input-with-icon">
+                            <span class="input-prefix">Rp</span>
+                            <input type="number" id="penghasilan" name="penghasilan" placeholder="10.000.000" step="100000" required/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="uang_muka">Uang Muka Tersedia</label>
+                        <div class="input-with-icon">
+                            <span class="input-prefix">Rp</span>
+                            <input type="number" id="uang_muka" name="uang_muka" placeholder="50.000.000" step="1000000"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cicilan_lain">Cicilan Bulanan Lain</label>
+                        <div class="input-with-icon">
+                            <span class="input-prefix">Rp</span>
+                            <input type="number" id="cicilan_lain" name="cicilan_lain" placeholder="2.000.000" step="100000"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tenor">Tenor KPR (Tahun)</label>
+                        <select id="tenor" name="tenor">
+                            <option value="5">5 Tahun</option>
+                            <option value="10">10 Tahun</option>
+                            <option value="15" selected>15 Tahun</option>
+                            <option value="20">20 Tahun</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-primary btn-block" id="hitungBtn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9 11 12 14 22 4"/>
+                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                    </svg>
+                    Hitung Kemampuan Saya
+                </button>
+            </form>
+
+            <div class="calculator-result" id="calculatorResult" style="display: none;">
+                <div class="result-header">
+                    <h3>📊 Hasil Analisis Budget</h3>
+                </div>
+                <div class="result-grid">
+                    <div class="result-item">
+                        <div class="result-label">Budget Rumah</div>
+                        <div class="result-value" id="resultBudget">-</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Cicilan/Bulan</div>
+                        <div class="result-value" id="resultCicilan">-</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Sisa Pendapatan</div>
+                        <div class="result-value" id="resultSisa">-</div>
+                    </div>
+                </div>
+                <div class="result-action">
+                    <a href="#contact" class="btn btn-primary">
+                        Cari Rumah Sesuai Budget
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
         @if(session('success'))
         <div class="form-success">{{ session('success') }}</div>
         @endif
