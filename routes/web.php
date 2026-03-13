@@ -31,26 +31,17 @@ Route::middleware('auth')->group(function () {
         }
         )->name('dashboard');
 
-        // ── Admin only ──
-        Route::middleware('admin')->prefix('admin')->group(function () {
-            Route::get('/dashboard', function () {
-                    return view('admin.pages.dashboard');
-                }
-                )->name('admin.dashboard');
+// ── Admin only ──
+    Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
+        Route::get('/dashboard', function () {
+            return view('admin.pages.dashboard');
+        })->name('dashboard');
 
-                Route::get('/rumah', function () {
-                    return view('admin.pages.rumah');
-                }
-                )->name('admin.rumah');
+        Route::resource('rumah', \App\Http\Controllers\Admin\RumahController::class);
+        Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
 
-                Route::get('/users', function () {
-                    return view('admin.pages.users');
-                }
-                )->name('admin.users');
-
-                Route::get('/statistik', function () {
-                    return view('admin.pages.statistik');
-                }
-                )->name('admin.statistik');
-            }
-            );        });
+        Route::get('/statistik', function () {
+            return view('admin.pages.statistik');
+        })->name('statistik');
+    });
+});

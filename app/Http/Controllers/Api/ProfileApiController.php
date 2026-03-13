@@ -44,7 +44,7 @@ class ProfileApiController extends Controller
             'password' => 'required|confirmed|min:6',
         ]);
 
-        if (!\Hash::check($validated['current_password'], $user->password)) {
+        if (!Hash::check($validated['current_password'], $user->password)) {
             return response()->json([
                 'success' => false,
                 'message' => 'Password saat ini salah'
@@ -52,7 +52,7 @@ class ProfileApiController extends Controller
         }
 
         $user->update([
-            'password' => \Hash::make($validated['password'])
+            'password' => Hash::make($validated['password'])
         ]);
 
         return response()->json([

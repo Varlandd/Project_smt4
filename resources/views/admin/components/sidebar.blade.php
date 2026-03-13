@@ -25,7 +25,7 @@
             Dashboard
         </a>
 
-        <a href="{{ route('admin.rumah') }}" class="sidebar-link {{ request()->routeIs('admin.rumah*') ? 'active' : '' }}">
+        <a href="{{ route('admin.rumah.index') }}" class="sidebar-link {{ request()->routeIs('admin.rumah*') ? 'active' : '' }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
                 <polyline points="9 22 9 12 15 12 15 22"/>
@@ -33,7 +33,7 @@
             Data Rumah
         </a>
 
-        <a href="{{ route('admin.users') }}" class="sidebar-link {{ request()->routeIs('admin.users*') ? 'active' : '' }}">
+        <a href="{{ route('admin.users.index') }}" class="sidebar-link {{ request()->routeIs('admin.users*') ? 'active' : '' }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
                 <circle cx="9" cy="7" r="4"/>
