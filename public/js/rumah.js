@@ -46,4 +46,23 @@ document.addEventListener('DOMContentLoaded', function () {
         if (mobileMenu) mobileMenu.classList.remove('open');
     });
 
+
+    // ── User dropdown toggle ──
+    const userDropdownBtn = document.getElementById('userDropdownBtn');
+    const navUser = document.getElementById('navUser');
+
+    if (userDropdownBtn && navUser) {
+        userDropdownBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            navUser.classList.toggle('open');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!navUser.contains(e.target)) {
+                navUser.classList.remove('open');
+            }
+        });
+    }
+
 });
