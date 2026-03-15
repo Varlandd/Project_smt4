@@ -33,15 +33,14 @@ Route::middleware('auth')->group(function () {
 
 // ── Admin only ──
     Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
-        Route::get('/dashboard', function () {
-            return view('admin.pages.dashboard');
-        })->name('dashboard');
+        Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
 
         Route::resource('rumah', \App\Http\Controllers\Admin\RumahController::class);
         Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
 
-        Route::get('/statistik', function () {
-            return view('admin.pages.statistik');
-        })->name('statistik');
+        Route::get('/statistik', [\App\Http\Controllers\Admin\StatistikController::class, 'index'])->name('statistik');
+
+        Route::get('/analitik', [\App\Http\Controllers\Admin\AnalitikController::class, 'index'])->name('analitik');
+        Route::post('/analitik/predict', [\App\Http\Controllers\Admin\AnalitikController::class, 'predict'])->name('predict');
     });
 });
