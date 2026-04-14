@@ -16,8 +16,8 @@ class StatsController extends Controller
                 'rata_rata_harga' => (int)Rumah::avg('harga'),
                 'harga_tertinggi' => (int)Rumah::max('harga'),
                 'harga_terendah' => (int)Rumah::min('harga'),
-                'total_lokasi' => Rumah::distinct('lokasi')->count('lokasi'),
-                'tipe_tersedia' => Rumah::distinct('tipe')->pluck('tipe'),
+                'total_lokasi' => count(Rumah::raw(fn($col) => $col->distinct('lokasi'))),
+                'tipe_tersedia' => collect(Rumah::raw(fn($col) => $col->distinct('tipe')))->values(),
             ],
         ]);
     }

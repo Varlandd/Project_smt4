@@ -9,7 +9,9 @@ class LokasiController extends Controller
 {
     public function index()
     {
-        $lokasi = Rumah::distinct()->pluck('lokasi')->sort()->values();
+        $lokasi = Rumah::raw(function ($collection) {
+            return collect($collection->distinct('lokasi'))->sort()->values();
+        });
 
         return response()->json([
             'success' => true,

@@ -1,23 +1,24 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration 
+/**
+ * Di MongoDB, relasi many-to-many antara Fasilitas dan Rumah ditangani
+ * secara otomatis oleh mongodb/laravel-mongodb menggunakan array of ObjectId
+ * di dalam dokumen masing-masing. Tidak perlu pivot table terpisah.
+ */
+return new class extends Migration
 {
+    protected $connection = 'mongodb';
+
     public function up(): void
     {
-        Schema::create('fasilitas_rumah', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('rumah_id')->constrained('rumah')->cascadeOnDelete();
-            $table->foreignId('fasilitas_id')->constrained('fasilitas')->cascadeOnDelete();
-            $table->unique(['rumah_id', 'fasilitas_id']);
-        });
+        // MongoDB tidak memerlukan pivot table.
+        // Relasi belongsToMany dihandle dengan embedded array di kedua koleksi.
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('fasilitas_rumah');
+        // Nothing to drop
     }
 };

@@ -13,7 +13,11 @@ class FavoritController extends Controller
      */
     public function index(Request $request)
     {
-        $favorits = $request->user()->favorits()->with('fasilitas')->get();
+        $userId = (string) $request->user()->_id;
+
+        // Cari rumah yang memiliki user_id di array favorited_user_ids
+        $favorits = Rumah::where('favorited_user_ids', $userId)
+            ->get();
 
         // Tandai semua sebagai favorit
         $favorits->transform(function ($item) {
@@ -40,15 +44,21 @@ class FavoritController extends Controller
             ], 404);
         }
 
+        $userId = (string) $request->user()->_id;
+        $currentFavs = $rumah->favorited_user_ids ?? [];
+
         // Cek apakah sudah ada
-        if ($request->user()->favorits()->where('rumah_id', $rumahId)->exists()) {
+        if (in_array($userId, $currentFavs)) {
             return response()->json([
                 'success' => false,
                 'message' => 'Rumah sudah ada di favorit',
             ], 400);
         }
 
-        $request->user()->favorits()->attach($rumahId);
+        // Tambahkan user ke array favorited_user_ids
+        $currentFavs[] = $userId;
+        $rumah->favorited_user_ids = $currentFavs;
+        $rumah->save();
 
         return response()->json([
             'success' => true,
@@ -61,7 +71,20 @@ class FavoritController extends Controller
      */
     public function destroy(Request $request, $rumahId)
     {
-        $request->user()->favorits()->detach($rumahId);
+        $rumah = Rumah::find($rumahId);
+        if (!$rumah) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Rumah tidak ditemukan',
+            ], 404);
+        }
+
+        $userId = (string) $request->user()->_id;
+        $currentFavs = $rumah->favorited_user_ids ?? [];
+
+        // Hapus user dari array
+        $rumah->favorited_user_ids = array_values(array_diff($currentFavs, [$userId]));
+        $rumah->save();
 
         return response()->json([
             'success' => true,

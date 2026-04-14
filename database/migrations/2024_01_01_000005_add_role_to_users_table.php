@@ -1,22 +1,24 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration 
+/**
+ * Di MongoDB, field 'role' langsung ditambahkan ke dokumen user
+ * saat create/update. Tidak memerlukan alter table/migration khusus
+ * karena MongoDB bersifat schemaless.
+ */
+return new class extends Migration
 {
+    protected $connection = 'mongodb';
+
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->enum('role', ['user', 'admin'])->default('user')->after('avatar');
-        });
+        // MongoDB bersifat schemaless, field 'role' otomatis ada
+        // ketika di-set di model atau seeder.
     }
 
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('role');
-        });
+        // Nothing to drop
     }
 };

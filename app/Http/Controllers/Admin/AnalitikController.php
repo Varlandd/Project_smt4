@@ -16,12 +16,28 @@ class AnalitikController extends Controller
         $totalRumah = Rumah::count();
         $avgHarga   = Rumah::avg('harga');
 
-        // Hitung distribusi harga per lokasi dari database
-        $hargaPerLokasi = Rumah::selectRaw('lokasi, AVG(harga) as rata_rata, COUNT(*) as jumlah, MIN(harga) as min_harga, MAX(harga) as max_harga')
-            ->groupBy('lokasi')
-            ->orderByDesc('rata_rata')
-            ->limit(10)
-            ->get();
+        // Hitung distribusi harga per lokasi dari database (MongoDB aggregation)
+        $hargaPerLokasiRaw = Rumah::raw(function ($collection) {
+            return $collection->aggregate([
+                ['$group' => [
+                    '_id'       => '$lokasi',
+                    'rata_rata' => ['$avg' => '$harga'],
+                    'jumlah'    => ['$sum' => 1],
+                    'min_harga' => ['$min' => '$harga'],
+                    'max_harga' => ['$max' => '$harga'],
+                ]],
+                ['$sort' => ['rata_rata' => -1]],
+                ['$limit' => 10],
+            ]);
+        });
+
+        $hargaPerLokasi = $hargaPerLokasiRaw->map(fn($d) => (object)[
+            'lokasi'    => $d['_id'],
+            'rata_rata' => $d['rata_rata'],
+            'jumlah'    => $d['jumlah'],
+            'min_harga' => $d['min_harga'],
+            'max_harga' => $d['max_harga'],
+        ]);
 
         $prediksiWilayah = [
             'labels' => $hargaPerLokasi->pluck('lokasi')->toArray(),
@@ -29,7 +45,6 @@ class AnalitikController extends Controller
         ];
 
         // Data kenaikan harga per wilayah (simulasi berdasarkan data)
-        // Dalam implementasi nyata, ini bisa dihitung dari data historis bulan-ke-bulan
         $kenaikanPerWilayah = [];
         $lokasi_list = ['Jakarta Selatan', 'Jakarta Barat', 'Jakarta Timur', 'Jakarta Utara', 'Jakarta Pusat',
                         'Depok', 'Tangerang', 'Tangerang Selatan', 'Bekasi', 'Bogor'];
@@ -41,7 +56,7 @@ class AnalitikController extends Controller
             $minHarga    = $dataLokasi ? (int)$dataLokasi->min_harga : 0;
             $maxHarga    = $dataLokasi ? (int)$dataLokasi->max_harga : 0;
 
-            // Simulasi kenaikan tahunan berdasarkan lokasi (dalam implementasi nyata dari data historis)
+            // Simulasi kenaikan tahunan berdasarkan lokasi
             $kenaikan = match(true) {
                 str_contains($lok, 'Jakarta Selatan') => 15.2,
                 str_contains($lok, 'Jakarta Pusat')   => 14.8,
@@ -65,25 +80,27 @@ class AnalitikController extends Controller
             ];
         }
 
-        // Tren harga berdasarkan waktu
-        $trendBulanan = Rumah::selectRaw("
-                DATE_FORMAT(created_at, '%Y-%m') as bulan,
-                AVG(harga) as rata_rata
-            ")
-            ->groupByRaw("DATE_FORMAT(created_at, '%Y-%m')")
-            ->orderBy('bulan')
-            ->limit(9)
-            ->get();
+        // Tren harga berdasarkan waktu (MongoDB aggregation)
+        $trendBulananRaw = Rumah::raw(function ($collection) {
+            return $collection->aggregate([
+                ['$group' => [
+                    '_id'       => ['$dateToString' => ['format' => '%Y-%m', 'date' => '$created_at']],
+                    'rata_rata' => ['$avg' => '$harga'],
+                ]],
+                ['$sort'  => ['_id' => 1]],
+                ['$limit' => 9],
+            ]);
+        });
 
-        if ($trendBulanan->count() < 2) {
+        if ($trendBulananRaw->count() < 2) {
             $trendHarga = [
                 'labels'  => ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul (Prediksi)', 'Agt (Prediksi)', 'Sep (Prediksi)'],
                 'actual'  => [300000000, 305000000, 312000000, 310000000, 320000000, 325000000, null, null, null],
                 'predict' => [null, null, null, null, null, 325000000, 335000000, 342000000, 350000000],
             ];
         } else {
-            $labels  = $trendBulanan->pluck('bulan')->toArray();
-            $actuals = $trendBulanan->pluck('rata_rata')->map(fn($v) => (int) $v)->toArray();
+            $labels  = $trendBulananRaw->pluck('_id')->toArray();
+            $actuals = $trendBulananRaw->pluck('rata_rata')->map(fn($v) => (int) $v)->toArray();
             $lastPrice = end($actuals);
             $predictPrices = array_fill(0, count($actuals) - 1, null);
             $predictPrices[] = $lastPrice;
@@ -99,10 +116,13 @@ class AnalitikController extends Controller
             ];
         }
 
-        // Distribusi tipe rumah
-        $distribusiTipe = Rumah::selectRaw('tipe, COUNT(*) as jumlah')
-            ->groupBy('tipe')
-            ->get();
+        // Distribusi tipe rumah (MongoDB aggregation)
+        $distribusiTipeRaw = Rumah::raw(function ($collection) {
+            return $collection->aggregate([
+                ['$group' => ['_id' => '$tipe', 'jumlah' => ['$sum' => 1]]],
+            ]);
+        });
+        $distribusiTipe = $distribusiTipeRaw->map(fn($d) => (object)['tipe' => $d['_id'], 'jumlah' => $d['jumlah']]);
 
         // Cek status ML API
         $mlStatus = 'offline';

@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
+use MongoDB\Laravel\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
 class Rumah extends Model
 {
     use HasFactory;
 
-    protected $table = 'rumah';
+    protected $connection = 'mongodb';
+    protected $collection = 'rumah';
 
     protected $fillable = [
         'nama',
@@ -22,23 +23,36 @@ class Rumah extends Model
         'tipe',
         'foto',
         'deskripsi',
+        'fasilitas',            // embedded array of nama fasilitas
+        'fasilitas_ids',        // array of ObjectId fasilitas
+        'favorited_user_ids',   // array of user _id yang memfavoritkan
     ];
 
     protected $casts = [
-        'harga' => 'integer',
-        'luas_tanah' => 'integer',
-        'luas_bangunan' => 'integer',
-        'kamar_tidur' => 'integer',
-        'kamar_mandi' => 'integer',
+        'harga'               => 'integer',
+        'luas_tanah'          => 'integer',
+        'luas_bangunan'       => 'integer',
+        'kamar_tidur'         => 'integer',
+        'kamar_mandi'         => 'integer',
+        'fasilitas'           => 'array',
+        'fasilitas_ids'       => 'array',
+        'favorited_user_ids'  => 'array',
     ];
 
-    public function fasilitas()
-    {
-        return $this->belongsToMany(Fasilitas::class , 'fasilitas_rumah');
-    }
-
+    /**
+     * Relasi ke user yang memfavoritkan.
+     */
     public function favoritedBy()
     {
-        return $this->belongsToMany(User::class , 'favorits')->withTimestamps();
+        return $this->belongsToMany(User::class, null, 'rumah_ids', 'user_ids')
+                    ->withTimestamps();
+    }
+
+    /**
+     * Hitung jumlah favorit dari array embedded.
+     */
+    public function getFavoritedByCountAttribute(): int
+    {
+        return count($this->favorited_user_ids ?? []);
     }
 }

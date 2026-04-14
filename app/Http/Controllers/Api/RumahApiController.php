@@ -16,16 +16,15 @@ class RumahApiController extends Controller
     {
         $perPage = $request->get('per_page', 10);
 
-        $rumah = Rumah::with('fasilitas')
-            ->latest()
+        $rumah = Rumah::latest()
             ->paginate($perPage);
 
         // Tambahkan is_favorit untuk setiap rumah
         $user = Auth::user();
         if ($user) {
-            $favoritIds = $user->favorits()->pluck('rumah_id')->toArray();
-            $rumah->getCollection()->transform(function ($item) use ($favoritIds) {
-                $item->is_favorit = in_array($item->id, $favoritIds);
+            $userId = (string) $user->_id;
+            $rumah->getCollection()->transform(function ($item) use ($userId) {
+                $item->is_favorit = in_array($userId, $item->favorited_user_ids ?? []);
                 return $item;
             });
         }
@@ -41,7 +40,7 @@ class RumahApiController extends Controller
      */
     public function show($id)
     {
-        $rumah = Rumah::with('fasilitas')->find($id);
+        $rumah = Rumah::find($id);
 
         if (!$rumah) {
             return response()->json([
@@ -53,7 +52,7 @@ class RumahApiController extends Controller
         // Check is_favorit
         $user = Auth::user();
         if ($user) {
-            $rumah->is_favorit = $user->favorits()->where('rumah_id', $id)->exists();
+            $rumah->is_favorit = in_array((string) $user->_id, $rumah->favorited_user_ids ?? []);
         }
 
         return response()->json([
@@ -67,18 +66,18 @@ class RumahApiController extends Controller
      */
     public function search(Request $request)
     {
-        $query = Rumah::with('fasilitas');
+        $query = Rumah::query();
 
         if ($request->filled('lokasi')) {
-            $query->where('lokasi', 'like', '%' . $request->lokasi . '%');
+            $query->where('lokasi', 'regex', new \MongoDB\BSON\Regex($request->lokasi, 'i'));
         }
 
         if ($request->filled('budget_min')) {
-            $query->where('harga', '>=', $request->budget_min);
+            $query->where('harga', '>=', (int) $request->budget_min);
         }
 
         if ($request->filled('budget_max')) {
-            $query->where('harga', '<=', $request->budget_max);
+            $query->where('harga', '<=', (int) $request->budget_max);
         }
 
         if ($request->filled('tipe')) {
@@ -86,10 +85,8 @@ class RumahApiController extends Controller
         }
 
         if ($request->filled('fasilitas') && is_array($request->fasilitas)) {
-            $fasilitasIds = $request->fasilitas;
-            $query->whereHas('fasilitas', function ($q) use ($fasilitasIds) {
-                $q->whereIn('fasilitas.id', $fasilitasIds);
-            });
+            // Filter berdasarkan nama fasilitas yang tersimpan di embedded array
+            $query->where('fasilitas', 'all', $request->fasilitas);
         }
 
         $rumah = $query->latest()->paginate($request->get('per_page', 10));
@@ -97,9 +94,9 @@ class RumahApiController extends Controller
         // Tambahkan is_favorit
         $user = Auth::user();
         if ($user) {
-            $favoritIds = $user->favorits()->pluck('rumah_id')->toArray();
-            $rumah->getCollection()->transform(function ($item) use ($favoritIds) {
-                $item->is_favorit = in_array($item->id, $favoritIds);
+            $userId = (string) $user->_id;
+            $rumah->getCollection()->transform(function ($item) use ($userId) {
+                $item->is_favorit = in_array($userId, $item->favorited_user_ids ?? []);
                 return $item;
             });
         }

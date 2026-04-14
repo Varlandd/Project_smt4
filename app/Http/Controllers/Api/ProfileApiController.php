@@ -22,7 +22,7 @@ class ProfileApiController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:100',
-            'email' => 'required|email|unique:users,email,' . $user->id,
+            'email' => 'required|email|unique:users,email,' . $user->_id . ',_id',
             'phone' => 'nullable|string|max:20',
         ]);
 

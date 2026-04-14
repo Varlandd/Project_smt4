@@ -6,17 +6,33 @@ use App\Models\Fasilitas;
 use App\Models\Rumah;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        // ── Hapus data lama di MongoDB ──
+        User::raw(fn($col) => $col->deleteMany([]));
+        Rumah::raw(fn($col) => $col->deleteMany([]));
+        Fasilitas::raw(fn($col) => $col->deleteMany([]));
+
+        // ── Admin User ──
+        User::create([
+            'name'     => 'Admin',
+            'email'    => 'admin@rumahku.com',
+            'password' => Hash::make('password'),
+            'phone'    => '081234567899',
+            'role'     => 'admin',
+        ]);
+
         // ── User Demo ──
         User::create([
-            'name' => 'Demo User',
-            'email' => 'demo@rumahku.com',
-            'password' => 'password',
-            'phone' => '081234567890',
+            'name'     => 'Demo User',
+            'email'    => 'demo@rumahku.com',
+            'password' => Hash::make('password'),
+            'phone'    => '081234567890',
+            'role'     => 'user',
         ]);
 
         // ── Fasilitas ──
@@ -25,9 +41,8 @@ class DatabaseSeeder extends Seeder
             'Masjid Terdekat', 'Playground', 'Gym', 'Rooftop',
         ];
 
-        $fasilitasList = [];
         foreach ($fasilitasNames as $nama) {
-            $fasilitasList[] = Fasilitas::create(['nama' => $nama]);
+            Fasilitas::create(['nama' => $nama]);
         }
 
         // ── Rumah ──
@@ -42,7 +57,7 @@ class DatabaseSeeder extends Seeder
                 'kamar_mandi' => 2,
                 'tipe' => 'Rumah',
                 'deskripsi' => 'Rumah asri dengan taman luas di kawasan Citra Indah Bandung. Dekat dengan pusat perbelanjaan dan sekolah.',
-                'fasilitas' => [0, 1, 2, 3], // Kolam, Taman, Garasi, Keamanan
+                'fasilitas' => ['Kolam Renang', 'Taman', 'Garasi', 'Keamanan 24 Jam'],
             ],
             [
                 'nama' => 'Apartemen Skyline Tower',
@@ -54,7 +69,7 @@ class DatabaseSeeder extends Seeder
                 'kamar_mandi' => 1,
                 'tipe' => 'Apartemen',
                 'deskripsi' => 'Apartemen modern dengan pemandangan kota Jakarta. Fully furnished dan akses mudah ke MRT.',
-                'fasilitas' => [0, 3, 6, 7], // Kolam, Keamanan, Gym, Rooftop
+                'fasilitas' => ['Kolam Renang', 'Keamanan 24 Jam', 'Gym', 'Rooftop'],
             ],
             [
                 'nama' => 'Cluster Harmoni Residence',
@@ -66,7 +81,7 @@ class DatabaseSeeder extends Seeder
                 'kamar_mandi' => 1,
                 'tipe' => 'Rumah',
                 'deskripsi' => 'Hunian nyaman di cluster eksklusif Depok. Akses dekat stasiun KRL dan toll.',
-                'fasilitas' => [1, 2, 3, 5], // Taman, Garasi, Keamanan, Playground
+                'fasilitas' => ['Taman', 'Garasi', 'Keamanan 24 Jam', 'Playground'],
             ],
             [
                 'nama' => 'Ruko Golden Boulevard',
@@ -78,7 +93,7 @@ class DatabaseSeeder extends Seeder
                 'kamar_mandi' => 2,
                 'tipe' => 'Ruko',
                 'deskripsi' => 'Ruko strategis di kawasan bisnis BSD City. 3 lantai, cocok untuk usaha atau kantor.',
-                'fasilitas' => [2, 3], // Garasi, Keamanan
+                'fasilitas' => ['Garasi', 'Keamanan 24 Jam'],
             ],
             [
                 'nama' => 'Villa Puncak Indah',
@@ -90,7 +105,7 @@ class DatabaseSeeder extends Seeder
                 'kamar_mandi' => 3,
                 'tipe' => 'Villa',
                 'deskripsi' => 'Villa eksklusif di kawasan Puncak dengan pemandangan pegunungan. Udara sejuk dan suasana asri.',
-                'fasilitas' => [0, 1, 2, 5], // Kolam, Taman, Garasi, Playground
+                'fasilitas' => ['Kolam Renang', 'Taman', 'Garasi', 'Playground'],
             ],
             [
                 'nama' => 'Griya Mentari Permai',
@@ -102,7 +117,7 @@ class DatabaseSeeder extends Seeder
                 'kamar_mandi' => 1,
                 'tipe' => 'Rumah',
                 'deskripsi' => 'Rumah subsidi berkualitas di kawasan Bekasi Timur. Cocok untuk keluarga muda.',
-                'fasilitas' => [1, 4], // Taman, Masjid
+                'fasilitas' => ['Taman', 'Masjid Terdekat'],
             ],
             [
                 'nama' => 'The Pinnacle Apartment',
@@ -114,7 +129,7 @@ class DatabaseSeeder extends Seeder
                 'kamar_mandi' => 2,
                 'tipe' => 'Apartemen',
                 'deskripsi' => 'Apartemen premium di jantung kota Jakarta. Fasilitas mewah dan lokasi strategis.',
-                'fasilitas' => [0, 3, 6, 7], // Kolam, Keamanan, Gym, Rooftop
+                'fasilitas' => ['Kolam Renang', 'Keamanan 24 Jam', 'Gym', 'Rooftop'],
             ],
             [
                 'nama' => 'Rumah Sahid Sudirman',
@@ -126,7 +141,7 @@ class DatabaseSeeder extends Seeder
                 'kamar_mandi' => 2,
                 'tipe' => 'Rumah',
                 'deskripsi' => 'Rumah modern minimalis di kawasan Sudirman Surabaya. Dekat dengan pusat kota.',
-                'fasilitas' => [1, 2, 3, 4], // Taman, Garasi, Keamanan, Masjid
+                'fasilitas' => ['Taman', 'Garasi', 'Keamanan 24 Jam', 'Masjid Terdekat'],
             ],
             [
                 'nama' => 'Perumahan Bumi Serpong',
@@ -138,7 +153,7 @@ class DatabaseSeeder extends Seeder
                 'kamar_mandi' => 2,
                 'tipe' => 'Rumah',
                 'deskripsi' => 'Perumahan premium di BSD City dengan konsep smart home. Lingkungan asri dan aman.',
-                'fasilitas' => [0, 1, 2, 3, 5], // Kolam, Taman, Garasi, Keamanan, Playground
+                'fasilitas' => ['Kolam Renang', 'Taman', 'Garasi', 'Keamanan 24 Jam', 'Playground'],
             ],
             [
                 'nama' => 'Kontrakan Murah Margonda',
@@ -150,20 +165,16 @@ class DatabaseSeeder extends Seeder
                 'kamar_mandi' => 1,
                 'tipe' => 'Rumah',
                 'deskripsi' => 'Rumah sederhana di kawasan Margonda Depok. Dekat kampus UI dan stasiun.',
-                'fasilitas' => [4], // Masjid
+                'fasilitas' => ['Masjid Terdekat'],
             ],
         ];
 
         foreach ($rumahData as $data) {
-            $fasilitasIndexes = $data['fasilitas'];
-            unset($data['fasilitas']);
-
-            $rumah = Rumah::create($data);
-
-            // Attach fasilitas
-            foreach ($fasilitasIndexes as $index) {
-                $rumah->fasilitas()->attach($fasilitasList[$index]->id);
-            }
+            $data['favorited_user_ids'] = [];
+            Rumah::create($data);
         }
+
+        echo "✅ Seeding ke MongoDB berhasil!\n";
     }
 }
+

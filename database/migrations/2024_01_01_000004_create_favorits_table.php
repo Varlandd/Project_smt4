@@ -1,24 +1,23 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration 
+/**
+ * Di MongoDB, favorit disimpan sebagai embedded array 'favorited_user_ids'
+ * di dokumen rumah. Tidak perlu tabel relasi terpisah.
+ */
+return new class extends Migration
 {
+    protected $connection = 'mongodb';
+
     public function up(): void
     {
-        Schema::create('favorits', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('rumah_id')->constrained('rumah')->cascadeOnDelete();
-            $table->unique(['user_id', 'rumah_id']);
-            $table->timestamps();
-        });
+        // MongoDB tidak memerlukan tabel favorits terpisah.
+        // Favorit disimpan sebagai array of user ObjectId di koleksi rumah.
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('favorits');
+        // Nothing to drop
     }
 };

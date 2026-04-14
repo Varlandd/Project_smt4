@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Rumah;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
 
 class StatistikController extends Controller
 {
@@ -15,19 +14,39 @@ class StatistikController extends Controller
         $totalRumah   = Rumah::count();
         $totalUser    = User::where('role', 'user')->count();
         $totalAdmin   = User::where('role', 'admin')->count();
-        $totalFavorit = DB::table('favorits')->count();
+
+        // Hitung total favorit dari embedded array
+        $totalFavorit = 0;
+        $allRumah = Rumah::whereNotNull('favorited_user_ids')->get();
+        foreach ($allRumah as $r) {
+            $totalFavorit += count($r->favorited_user_ids ?? []);
+        }
 
         // ── Distribusi Rumah per Lokasi (Bar Chart) ──
-        $perLokasi = Rumah::selectRaw('lokasi, COUNT(*) as jumlah')
-            ->groupBy('lokasi')
-            ->orderByDesc('jumlah')
-            ->get();
+        $perLokasiRaw = Rumah::raw(function ($collection) {
+            return $collection->aggregate([
+                ['$group' => ['_id' => '$lokasi', 'jumlah' => ['$sum' => 1]]],
+                ['$sort'  => ['jumlah' => -1]],
+            ]);
+        });
+        $perLokasi = $perLokasiRaw->map(fn($d) => (object)['lokasi' => $d['_id'], 'jumlah' => $d['jumlah']]);
 
         // ── Rata-rata Harga per Tipe (Bar Chart) ──
-        $perTipe = Rumah::selectRaw('tipe, AVG(harga) as avg_harga, COUNT(*) as jumlah')
-            ->groupBy('tipe')
-            ->orderByDesc('avg_harga')
-            ->get();
+        $perTipeRaw = Rumah::raw(function ($collection) {
+            return $collection->aggregate([
+                ['$group' => [
+                    '_id'       => '$tipe',
+                    'avg_harga' => ['$avg' => '$harga'],
+                    'jumlah'    => ['$sum' => 1],
+                ]],
+                ['$sort' => ['avg_harga' => -1]],
+            ]);
+        });
+        $perTipe = $perTipeRaw->map(fn($d) => (object)[
+            'tipe'      => $d['_id'],
+            'avg_harga' => $d['avg_harga'],
+            'jumlah'    => $d['jumlah'],
+        ]);
 
         // ── Distribusi Segmen Harga (Doughnut) ──
         $segmenHarga = [
@@ -38,17 +57,24 @@ class StatistikController extends Controller
         ];
 
         // ── Top 5 Rumah Paling Difavoritkan ──
-        $topFavorit = Rumah::withCount('favoritedBy')
-            ->orderByDesc('favorited_by_count')
-            ->limit(5)
-            ->get();
+        $allRumahForFav = Rumah::all()->map(function ($r) {
+            $r->favorited_by_count = count($r->favorited_user_ids ?? []);
+            return $r;
+        })->sortByDesc('favorited_by_count')->take(5)->values();
+        $topFavorit = $allRumahForFav;
 
         // ── Aktivitas Pendaftaran User per Bulan (Line Chart) ──
-        $userPerBulan = User::selectRaw("DATE_FORMAT(created_at, '%Y-%m') as bulan, COUNT(*) as jumlah")
-            ->groupByRaw("DATE_FORMAT(created_at, '%Y-%m')")
-            ->orderBy('bulan')
-            ->limit(12)
-            ->get();
+        $userPerBulanRaw = User::raw(function ($collection) {
+            return $collection->aggregate([
+                ['$group' => [
+                    '_id'    => ['$dateToString' => ['format' => '%Y-%m', 'date' => '$created_at']],
+                    'jumlah' => ['$sum' => 1],
+                ]],
+                ['$sort'  => ['_id' => 1]],
+                ['$limit' => 12],
+            ]);
+        });
+        $userPerBulan = $userPerBulanRaw->map(fn($d) => (object)['bulan' => $d['_id'], 'jumlah' => $d['jumlah']]);
 
         // ── 5 Properti Terbaru ──
         $rumahTerbaru = Rumah::latest()->limit(5)->get();
