@@ -4,14 +4,14 @@ namespace App\Models\Sanctum;
 
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
-use App\Models\Sanctum\PersonalAccessToken;
+use Laravel\Sanctum\Contracts\HasAbilities;
 
 class NewAccessToken implements Arrayable, Jsonable
 {
     /**
      * The access token instance.
      *
-     * @var \App\Models\Sanctum\PersonalAccessToken
+     * @var \Laravel\Sanctum\Contracts\HasAbilities
      */
     public $accessToken;
 
@@ -25,11 +25,11 @@ class NewAccessToken implements Arrayable, Jsonable
     /**
      * Create a new access token result.
      *
-     * @param  \App\Models\Sanctum\PersonalAccessToken  $accessToken
+     * @param  \Laravel\Sanctum\Contracts\HasAbilities  $accessToken
      * @param  string  $plainTextToken
      * @return void
      */
-    public function __construct(PersonalAccessToken $accessToken, string $plainTextToken)
+    public function __construct(HasAbilities $accessToken, string $plainTextToken)
     {
         $this->accessToken = $accessToken;
         $this->plainTextToken = $plainTextToken;

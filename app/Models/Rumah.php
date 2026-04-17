@@ -4,6 +4,7 @@ namespace App\Models;
 
 use MongoDB\Laravel\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 class Rumah extends Model
 {
@@ -54,5 +55,16 @@ class Rumah extends Model
     public function getFavoritedByCountAttribute(): int
     {
         return count($this->favorited_user_ids ?? []);
+    }
+
+    /**
+     * Override insertAndSetId to fix MongoDB Eloquent Builder bug in mongodb/laravel-mongodb v4.0
+     * where parent::insertGetId resolves to __call, which ignores the inserted ID and returns the Builder.
+     */
+    protected function insertAndSetId(EloquentBuilder $query, $attributes)
+    {
+        $id = $query->toBase()->insertGetId($attributes, $keyName = $this->getKeyName());
+
+        $this->setAttribute($keyName, $id);
     }
 }

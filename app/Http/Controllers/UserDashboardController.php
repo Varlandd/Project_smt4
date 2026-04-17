@@ -246,6 +246,16 @@ class UserDashboardController extends Controller
         return view('pages.rekomendasi', compact('rumahs', 'lokasiList'));
     }
 
+    public function wizard()
+    {
+        $rumahs = Rumah::all();
+        $lokasiList = Rumah::raw(function ($collection) {
+            return $collection->distinct('lokasi');
+        });
+
+        return view('pages.wizard', compact('rumahs', 'lokasiList'));
+    }
+
     /**
      * Bandingkan / Compare properties page.
      */

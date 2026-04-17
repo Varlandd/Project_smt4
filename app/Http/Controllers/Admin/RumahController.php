@@ -4,6 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Rumah;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\RumahImport;
+use App\Exports\RumahExport;
 
 class RumahController extends Controller
 {
@@ -13,9 +17,29 @@ class RumahController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->input('per_page', 10);
-        $rumahs = \App\Models\Rumah::latest()->paginate($perPage)->appends(request()->query());
+        $rumahs = Rumah::latest()->paginate($perPage)->appends(request()->query());
         return view('admin.pages.rumah', compact('rumahs', 'perPage'));
     }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file_excel' => 'required|mimes:xlsx,xls,csv|max:10240',
+        ]);
+
+        try {
+            Excel::import(new RumahImport, $request->file('file_excel'));
+            return redirect()->route('admin.rumah.index')->with('success', 'Data properti berhasil diimport dari Excel.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal mengimport data: ' . $e->getMessage());
+        }
+    }
+
+    public function export()
+    {
+        return Excel::download(new RumahExport, 'format_import_rumah.xlsx');
+    }
+
 
     /**
      * Show the form for creating a new resource.
