@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Sanctum\NewAccessToken;
 use DateTimeInterface;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 class User extends Authenticatable
 {
@@ -68,5 +69,16 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Rumah::class, null, 'user_ids', 'rumah_ids')
                     ->withTimestamps();
+    }
+
+    /**
+     * Override insertAndSetId to fix MongoDB Eloquent Builder bug in mongodb/laravel-mongodb v4.0
+     * where parent::insertGetId resolves to __call, which ignores the inserted ID and returns the Builder.
+     */
+    protected function insertAndSetId(EloquentBuilder $query, $attributes)
+    {
+        $id = $query->toBase()->insertGetId($attributes, $keyName = $this->getKeyName());
+
+        $this->setAttribute($keyName, $id);
     }
 }

@@ -190,15 +190,21 @@
 
         {{-- ═══ WELCOME BANNER ═══ --}}
         <div class="welcome-banner">
-            <h1>Selamat Datang, {{ Auth::user()->name }} 👋</h1>
-            <p>Temukan rumah impian kamu dengan sistem rekomendasi cerdas RumahKu.</p>
-            <div class="welcome-nav">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem;">
+                <div>
+                    <h1>Selamat Datang, {{ Auth::user()->name }} 👋</h1>
+                    <p>Temukan rumah impian kamu dengan sistem rekomendasi cerdas RumahKu.</p>
+                </div>
+                <a href="{{ route('rekomendasi.wizard') }}" class="btn btn-white" style="border-radius: 12px; padding: .8rem 1.8rem;">
+                    🎯 Temukan Rumah Impian (4 Langkah)
+                </a>
+            </div>
+            <div class="welcome-nav" style="margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 1.5rem;">
                 <a href="{{ route('properti.browse') }}">🏠 Jelajahi Properti</a>
                 <a href="{{ route('favorit.index') }}">❤️ Favorit Saya</a>
                 <a href="{{ route('prediksi') }}">📊 Prediksi Harga</a>
                 <a href="{{ route('rekomendasi') }}">🎯 Rekomendasi</a>
                 <a href="{{ route('bandingkan') }}">⚖️ Bandingkan</a>
-                <a href="#calculator">🧮 Kalkulator Budget</a>
             </div>
         </div>
 

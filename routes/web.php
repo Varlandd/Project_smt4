@@ -39,12 +39,15 @@ Route::middleware('auth')->group(function () {
     // ── Fitur User ──
     Route::get('/prediksi', [UserDashboardController::class, 'prediksi'])->name('prediksi');
     Route::get('/rekomendasi', [UserDashboardController::class, 'rekomendasi'])->name('rekomendasi');
+    Route::get('/rekomendasi/wizard', [UserDashboardController::class, 'wizard'])->name('rekomendasi.wizard');
     Route::get('/bandingkan', [UserDashboardController::class, 'bandingkan'])->name('bandingkan');
 
     // ── Admin only ──
     Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
 
+        Route::get('rumah/export', [\App\Http\Controllers\Admin\RumahController::class, 'export'])->name('rumah.export');
+        Route::post('rumah/import', [\App\Http\Controllers\Admin\RumahController::class, 'import'])->name('rumah.import');
         Route::resource('rumah', \App\Http\Controllers\Admin\RumahController::class);
         Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
 

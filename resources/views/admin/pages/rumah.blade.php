@@ -7,7 +7,7 @@
 <div class="admin-section">
     <div class="admin-section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <h3>Daftar Properti</h3>
-        <div style="display: flex; gap: 15px; align-items: center;">
+        <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
             <form action="{{ route('admin.rumah.index') }}" method="GET" id="filterForm">
                 <select name="per_page" onchange="document.getElementById('filterForm').submit()" style="padding: 8px; border-radius: 6px; border: 1px solid #d1d5db; font-size: 0.875rem;">
                     <option value="5" {{ isset($perPage) && $perPage == 5 ? 'selected' : '' }}>5 data</option>
@@ -17,6 +17,15 @@
                 </select>
             </form>
             <span class="admin-count">{{ $rumahs->total() }} data</span>
+            
+            <a href="{{ route('admin.rumah.export') }}" class="btn btn-secondary" style="padding: 8px 15px; background: #10b981; color: white; border-radius: 6px; text-decoration: none; font-weight: 500;">Unduh Template Excel</a>
+            
+            <form action="{{ route('admin.rumah.import') }}" method="POST" enctype="multipart/form-data" id="importForm" style="margin: 0;">
+                @csrf
+                <input type="file" name="file_excel" id="file_excel" accept=".xlsx, .xls, .csv" style="display: none;" onchange="document.getElementById('importForm').submit()">
+                <button type="button" onclick="document.getElementById('file_excel').click()" class="btn btn-warning" style="padding: 8px 15px; background: #f59e0b; color: white; border: none; border-radius: 6px; font-weight: 500; cursor: pointer;">Import Excel</button>
+            </form>
+
             <a href="{{ route('admin.rumah.create') }}" class="btn btn-primary" style="padding: 8px 15px; background: #4f46e5; color: white; border-radius: 6px; text-decoration: none; font-weight: 500;">+ Tambah Properti</a>
         </div>
     </div>
@@ -24,6 +33,22 @@
     @if(session('success'))
         <div style="background-color: #d1fae5; color: #065f46; padding: 12px; border-radius: 6px; margin-bottom: 20px;">
             {{ session('success') }}
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div style="background-color: #fee2e2; color: #991b1b; padding: 12px; border-radius: 6px; margin-bottom: 20px;">
+            {{ session('error') }}
+        </div>
+    @endif
+    
+    @if($errors->any())
+        <div style="background-color: #fee2e2; color: #991b1b; padding: 12px; border-radius: 6px; margin-bottom: 20px;">
+            <ul style="margin: 0; padding-left: 20px;">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
         </div>
     @endif
 
