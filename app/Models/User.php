@@ -6,6 +6,8 @@ use MongoDB\Laravel\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\Sanctum\NewAccessToken;
+use DateTimeInterface;
 
 class User extends Authenticatable
 {
@@ -36,6 +38,25 @@ class User extends Authenticatable
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
+    }
+
+    /**
+     * Override createToken to use our MongoDB-compatible NewAccessToken
+     * instead of the default Laravel\Sanctum\NewAccessToken which
+     * type-hints Laravel\Sanctum\PersonalAccessToken in its constructor.
+     */
+    public function createToken(string $name, array $abilities = ['*'], DateTimeInterface $expiresAt = null)
+    {
+        $plainTextToken = $this->generateTokenString();
+
+        $token = $this->tokens()->create([
+            'name' => $name,
+            'token' => hash('sha256', $plainTextToken),
+            'abilities' => $abilities,
+            'expires_at' => $expiresAt,
+        ]);
+
+        return new NewAccessToken($token, $token->getKey().'|'.$plainTextToken);
     }
 
     /**

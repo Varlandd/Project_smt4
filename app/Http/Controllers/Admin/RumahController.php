@@ -10,10 +10,11 @@ class RumahController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $rumahs = \App\Models\Rumah::latest()->paginate(20);
-        return view('admin.pages.rumah', compact('rumahs'));
+        $perPage = $request->input('per_page', 10);
+        $rumahs = \App\Models\Rumah::latest()->paginate($perPage)->appends(request()->query());
+        return view('admin.pages.rumah', compact('rumahs', 'perPage'));
     }
 
     /**

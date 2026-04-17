@@ -3,35 +3,45 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RumahController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserDashboardController;
 
 /* |-------------------------------------------------------------------------- | Web Routes |-------------------------------------------------------------------------- */
 
 // ── Landing Page ──
-Route::get('/', function () {
-    return view('pages.landing');
-})->name('home');
+Route::get('/', [RumahController::class, 'index'])->name('home');
 
 // ── Form Pencarian Rumah ──
-Route::post('/cari-rumah', [RumahController::class , 'search'])->name('rumah.search');
+Route::post('/cari-rumah', [RumahController::class, 'search'])->name('rumah.search');
 
 // ── Auth (Guest only) ──
 Route::middleware('guest')->group(function () {
-    Route::get('/login', [AuthController::class , 'showLogin'])->name('login');
-    Route::post('/login', [AuthController::class , 'login']);
-    Route::get('/register', [AuthController::class , 'showRegister'])->name('register');
-    Route::post('/register', [AuthController::class , 'register']);
+    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+    Route::post('/register', [AuthController::class, 'register']);
 });
 
 // ── Auth (Logged in) ──
 Route::middleware('auth')->group(function () {
-    Route::post('/logout', [AuthController::class , 'logout'])->name('logout');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    Route::get('/dashboard', function () {
-            return view('pages.dashboard');
-        }
-        )->name('dashboard');
+    // ── User Dashboard ──
+    Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
 
-// ── Admin only ──
+    // ── Browse Properti ──
+    Route::get('/properti', [UserDashboardController::class, 'browse'])->name('properti.browse');
+    Route::get('/properti/{id}', [UserDashboardController::class, 'show'])->name('properti.show');
+
+    // ── Favorit ──
+    Route::post('/properti/{id}/favorit', [UserDashboardController::class, 'toggleFavorit'])->name('properti.favorit');
+    Route::get('/favorit', [UserDashboardController::class, 'favorit'])->name('favorit.index');
+
+    // ── Fitur User ──
+    Route::get('/prediksi', [UserDashboardController::class, 'prediksi'])->name('prediksi');
+    Route::get('/rekomendasi', [UserDashboardController::class, 'rekomendasi'])->name('rekomendasi');
+    Route::get('/bandingkan', [UserDashboardController::class, 'bandingkan'])->name('bandingkan');
+
+    // ── Admin only ──
     Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
 

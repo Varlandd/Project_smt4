@@ -65,4 +65,53 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+
+    // ── Budget Calculator ──
+    const hitungBtn = document.getElementById('hitungBtn');
+    if (hitungBtn) {
+        hitungBtn.addEventListener('click', () => {
+            const penghasilan = parseFloat(document.getElementById('penghasilan')?.value) || 0;
+            const uangMuka    = parseFloat(document.getElementById('uang_muka')?.value) || 0;
+            const cicilanLain = parseFloat(document.getElementById('cicilan_lain')?.value) || 0;
+            const tenor       = parseInt(document.getElementById('tenor')?.value) || 15;
+
+            if (penghasilan <= 0) {
+                alert('Masukkan penghasilan terlebih dahulu!');
+                return;
+            }
+
+            // Max cicilan = 30% penghasilan - cicilan lain
+            const maxCicilan = (penghasilan * 0.30) - cicilanLain;
+
+            if (maxCicilan <= 0) {
+                alert('Cicilan bulanan lain melebihi 30% penghasilan. Kurangi cicilan terlebih dahulu.');
+                return;
+            }
+
+            // Bunga KPR ~8.5% per tahun (fixed rate simulation)
+            const bungaTahunan = 8.5 / 100;
+            const bungaBulanan = bungaTahunan / 12;
+            const totalBulan   = tenor * 12;
+
+            // Hitung maksimum pinjaman dengan rumus anuitas
+            const maxPinjaman = maxCicilan * ((Math.pow(1 + bungaBulanan, totalBulan) - 1) / (bungaBulanan * Math.pow(1 + bungaBulanan, totalBulan)));
+
+            const budgetRumah = maxPinjaman + uangMuka;
+            const sisaPendapatan = penghasilan - maxCicilan - cicilanLain;
+
+            // Format Rupiah
+            const formatRp = (num) => 'Rp ' + Math.round(num).toLocaleString('id-ID');
+
+            document.getElementById('resultBudget').textContent  = formatRp(budgetRumah);
+            document.getElementById('resultCicilan').textContent  = formatRp(maxCicilan);
+            document.getElementById('resultSisa').textContent     = formatRp(sisaPendapatan);
+
+            const resultEl = document.getElementById('calculatorResult');
+            if (resultEl) {
+                resultEl.style.display = 'block';
+                resultEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        });
+    }
+
 });

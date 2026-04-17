@@ -31,7 +31,7 @@
 
             <div class="hero-stats">
                 <div class="stat-item">
-                    <div class="stat-number">500+</div>
+                    <div class="stat-number">{{ isset($totalRumah) ? $totalRumah : '500+' }}</div>
                     <div class="stat-label">Data Properti</div>
                 </div>
                 <div class="stat-item">
@@ -66,12 +66,16 @@
 
         <div class="hero-visual">
             <div class="house-card">
-                <div class="house-card-image">🏠</div>
+                @if(isset($featuredRumah) && $featuredRumah->foto)
+                    <div class="house-card-image" style="background-image: url('{{ asset('storage/' . $featuredRumah->foto) }}'); background-size: cover; background-position: center; border-radius: 8px 8px 0 0;"></div>
+                @else
+                    <div class="house-card-image">🏠</div>
+                @endif
                 <div class="house-card-content">
-                    <div class="house-card-title">Rumah Type 45</div>
-                    <div class="house-card-location">📍 Jember, Jawa Timur</div>
-                    <div class="house-card-price">Rp 450 Juta</div>
-                    <div class="house-card-match">✨ 92% Match</div>
+                    <div class="house-card-title">{{ isset($featuredRumah) ? $featuredRumah->nama : 'Rumah Type 45' }}</div>
+                    <div class="house-card-location">📍 {{ isset($featuredRumah) ? $featuredRumah->lokasi : 'Jember, Jawa Timur' }}</div>
+                    <div class="house-card-price">Rp {{ isset($featuredRumah) ? number_format($featuredRumah->harga, 0, ',', '.') : '450.000.000' }}</div>
+                    <div class="house-card-match">✨ Rekomendasi Teratas</div>
                 </div>
             </div>
         </div>

@@ -8,6 +8,14 @@
     <div class="admin-section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <h3>Daftar Properti</h3>
         <div style="display: flex; gap: 15px; align-items: center;">
+            <form action="{{ route('admin.rumah.index') }}" method="GET" id="filterForm">
+                <select name="per_page" onchange="document.getElementById('filterForm').submit()" style="padding: 8px; border-radius: 6px; border: 1px solid #d1d5db; font-size: 0.875rem;">
+                    <option value="5" {{ isset($perPage) && $perPage == 5 ? 'selected' : '' }}>5 data</option>
+                    <option value="10" {{ isset($perPage) && $perPage == 10 ? 'selected' : '' }}>10 data</option>
+                    <option value="50" {{ isset($perPage) && $perPage == 50 ? 'selected' : '' }}>50 data</option>
+                    <option value="100" {{ isset($perPage) && $perPage == 100 ? 'selected' : '' }}>100 data</option>
+                </select>
+            </form>
             <span class="admin-count">{{ $rumahs->total() }} data</span>
             <a href="{{ route('admin.rumah.create') }}" class="btn btn-primary" style="padding: 8px 15px; background: #4f46e5; color: white; border-radius: 6px; text-decoration: none; font-weight: 500;">+ Tambah Properti</a>
         </div>
@@ -73,8 +81,36 @@
         </table>
     </div>
     
-    <div style="margin-top: 20px;">
-        {{ $rumahs->links() }}
+    @if($rumahs->hasPages())
+    <div style="margin-top: 20px; display: flex; justify-content: space-between; align-items: center;">
+        <span style="color: #9ca3af; font-size: 0.875rem;">
+            Menampilkan {{ $rumahs->firstItem() }}–{{ $rumahs->lastItem() }} dari {{ $rumahs->total() }} data
+        </span>
+        <div style="display: flex; gap: 4px; align-items: center;">
+            {{-- Previous --}}
+            @if($rumahs->onFirstPage())
+                <span style="padding: 8px 12px; border-radius: 6px; background: #1f2937; color: #4b5563; font-size: 0.875rem; cursor: default;">‹</span>
+            @else
+                <a href="{{ $rumahs->previousPageUrl() }}" style="padding: 8px 12px; border-radius: 6px; background: #374151; color: #d1d5db; font-size: 0.875rem; text-decoration: none; transition: background .2s;">‹</a>
+            @endif
+
+            {{-- Page Numbers --}}
+            @foreach($rumahs->getUrlRange(max($rumahs->currentPage()-2, 1), min($rumahs->currentPage()+2, $rumahs->lastPage())) as $page => $url)
+                @if($page == $rumahs->currentPage())
+                    <span style="padding: 8px 12px; border-radius: 6px; background: #4f46e5; color: #fff; font-size: 0.875rem; font-weight: 600;">{{ $page }}</span>
+                @else
+                    <a href="{{ $url }}" style="padding: 8px 12px; border-radius: 6px; background: #374151; color: #d1d5db; font-size: 0.875rem; text-decoration: none; transition: background .2s;">{{ $page }}</a>
+                @endif
+            @endforeach
+
+            {{-- Next --}}
+            @if($rumahs->hasMorePages())
+                <a href="{{ $rumahs->nextPageUrl() }}" style="padding: 8px 12px; border-radius: 6px; background: #374151; color: #d1d5db; font-size: 0.875rem; text-decoration: none; transition: background .2s;">›</a>
+            @else
+                <span style="padding: 8px 12px; border-radius: 6px; background: #1f2937; color: #4b5563; font-size: 0.875rem; cursor: default;">›</span>
+            @endif
+        </div>
     </div>
+    @endif
 </div>
 @endsection
