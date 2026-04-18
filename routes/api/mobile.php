@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\StatsController;
 use App\Http\Controllers\Api\LokasiController;
 use App\Http\Controllers\Api\FasilitasController;
 use App\Http\Controllers\Api\ProfileApiController;
+use App\Http\Controllers\Api\AnalitikApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,4 +48,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [ProfileApiController::class, 'show']);
     Route::put('/user/profile', [ProfileApiController::class, 'updateProfile']);
     Route::put('/user/password', [ProfileApiController::class, 'updatePassword']);
+
+    // Analitik (MLR & SAW)
+    Route::post('/predict', [AnalitikApiController::class, 'predict']);
+    Route::post('/recommend', [AnalitikApiController::class, 'recommend']);
 });

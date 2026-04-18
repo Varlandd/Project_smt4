@@ -62,4 +62,27 @@ class RumahController extends Controller
             ->with('success', "Terima kasih {$validated['nama']}! Kami sedang memproses pencarian rumah terbaik untuk Anda. Hasil akan dikirim ke email {$validated['email']}.")
             ->withFragment('contact');
     }
+
+    /**
+     * Handle public contact form submission.
+     */
+    public function contact(Request $request)
+    {
+        $request->validate([
+            'nama' => 'required|string|max:100',
+            'email' => 'required|email|max:100',
+            'subjek' => 'required|string|max:150',
+            'pesan' => 'required|string',
+        ]);
+
+        \App\Models\Pesan::create([
+            'nama' => $request->nama,
+            'email' => $request->email,
+            'subjek' => $request->subjek,
+            'pesan' => $request->pesan,
+            'status' => 'unread',
+        ]);
+
+        return redirect()->back()->with('success', 'Pesan Anda telah terkirim! Admin akan segera meninjau.');
+    }
 }

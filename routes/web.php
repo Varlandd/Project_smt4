@@ -42,6 +42,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/rekomendasi/wizard', [UserDashboardController::class, 'wizard'])->name('rekomendasi.wizard');
     Route::get('/bandingkan', [UserDashboardController::class, 'bandingkan'])->name('bandingkan');
 
+    // ── Form Pencarian Rumah ──
+    Route::post('/cari-rumah', [RumahController::class, 'search'])->name('rumah.search');
+    Route::post('/kontak', [RumahController::class, 'contact'])->name('kontak.send');
+
     // ── Admin only ──
     Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
@@ -50,8 +54,10 @@ Route::middleware('auth')->group(function () {
         Route::post('rumah/import', [\App\Http\Controllers\Admin\RumahController::class, 'import'])->name('rumah.import');
         Route::resource('rumah', \App\Http\Controllers\Admin\RumahController::class);
         Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
+        Route::resource('pesan', \App\Http\Controllers\Admin\PesanController::class)->only(['index', 'show', 'destroy']);
 
         Route::get('/statistik', [\App\Http\Controllers\Admin\StatistikController::class, 'index'])->name('statistik');
+        Route::get('/logs', [\App\Http\Controllers\Admin\LogController::class, 'index'])->name('logs');
 
         Route::get('/analitik', [\App\Http\Controllers\Admin\AnalitikController::class, 'index'])->name('analitik');
         Route::post('/analitik/predict', [\App\Http\Controllers\Admin\AnalitikController::class, 'predict'])->name('predict');

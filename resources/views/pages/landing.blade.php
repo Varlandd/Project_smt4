@@ -258,51 +258,36 @@
     <div class="container">
         <div class="contact-layout">
             
-            {{-- Info Kontak --}}
-            <div class="contact-info">
-                <span class="section-tag">Hubungi Kami</span>
-                <h2 class="section-title">Butuh Bantuan?<br/>Tim Kami Siap Membantu</h2>
-                <p class="section-desc" style="margin-bottom: 1.5rem;">
-                    Hubungi tim pengembang atau langsung coba sistem rekomendasi rumah dengan mengisi form di samping.
-                </p>
+            {{-- Form Feedback/Pesan --}}
+            <div class="feedback-card">
+                <span class="section-tag">Kirim Pesan</span>
+                <h3 class="form-card-title">Hubungi Tim Kami</h3>
+                <p class="form-card-subtitle">Ada pertanyaan atau saran? Kirimkan pesan Anda di bawah ini.</p>
 
-                <div class="contact-item">
-                    <div class="contact-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                            <polyline points="22,6 12,13 2,6"/>
-                        </svg>
+                <form action="{{ route('kontak.send') }}" method="POST">
+                    @csrf
+                    <div class="form-group">
+                        <label>Nama Anda</label>
+                        <input type="text" name="nama" placeholder="Masukkan nama" required>
                     </div>
-                    <div class="contact-text">
-                        <strong>Email</strong>
-                        rumahku.project@unej.ac.id
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" name="email" placeholder="nama@email.com" required>
                     </div>
-                </div>
+                    <div class="form-group">
+                        <label>Subjek</label>
+                        <input type="text" name="subjek" placeholder="Judul pesan" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Pesan</label>
+                        <textarea name="pesan" rows="4" placeholder="Tuliskan pesan Anda..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-outline btn-block">Kirim Pesan</button>
+                </form>
 
-                <div class="contact-item">
-                    <div class="contact-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                            <circle cx="12" cy="10" r="3"/>
-                        </svg>
-                    </div>
-                    <div class="contact-text">
-                        <strong>Kampus</strong>
-                        Fakultas Ilmu Komputer<br/>Universitas Jember
-                    </div>
-                </div>
-
-                <div class="contact-item">
-                    <div class="contact-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.5A2 2 0 0 1 3.6 1.36h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9a16 16 0 0 0 6.09 6.09l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
-                        </svg>
-                    </div>
-                    <div class="contact-text">
-                        <strong>WhatsApp</strong>
-                        +62 812-3456-7890
-                    </div>
-                </div>
+                @if(session('success'))
+                    <div class="form-success" style="margin-top: 1rem;">{{ session('success') }}</div>
+                @endif
             </div>
 
             {{-- Form Pencarian --}}

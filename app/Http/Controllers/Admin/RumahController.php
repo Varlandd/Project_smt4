@@ -8,6 +8,8 @@ use App\Models\Rumah;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\RumahImport;
 use App\Exports\RumahExport;
+use App\Models\Aktivitas;
+use Illuminate\Support\Facades\Auth;
 
 class RumahController extends Controller
 {
@@ -29,6 +31,15 @@ class RumahController extends Controller
 
         try {
             Excel::import(new RumahImport, $request->file('file_excel'));
+
+            Aktivitas::create([
+                'user_id' => Auth::id(),
+                'user_name' => Auth::user()->name,
+                'aksi' => 'IMPORT',
+                'tipe_objek' => 'Rumah',
+                'deskripsi' => "Mengimport produk via Excel",
+            ]);
+
             return redirect()->route('admin.rumah.index')->with('success', 'Data properti berhasil diimport dari Excel.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal mengimport data: ' . $e->getMessage());
@@ -72,7 +83,15 @@ class RumahController extends Controller
             $validated['foto'] = $path;
         }
 
-        \App\Models\Rumah::create($validated);
+        $r = \App\Models\Rumah::create($validated);
+
+        Aktivitas::create([
+            'user_id' => Auth::id(),
+            'user_name' => Auth::user()->name,
+            'aksi' => 'CREATE',
+            'tipe_objek' => 'Rumah',
+            'deskripsi' => "Menambahkan properti baru: {$r->nama}",
+        ]);
 
         return redirect()->route('admin.rumah.index')->with('success', 'Data properti berhasil ditambahkan.');
     }
@@ -125,6 +144,14 @@ class RumahController extends Controller
 
         $rumah->update($validated);
 
+        Aktivitas::create([
+            'user_id' => Auth::id(),
+            'user_name' => Auth::user()->name,
+            'aksi' => 'UPDATE',
+            'tipe_objek' => 'Rumah',
+            'deskripsi' => "Mengupdate data properti: {$rumah->nama}",
+        ]);
+
         return redirect()->route('admin.rumah.index')->with('success', 'Data properti berhasil diperbarui.');
     }
 
@@ -139,7 +166,16 @@ class RumahController extends Controller
             \Illuminate\Support\Facades\Storage::disk('public')->delete($rumah->foto);
         }
 
+        $nama = $rumah->nama;
         $rumah->delete();
+
+        Aktivitas::create([
+            'user_id' => Auth::id(),
+            'user_name' => Auth::user()->name,
+            'aksi' => 'DELETE',
+            'tipe_objek' => 'Rumah',
+            'deskripsi' => "Menghapus properti: {$nama}",
+        ]);
 
         return redirect()->route('admin.rumah.index')->with('success', 'Data properti berhasil dihapus.');
     }
