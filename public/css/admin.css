@@ -634,6 +634,117 @@
     color: #4ade80;
 }
 
+/* ── ADDITIONAL COMPONENTS ── */
+.nav-badge {
+    background: #dc2626;
+    color: white;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 99px;
+    margin-left: auto;
+    box-shadow: 0 2px 4px rgba(220, 38, 38, .3);
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.admin-title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--text-dark);
+}
+
+.admin-subtitle {
+    font-size: .9rem;
+    color: var(--text-soft);
+    margin-top: .25rem;
+}
+
+.admin-card {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+.admin-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, .5);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background: white;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 20px;
+    overflow: hidden;
+    animation: modalSlideUp .3s ease-out;
+}
+
+@keyframes modalSlideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 { font-weight: 700; font-size: 1.1rem; }
+.modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-soft); }
+
+.modal-body { padding: 1.5rem; }
+.modal-footer { padding: 1.25rem 1.5rem; background: var(--bg-soft); border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: .75rem; }
+
+.btn-cancel { background: white; border: 1px solid var(--border); padding: .6rem 1.2rem; border-radius: 10px; font-weight: 600; cursor: pointer; }
+.btn-save { background: var(--primary); color: white; border: none; padding: .6rem 1.2rem; border-radius: 10px; font-weight: 600; cursor: pointer; }
+
+/* Dark Mode fixes for new components */
+.dark-mode .nav-badge { background: #f87171; color: #7f1d1d; }
+.dark-mode .admin-card { background: #1e293b; border-color: #334155; }
+.dark-mode .admin-title { color: white; }
+.dark-mode .modal-content { background: #1e293b; border: 1px solid #334155; }
+.dark-mode .modal-header { border-bottom-color: #334155; }
+.dark-mode .modal-footer { background: #0f172a; border-top-color: #334155; }
+.dark-mode .btn-cancel { background: #1e293b; border-color: #334155; color: #94a3b8; }
+
+/* Additional button styles */
+.admin-btn {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .6rem 1.2rem;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: .88rem;
+    cursor: pointer;
+    transition: all .2s;
+    border: none;
+    text-decoration: none;
+}
+
+.btn-primary { background: var(--primary); color: white; }
+.btn-primary:hover { background: #0d9488; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(15, 118, 110, .3); }
+
 /* Sidebar stays dark in both modes — slight tweak for light mode contrast */
 .dark-mode .admin-sidebar {
     background: linear-gradient(180deg, #020617 0%, #0f172a 100%);

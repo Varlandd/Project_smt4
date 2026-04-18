@@ -392,6 +392,18 @@
             <span class="admin-stat-label">Total Admin</span>
         </div>
     </div>
+    <div class="admin-stat-card">
+        <div class="admin-stat-icon" style="background: linear-gradient(135deg, #ede9fe, #c084fc);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#6d28d9" stroke-width="2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+            </svg>
+        </div>
+        <div class="admin-stat-info">
+            <span class="admin-stat-number">{{ $totalPesan }}</span>
+            <span class="admin-stat-label">Pesan Masuk @if($unreadPesan > 0) <small style="color: #dc2626;">({{ $unreadPesan }} Baru)</small> @endif</span>
+        </div>
+    </div>
 </div>
 
 {{-- Price Stats Strip --}}

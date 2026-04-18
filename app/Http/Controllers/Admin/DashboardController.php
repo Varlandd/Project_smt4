@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Rumah;
 use App\Models\User;
+use App\Models\Pesan;
 use Illuminate\Support\Facades\Http;
 
 class DashboardController extends Controller
@@ -15,6 +16,8 @@ class DashboardController extends Controller
         $totalRumah   = Rumah::count();
         $totalUser    = User::count();
         $totalAdmin   = User::where('role', 'admin')->count();
+        $totalPesan   = Pesan::count();
+        $unreadPesan  = Pesan::where('status', 'unread')->count();
 
         // Hitung total favorit dari field favorited_user_ids
         $totalFavorit = Rumah::raw(function ($collection) {
@@ -100,7 +103,8 @@ class DashboardController extends Controller
             'totalRumah', 'totalUser', 'totalFavorit', 'totalAdmin',
             'hargaTertinggi', 'hargaTerendah', 'avgHarga',
             'topFavorit', 'rumahTerbaru', 'userTerbaru',
-            'trendData', 'perLokasi', 'mlStatus'
+            'trendData', 'perLokasi', 'mlStatus',
+            'totalPesan', 'unreadPesan'
         ));
     }
 }
