@@ -70,14 +70,12 @@
                 <tr style="border-bottom: 1px solid #e5e7eb;">
                     <td style="padding: 12px;">{{ $rumahs->firstItem() + $i }}</td>
                     <td style="padding: 12px;">
-                        @if($rumah->foto)
-                            @if(\Illuminate\Support\Str::startsWith($rumah->foto, 'http'))
-                                <img src="{{ $rumah->foto }}" alt="{{ $rumah->nama }}" style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;">
-                            @elseif(\Illuminate\Support\Str::startsWith($rumah->foto, 'rumah_photos/'))
-                                <img src="{{ asset('storage/' . $rumah->foto) }}" alt="{{ $rumah->nama }}" style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;">
-                            @else
-                                <img src="{{ asset($rumah->foto) }}" alt="{{ $rumah->nama }}" style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;">
-                            @endif
+                      @php
+    $fotoUrl = is_array($rumah->foto) ? ($rumah->foto[0] ?? null) : $rumah->foto;
+@endphp
+
+@if($fotoUrl)
+    <img src="{{ $fotoUrl }}" alt="{{ $rumah->nama }}" style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;">
                         @else
                             <span style="color: #9ca3af; font-size: 0.875rem;">No Image</span>
                         @endif

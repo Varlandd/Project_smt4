@@ -1,17 +1,20 @@
 <div class="property-card">
     <a href="{{ route('properti.show', $rumah->_id) }}" style="text-decoration:none;color:inherit;">
         <div class="property-card-img">
-            @if($rumah->foto)
-                @if(\Illuminate\Support\Str::startsWith($rumah->foto, 'http'))
-                    <img src="{{ $rumah->foto }}" alt="{{ $rumah->nama }}">
-                @elseif(\Illuminate\Support\Str::startsWith($rumah->foto, 'rumah_photos/'))
-                    <img src="{{ asset('storage/' . $rumah->foto) }}" alt="{{ $rumah->nama }}">
-                @else
-                    <img src="{{ asset($rumah->foto) }}" alt="{{ $rumah->nama }}">
-                @endif
-            @else
-                🏠
-            @endif
+            @php
+    $fotoUrl = is_array($rumah->foto) ? ($rumah->foto[0] ?? null) : $rumah->foto;
+@endphp
+@if($fotoUrl)
+    @if(\Illuminate\Support\Str::startsWith($fotoUrl, 'http'))
+        <img src="{{ $fotoUrl }}" alt="{{ $rumah->nama }}" style="width:100%; height:100%; object-fit:cover;">
+    @elseif(\Illuminate\Support\Str::startsWith($fotoUrl, 'rumah_photos/'))
+        <img src="{{ asset('storage/' . $fotoUrl) }}" alt="{{ $rumah->nama }}" style="width:100%; height:100%; object-fit:cover;">
+    @else
+        <img src="{{ asset($fotoUrl) }}" alt="{{ $rumah->nama }}" style="width:100%; height:100%; object-fit:cover;">
+    @endif
+@else
+    🏠
+@endif
         </div>
         <div class="property-card-body">
             <span class="property-card-type">{{ ucfirst($rumah->tipe ?? 'Rumah') }}</span>

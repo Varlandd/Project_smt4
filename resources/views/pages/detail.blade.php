@@ -175,18 +175,34 @@
 
         {{-- Main Detail Card --}}
         <div class="detail-card">
-            <div class="detail-img-wrapper">
-                @if($rumah->foto)
-                    @if(\Illuminate\Support\Str::startsWith($rumah->foto, 'http'))
-                        <img src="{{ $rumah->foto }}" alt="{{ $rumah->nama }}">
-                    @elseif(\Illuminate\Support\Str::startsWith($rumah->foto, 'rumah_photos/'))
-                        <img src="{{ asset('storage/' . $rumah->foto) }}" alt="{{ $rumah->nama }}">
-                    @else
-                        <img src="{{ asset($rumah->foto) }}" alt="{{ $rumah->nama }}">
-                    @endif
-                @else
-                    🏠
-                @endif
+            <div class="detail-img-wrapper" style="position:relative; overflow:hidden;">
+    @php
+        $fotos = is_array($rumah->foto) ? $rumah->foto : ($rumah->foto ? [$rumah->foto] : []);
+    @endphp
+
+    @if(count($fotos) > 0)
+        {{-- Slides --}}
+        @foreach($fotos as $i => $foto)
+            <div class="slide" data-index="{{ $i }}" style="display:{{ $i === 0 ? 'block' : 'none' }}; width:100%; height:100%;">
+                <img src="{{ $foto }}" alt="{{ $rumah->nama }}" 
+                     style="width:100%; height:100%; object-fit:cover; cursor:pointer;"
+                     onclick="openLightbox({{ $i }})">
+            </div>
+        @endforeach
+
+        {{-- Counter --}}
+        @if(count($fotos) > 1)
+            <div style="position:absolute; bottom:1rem; left:1rem; background:rgba(0,0,0,.5); color:white; padding:.3rem .8rem; border-radius:20px; font-size:.85rem; font-weight:600;">
+                <span id="slideCounter">1</span>/{{ count($fotos) }}
+            </div>
+
+            {{-- Arrows --}}
+            <button onclick="changeSlide(-1)" style="position:absolute; left:1rem; top:50%; transform:translateY(-50%); background:rgba(255,255,255,.85); border:none; border-radius:50%; width:40px; height:40px; font-size:1.2rem; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(0,0,0,.2);">‹</button>
+            <button onclick="changeSlide(1)" style="position:absolute; right:4rem; top:50%; transform:translateY(-50%); background:rgba(255,255,255,.85); border:none; border-radius:50%; width:40px; height:40px; font-size:1.2rem; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(0,0,0,.2);">›</button>
+        @endif
+    @else
+        🏠
+    @endif
 
                 <form action="{{ route('properti.favorit', $rumah->_id) }}" method="POST">
                     @csrf
@@ -241,7 +257,7 @@
                 <div class="detail-desc">
                     <h3>📝 Deskripsi</h3>
                     @if($rumah->deskripsi)
-                        <p>{{ $rumah->deskripsi }}</p>
+                        <p style="white-space: pre-line">{{ $rumah->deskripsi }}</p>
                     @else
                         <p class="detail-desc-empty">Belum ada deskripsi untuk properti ini.</p>
                     @endif
@@ -266,4 +282,56 @@
         </a>
     </div>
 </section>
+{{-- Lightbox --}}
+@php $fotos = is_array($rumah->foto) ? $rumah->foto : ($rumah->foto ? [$rumah->foto] : []); @endphp
+@if(count($fotos) > 0)
+<div id="lightbox" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.9); z-index:9999; align-items:center; justify-content:center;">
+    <button onclick="closeLightbox()" style="position:absolute; top:1rem; right:1.5rem; background:none; border:none; color:white; font-size:2rem; cursor:pointer;">✕</button>
+    <button onclick="changeLightbox(-1)" style="position:absolute; left:1rem; background:rgba(255,255,255,.2); border:none; color:white; font-size:2rem; width:50px; height:50px; border-radius:50%; cursor:pointer;">‹</button>
+    <img id="lightboxImg" src="" style="max-width:90vw; max-height:90vh; object-fit:contain; border-radius:8px;">
+    <button onclick="changeLightbox(1)" style="position:absolute; right:1rem; background:rgba(255,255,255,.2); border:none; color:white; font-size:2rem; width:50px; height:50px; border-radius:50%; cursor:pointer;">›</button>
+    <div style="position:absolute; bottom:1rem; color:white; font-size:.9rem;">
+        <span id="lightboxCounter">1</span>/{{ count($fotos) }}
+    </div>
+</div>
+
+<script>
+    const fotos = @json($fotos);
+    let currentSlide = 0;
+    let currentLightbox = 0;
+
+    function changeSlide(dir) {
+        document.querySelectorAll('.slide').forEach(s => s.style.display = 'none');
+        currentSlide = (currentSlide + dir + fotos.length) % fotos.length;
+        document.querySelector(`.slide[data-index="${currentSlide}"]`).style.display = 'block';
+        document.getElementById('slideCounter').textContent = currentSlide + 1;
+    }
+
+    function openLightbox(index) {
+        currentLightbox = index;
+        document.getElementById('lightboxImg').src = fotos[currentLightbox];
+        document.getElementById('lightboxCounter').textContent = currentLightbox + 1;
+        document.getElementById('lightbox').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+        document.getElementById('lightbox').style.display = 'none';
+        document.body.style.overflow = '';
+    }
+
+    function changeLightbox(dir) {
+        currentLightbox = (currentLightbox + dir + fotos.length) % fotos.length;
+        document.getElementById('lightboxImg').src = fotos[currentLightbox];
+        document.getElementById('lightboxCounter').textContent = currentLightbox + 1;
+    }
+
+    // Close lightbox with Escape key
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowLeft') changeLightbox(-1);
+        if (e.key === 'ArrowRight') changeLightbox(1);
+    });
+</script>
+@endif
 @endsection
