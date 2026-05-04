@@ -30,6 +30,7 @@ class RumahImport implements ToCollection, WithHeadingRow
                 'kamar_mandi'   => isset($row['kamar_mandi']) ? (int)$row['kamar_mandi'] : null,
                 'tipe'          => $row['tipe'] ?? 'jual',
                 'deskripsi'     => $row['deskripsi'] ?? null,
+                'foto' => isset($row['foto']) ? array_map('trim', explode(',', $row['foto'])) : [],
             ]);
         }
     }
