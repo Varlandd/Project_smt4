@@ -19,7 +19,8 @@ class StatistikController extends Controller
         $totalFavorit = 0;
         $allRumah = Rumah::whereNotNull('favorited_user_ids')->get();
         foreach ($allRumah as $r) {
-            $totalFavorit += count($r->favorited_user_ids ?? []);
+            $favs = $r->favorited_user_ids;
+            $totalFavorit += is_array($favs) ? count($favs) : 0;
         }
 
         // ── Distribusi Rumah per Lokasi (Bar Chart) ──
@@ -58,7 +59,8 @@ class StatistikController extends Controller
 
         // ── Top 5 Rumah Paling Difavoritkan ──
         $allRumahForFav = Rumah::all()->map(function ($r) {
-            $r->favorited_by_count = count($r->favorited_user_ids ?? []);
+            $favs = $r->favorited_user_ids;
+            $r->favorited_by_count = is_array($favs) ? count($favs) : 0;
             return $r;
         })->sortByDesc('favorited_by_count')->take(5)->values();
         $topFavorit = $allRumahForFav;
