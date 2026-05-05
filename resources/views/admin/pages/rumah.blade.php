@@ -52,57 +52,120 @@
         </div>
     @endif
 
-    <div class="admin-table-wrapper" style="overflow-x: auto;">
-        <table class="admin-table" style="width: 100%; border-collapse: collapse;">
-            <thead>
-                <tr style="border-bottom: 2px solid #e5e7eb; text-align: left;">
-                    <th style="padding: 12px;">#</th>
-                    <th style="padding: 12px;">Foto</th>
-                    <th style="padding: 12px;">Nama</th>
-                    <th style="padding: 12px;">Lokasi</th>
-                    <th style="padding: 12px;">Harga</th>
-                    <th style="padding: 12px;">Tipe</th>
-                    <th style="padding: 12px; text-align: center;">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($rumahs as $i => $rumah)
-                <tr style="border-bottom: 1px solid #e5e7eb;">
-                    <td style="padding: 12px;">{{ $rumahs->firstItem() + $i }}</td>
-                    <td style="padding: 12px;">
-                      @php
-    $fotoUrl = is_array($rumah->foto) ? ($rumah->foto[0] ?? null) : $rumah->foto;
-@endphp
+    <form action="{{ route('admin.rumah.bulk-delete') }}" method="POST" id="bulkDeleteForm">
+        @csrf
+        @method('DELETE')
+        
+        <div class="admin-table-wrapper" style="overflow-x: auto;">
+            <div style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+                <button type="button" id="btnBulkDelete" class="btn btn-danger" style="padding: 6px 12px; background: #ef4444; color: white; border: none; border-radius: 6px; font-weight: 500; cursor: pointer; display: none;" onclick="confirmBulkDelete()">
+                    Hapus Terpilih (<span id="selectedCount">0</span>)
+                </button>
+            </div>
 
-@if($fotoUrl)
-    <img src="{{ $fotoUrl }}" alt="{{ $rumah->nama }}" style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;">
-                        @else
-                            <span style="color: #9ca3af; font-size: 0.875rem;">No Image</span>
-                        @endif
-                    </td>
-                    <td style="padding: 12px; font-weight: 500;">{{ $rumah->nama }}</td>
-                    <td style="padding: 12px; color: #6b7280;">{{ $rumah->lokasi }}</td>
-                    <td style="padding: 12px; color: #10b981; font-weight: 600;">Rp {{ number_format($rumah->harga, 0, ',', '.') }}</td>
-                    <td style="padding: 12px;">
-                        <span style="background: #f3f4f6; padding: 4px 8px; border-radius: 4px; font-size: 0.875rem;">{{ ucfirst($rumah->tipe) }}</span>
-                    </td>
-                    <td style="padding: 12px; text-align: center;">
-                        <div style="display: flex; gap: 8px; justify-content: center;">
-                            <a href="{{ route('admin.rumah.edit', $rumah->id) }}" style="color: #f59e0b; text-decoration: none; font-size: 0.875rem;">Edit</a>
-                            <form action="{{ route('admin.rumah.destroy', $rumah->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus properti ini?');" style="display: inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" style="color: #ef4444; background: none; border: none; cursor: pointer; font-size: 0.875rem; padding: 0;">Hapus</button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
-                @empty
-                <tr><td colspan="7" class="empty-state" style="padding: 20px; text-align: center; color: #6b7280;">Belum ada data rumah.</td></tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
+            <table class="admin-table" style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="border-bottom: 2px solid #e5e7eb; text-align: left;">
+                        <th style="padding: 12px; width: 40px;">
+                            <input type="checkbox" id="selectAll" style="cursor: pointer;">
+                        </th>
+                        <th style="padding: 12px;">#</th>
+                        <th style="padding: 12px;">Foto</th>
+                        <th style="padding: 12px;">Nama</th>
+                        <th style="padding: 12px;">Lokasi</th>
+                        <th style="padding: 12px;">Harga</th>
+                        <th style="padding: 12px;">Tipe</th>
+                        <th style="padding: 12px; text-align: center;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($rumahs as $i => $rumah)
+                    <tr style="border-bottom: 1px solid #e5e7eb;">
+                        <td style="padding: 12px;">
+                            <input type="checkbox" name="ids[]" value="{{ $rumah->id }}" class="rumah-checkbox" style="cursor: pointer;">
+                        </td>
+                        <td style="padding: 12px;">{{ $rumahs->firstItem() + $i }}</td>
+                        <td style="padding: 12px;">
+                          @php
+        $fotoUrl = is_array($rumah->foto) ? ($rumah->foto[0] ?? null) : $rumah->foto;
+    @endphp
+
+    @if($fotoUrl)
+        <img src="{{ $fotoUrl }}" alt="{{ $rumah->nama }}" style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;">
+                            @else
+                                <span style="color: #9ca3af; font-size: 0.875rem;">No Image</span>
+                            @endif
+                        </td>
+                        <td style="padding: 12px; font-weight: 500;">{{ $rumah->nama }}</td>
+                        <td style="padding: 12px; color: #6b7280;">{{ $rumah->lokasi }}</td>
+                        <td style="padding: 12px; color: #10b981; font-weight: 600;">Rp {{ number_format($rumah->harga, 0, ',', '.') }}</td>
+                        <td style="padding: 12px;">
+                            <span style="background: #f3f4f6; padding: 4px 8px; border-radius: 4px; font-size: 0.875rem;">{{ ucfirst($rumah->tipe) }}</span>
+                        </td>
+                        <td style="padding: 12px; text-align: center;">
+                            <div style="display: flex; gap: 8px; justify-content: center;">
+                                <a href="{{ route('admin.rumah.edit', $rumah->id) }}" style="color: #f59e0b; text-decoration: none; font-size: 0.875rem;">Edit</a>
+                                <button type="button" onclick="deleteIndividual('{{ route('admin.rumah.destroy', $rumah->id) }}')" style="color: #ef4444; background: none; border: none; cursor: pointer; font-size: 0.875rem; padding: 0;">Hapus</button>
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr><td colspan="8" class="empty-state" style="padding: 20px; text-align: center; color: #6b7280;">Belum ada data rumah.</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </form>
+
+    {{-- Form tersembunyi untuk hapus individual --}}
+    <form id="deleteIndividualForm" method="POST" style="display: none;">
+        @csrf
+        @method('DELETE')
+    </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const selectAll = document.getElementById('selectAll');
+            const checkboxes = document.querySelectorAll('.rumah-checkbox');
+            const btnBulkDelete = document.getElementById('btnBulkDelete');
+            const selectedCount = document.getElementById('selectedCount');
+
+            function updateBulkDeleteButton() {
+                const checked = document.querySelectorAll('.rumah-checkbox:checked');
+                selectedCount.textContent = checked.length;
+                if (checked.length > 0) {
+                    btnBulkDelete.style.display = 'block';
+                } else {
+                    btnBulkDelete.style.display = 'none';
+                }
+            }
+
+            selectAll.addEventListener('change', function() {
+                checkboxes.forEach(cb => {
+                    cb.checked = selectAll.checked;
+                });
+                updateBulkDeleteButton();
+            });
+
+            checkboxes.forEach(cb => {
+                cb.addEventListener('change', updateBulkDeleteButton);
+            });
+        });
+
+        function confirmBulkDelete() {
+            if (confirm('Apakah Anda yakin ingin menghapus data yang dipilih?')) {
+                document.getElementById('bulkDeleteForm').submit();
+            }
+        }
+
+        function deleteIndividual(url) {
+            if (confirm('Apakah Anda yakin ingin menghapus properti ini?')) {
+                const form = document.getElementById('deleteIndividualForm');
+                form.action = url;
+                form.submit();
+            }
+        }
+    </script>
     
     @if($rumahs->hasPages())
     <div style="margin-top: 20px; display: flex; justify-content: space-between; align-items: center;">

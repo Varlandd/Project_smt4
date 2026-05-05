@@ -179,4 +179,32 @@ class RumahController extends Controller
 
         return redirect()->route('admin.rumah.index')->with('success', 'Data properti berhasil dihapus.');
     }
+
+    public function bulkDestroy(Request $request)
+    {
+        $ids = $request->input('ids');
+        if (empty($ids)) {
+            return redirect()->back()->with('error', 'Pilih minimal satu data untuk dihapus.');
+        }
+
+        try {
+            $count = count($ids);
+            
+            // Log activity before deleting to have access to names if needed, or just log the count
+            Aktivitas::create([
+                'user_id' => Auth::id(),
+                'user_name' => Auth::user()->name,
+                'aksi' => 'DELETE_BULK',
+                'tipe_objek' => 'Rumah',
+                'deskripsi' => "Menghapus {$count} properti sekaligus",
+            ]);
+
+            // Perform deletion
+            Rumah::whereIn('_id', $ids)->delete();
+
+            return redirect()->route('admin.rumah.index')->with('success', "{$count} data properti berhasil dihapus.");
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal menghapus data: ' . $e->getMessage());
+        }
+    }
 }

@@ -90,4 +90,22 @@ class RumahApiController extends Controller
             'message' => 'Rumah berhasil dihapus'
         ]);
     }
+
+    public function bulkDestroy(Request $request)
+    {
+        $validated = $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'required|string',
+        ]);
+
+        $ids = $validated['ids'];
+        
+        // MongoDB compatible whereIn delete
+        Rumah::whereIn('_id', $ids)->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => count($ids) . ' Rumah berhasil dihapus'
+        ]);
+    }
 }
