@@ -35,10 +35,11 @@ class Rumah extends Model
         'luas_bangunan'       => 'integer',
         'kamar_tidur'         => 'integer',
         'kamar_mandi'         => 'integer',
-        'fasilitas'           => 'array',
-        'fasilitas_ids'       => 'array',
-        'favorited_user_ids'  => 'array',
-        'foto'                => 'array',
+        // Jangan cast 'array' untuk MongoDB — field sudah native array
+        // 'fasilitas'        => 'array',
+        // 'fasilitas_ids'    => 'array',
+        // 'favorited_user_ids' => 'array',
+        // 'foto'             => 'array',
     ];
 
      public function getFotoAttribute($value)

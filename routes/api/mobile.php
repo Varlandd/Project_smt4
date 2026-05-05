@@ -26,14 +26,16 @@ Route::get('/stats', [StatsController::class, 'index']);
 Route::get('/lokasi', [LokasiController::class, 'index']);
 Route::get('/fasilitas', [FasilitasController::class, 'index']);
 
+// Rumah (public - bisa dilihat tanpa login)
+Route::get('/rumah', [RumahApiController::class, 'index']);
+Route::get('/rumah/{id}', [RumahApiController::class, 'show']);
+
 // ── Protected Routes (butuh Sanctum token) ──
 Route::middleware('auth:sanctum')->group(function () {
     // Auth
     Route::post('/logout', [AuthController::class, 'logout']);
 
-    // Rumah
-    Route::get('/rumah', [RumahApiController::class, 'index']);
-    Route::get('/rumah/{id}', [RumahApiController::class, 'show']);
+    // Rumah (protected actions)
     Route::post('/rumah/search', [RumahApiController::class, 'search']);
 
     // Kalkulator KPR
