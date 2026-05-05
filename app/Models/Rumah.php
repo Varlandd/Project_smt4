@@ -114,7 +114,8 @@ class Rumah extends Model
      */
     public function getFavoritedByCountAttribute(): int
     {
-        return count($this->favorited_user_ids ?? []);
+        $favs = $this->favorited_user_ids;
+        return is_array($favs) ? count($favs) : 0;
     }
 
     /**
