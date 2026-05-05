@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\LokasiController;
 use App\Http\Controllers\Api\FasilitasController;
 use App\Http\Controllers\Api\ProfileApiController;
 use App\Http\Controllers\Api\AnalitikApiController;
+use App\Http\Controllers\Api\ImageProxyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,9 +27,17 @@ Route::get('/stats', [StatsController::class, 'index']);
 Route::get('/lokasi', [LokasiController::class, 'index']);
 Route::get('/fasilitas', [FasilitasController::class, 'index']);
 
+// Image Proxy (untuk Flutter Web CORS)
+Route::get('/image-proxy', [ImageProxyController::class, 'show']);
+
 // Rumah (public - bisa dilihat tanpa login)
 Route::get('/rumah', [RumahApiController::class, 'index']);
 Route::get('/rumah/{id}', [RumahApiController::class, 'show']);
+
+// Analitik - Prediksi & Rekomendasi (public)
+Route::post('/predict', [AnalitikApiController::class, 'predict']);
+Route::post('/recommend', [AnalitikApiController::class, 'recommend']);
+Route::post('/kalkulator', [KalkulatorController::class, 'hitung']);
 
 // ── Protected Routes (butuh Sanctum token) ──
 Route::middleware('auth:sanctum')->group(function () {
@@ -37,9 +46,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Rumah (protected actions)
     Route::post('/rumah/search', [RumahApiController::class, 'search']);
-
-    // Kalkulator KPR
-    Route::post('/kalkulator', [KalkulatorController::class, 'hitung']);
 
     // Favorit
     Route::get('/favorit', [FavoritController::class, 'index']);
@@ -51,7 +57,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/user/profile', [ProfileApiController::class, 'updateProfile']);
     Route::put('/user/password', [ProfileApiController::class, 'updatePassword']);
 
-    // Analitik (MLR & SAW)
-    Route::post('/predict', [AnalitikApiController::class, 'predict']);
-    Route::post('/recommend', [AnalitikApiController::class, 'recommend']);
+
 });

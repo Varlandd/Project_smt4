@@ -52,6 +52,7 @@ Route::middleware('auth')->group(function () {
 
         Route::get('rumah/export', [\App\Http\Controllers\Admin\RumahController::class, 'export'])->name('rumah.export');
         Route::post('rumah/import', [\App\Http\Controllers\Admin\RumahController::class, 'import'])->name('rumah.import');
+        Route::delete('rumah/bulk-delete', [\App\Http\Controllers\Admin\RumahController::class, 'bulkDestroy'])->name('rumah.bulk-delete');
         Route::resource('rumah', \App\Http\Controllers\Admin\RumahController::class);
         Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
         Route::resource('pesan', \App\Http\Controllers\Admin\PesanController::class)->only(['index', 'show', 'destroy']);

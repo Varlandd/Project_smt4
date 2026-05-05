@@ -17,6 +17,7 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
     Route::delete('/users/{id}', [\App\Http\Controllers\Api\Admin\UserApiController::class, 'destroy']);
     
     Route::post('/rumah', [\App\Http\Controllers\Api\Admin\RumahApiController::class, 'store']);
+    Route::post('/rumah/bulk-delete', [\App\Http\Controllers\Api\Admin\RumahApiController::class, 'bulkDestroy']);
     Route::post('/rumah/{id}', [\App\Http\Controllers\Api\Admin\RumahApiController::class, 'update']);
     Route::delete('/rumah/{id}', [\App\Http\Controllers\Api\Admin\RumahApiController::class, 'destroy']);
 });
