@@ -7,6 +7,8 @@
 {{-- ═══ HERO ═══ --}}
 <section id="hero" class="hero">
     <div class="hero-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
         <div class="hero-gradient"></div>
     </div>
     
@@ -31,7 +33,7 @@
 
             <div class="hero-stats">
                 <div class="stat-item">
-                    <div class="stat-number">{{ isset($totalRumah) ? $totalRumah : '500+' }}</div>
+                    <div class="stat-number">{{ $totalRumah ?? '500+' }}</div>
                     <div class="stat-label">Data Properti</div>
                 </div>
                 <div class="stat-item">
@@ -39,8 +41,8 @@
                     <div class="stat-label">Akurasi Prediksi</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number">10+</div>
-                    <div class="stat-label">Kriteria Filter</div>
+                    <div class="stat-number">{{ $totalLokasi ?? '10+' }}</div>
+                    <div class="stat-label">Kota Tercakup</div>
                 </div>
             </div>
 
@@ -64,18 +66,67 @@
             </div>
         </div>
 
+        {{-- ═══ HERO VISUAL: AI Dashboard Preview ═══ --}}
         <div class="hero-visual">
-            <div class="house-card">
-                @if(isset($featuredRumah) && $featuredRumah->foto)
-                    <div class="house-card-image" style="background-image: url('{{ asset('storage/' . $featuredRumah->foto) }}'); background-size: cover; background-position: center; border-radius: 8px 8px 0 0;"></div>
-                @else
-                    <div class="house-card-image">🏠</div>
-                @endif
-                <div class="house-card-content">
-                    <div class="house-card-title">{{ isset($featuredRumah) ? $featuredRumah->nama : 'Rumah Type 45' }}</div>
-                    <div class="house-card-location">📍 {{ isset($featuredRumah) ? $featuredRumah->lokasi : 'Jember, Jawa Timur' }}</div>
-                    <div class="house-card-price">Rp {{ isset($featuredRumah) ? number_format($featuredRumah->harga, 0, ',', '.') : '450.000.000' }}</div>
-                    <div class="house-card-match">✨ Rekomendasi Teratas</div>
+            <div class="dashboard-preview">
+                {{-- Card 1: Prediksi AI --}}
+                <div class="preview-card preview-card-main">
+                    <div class="preview-card-header">
+                        <div class="preview-dot green"></div>
+                        <span>Prediksi AI — RumahKu</span>
+                    </div>
+                    <div class="preview-prediction">
+                        <div class="preview-label">Estimasi Harga Rumah</div>
+                        <div class="preview-price">Rp 850.000.000</div>
+                        <div class="preview-range">
+                            <span class="range-min">Min: Rp 720Jt</span>
+                            <div class="range-bar"><div class="range-fill"></div></div>
+                            <span class="range-max">Max: Rp 980Jt</span>
+                        </div>
+                    </div>
+                    <div class="preview-specs">
+                        <div class="spec-item">
+                            <span class="spec-icon">📐</span>
+                            <span>LT 120m²</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-icon">🏗️</span>
+                            <span>LB 80m²</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-icon">🛏️</span>
+                            <span>3 KT</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-icon">🚿</span>
+                            <span>2 KM</span>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Card 2: Skor Rekomendasi (Floating) --}}
+                <div class="preview-card preview-card-float preview-score">
+                    <div class="score-circle">
+                        <svg viewBox="0 0 36 36" class="score-svg">
+                            <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3"/>
+                            <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="url(#scoreGrad)" stroke-width="3" stroke-dasharray="92, 100" stroke-linecap="round"/>
+                            <defs><linearGradient id="scoreGrad"><stop offset="0%" stop-color="#0f766e"/><stop offset="100%" stop-color="#14b8a6"/></linearGradient></defs>
+                        </svg>
+                        <span class="score-text">92</span>
+                    </div>
+                    <div class="score-info">
+                        <div class="score-label">Skor SAW</div>
+                        <div class="score-status">Sangat Cocok ✨</div>
+                    </div>
+                </div>
+
+                {{-- Card 3: Lokasi (Floating) --}}
+                <div class="preview-card preview-card-float preview-location">
+                    <span class="loc-icon">📍</span>
+                    <div>
+                        <div class="loc-city">Surabaya</div>
+                        <div class="loc-detail">{{ $totalRumah ?? 125 }} properti tersedia</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -147,6 +198,64 @@
                 @endif
             </div>
             @endforeach
+        </div>
+    </div>
+</section>
+
+{{-- ═══ PROPERTI TERBARU ═══ --}}
+<section id="properti" class="section section-light">
+    <div class="container">
+        <div class="section-header" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap;">
+            <div>
+                <span class="section-tag">Properti Terbaru</span>
+                <h2 class="section-title">Rumah Pilihan Terbaik<br/>dari Database Kami</h2>
+                <p class="section-desc">Data properti terbaru yang siap dianalisis dan direkomendasikan oleh sistem AI kami.</p>
+            </div>
+            @auth
+            <a href="{{ route('properti.browse') }}" class="btn btn-outline" style="margin-bottom: 1rem;">
+                Lihat Semua Properti →
+            </a>
+            @endauth
+        </div>
+
+        <div class="properti-grid">
+            @forelse($latestRumah ?? [] as $rumah)
+            <div class="properti-card fade-up">
+                <div class="properti-image">
+                    @php
+                        $foto = is_array($rumah->foto) ? ($rumah->foto[0] ?? null) : $rumah->foto;
+                    @endphp
+                    @if($foto && str_starts_with($foto, 'http'))
+                        <img src="{{ $foto }}" alt="{{ $rumah->nama }}" loading="lazy">
+                    @elseif($foto)
+                        <img src="{{ asset('storage/' . $foto) }}" alt="{{ $rumah->nama }}" loading="lazy">
+                    @else
+                        <div class="properti-no-img">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                                <polyline points="9 22 9 12 15 12 15 22"/>
+                            </svg>
+                        </div>
+                    @endif
+                    <div class="properti-badge">{{ ucfirst($rumah->tipe ?? 'Rumah') }}</div>
+                </div>
+                <div class="properti-content">
+                    <div class="properti-price">Rp {{ number_format($rumah->harga ?? 0, 0, ',', '.') }}</div>
+                    <h3 class="properti-name">{{ $rumah->nama ?? 'Properti' }}</h3>
+                    <div class="properti-loc">📍 {{ $rumah->lokasi ?? '-' }}</div>
+                    <div class="properti-meta">
+                        <span>📐 {{ $rumah->luas_tanah ?? '-' }}m²</span>
+                        <span>🏗️ {{ $rumah->luas_bangunan ?? '-' }}m²</span>
+                        <span>🛏️ {{ $rumah->kamar_tidur ?? '-' }} KT</span>
+                        <span>🚿 {{ $rumah->kamar_mandi ?? '-' }} KM</span>
+                    </div>
+                </div>
+            </div>
+            @empty
+            <div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: var(--text-soft);">
+                <p>Belum ada data properti. Silakan import data melalui Admin Panel.</p>
+            </div>
+            @endforelse
         </div>
     </div>
 </section>
@@ -226,9 +335,11 @@
                     </div>
                 </div>
                 <div class="result-action">
-                    <a href="#contact" class="btn btn-primary">
-                        Cari Rumah Sesuai Budget
-                    </a>
+                    @auth
+                    <a href="{{ route('properti.browse') }}" class="btn btn-primary">Cari Rumah Sesuai Budget</a>
+                    @else
+                    <a href="{{ route('register') }}" class="btn btn-primary">Daftar & Cari Rumah</a>
+                    @endauth
                 </div>
             </div>
         </div>
@@ -242,27 +353,39 @@
             <span class="section-tag section-tag-light">Gratis & Mudah</span>
             <h2 class="section-title text-white">Siap Temukan<br/>Rumah Impianmu?</h2>
             <p class="section-desc text-light">Gunakan sistem kami secara gratis untuk mendapatkan rekomendasi rumah terbaik sesuai budget dan preferensi kamu.</p>
-            <a href="#contact" class="btn btn-white">
+            @auth
+            <a href="{{ route('rekomendasi') }}" class="btn btn-white">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
                     <polyline points="9 22 9 12 15 12 15 22"/>
                 </svg>
-                Mulai Pencarian Rumah
+                Mulai Rekomendasi AI
             </a>
+            @else
+            <a href="{{ route('register') }}" class="btn btn-white">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                    <polyline points="9 22 9 12 15 12 15 22"/>
+                </svg>
+                Daftar Gratis Sekarang
+            </a>
+            @endauth
         </div>
     </div>
 </section>
 
-{{-- ═══ CONTACT & FILTER FORM ═══ --}}
+{{-- ═══ CONTACT ═══ --}}
 <section id="contact" class="section section-light">
     <div class="container">
+        <div class="section-header text-center">
+            <span class="section-tag">Hubungi Kami</span>
+            <h2 class="section-title">Ada Pertanyaan?<br/>Kami Siap Membantu</h2>
+        </div>
         <div class="contact-layout">
-            
-            {{-- Form Feedback/Pesan --}}
+            {{-- Form Pesan --}}
             <div class="feedback-card">
-                <span class="section-tag">Kirim Pesan</span>
-                <h3 class="form-card-title">Hubungi Tim Kami</h3>
-                <p class="form-card-subtitle">Ada pertanyaan atau saran? Kirimkan pesan Anda di bawah ini.</p>
+                <h3 class="form-card-title">✉️ Kirim Pesan</h3>
+                <p class="form-card-subtitle">Sampaikan saran, masukan, atau pertanyaan Anda.</p>
 
                 <form action="{{ route('kontak.send') }}" method="POST">
                     @csrf
@@ -282,7 +405,7 @@
                         <label>Pesan</label>
                         <textarea name="pesan" rows="4" placeholder="Tuliskan pesan Anda..." required></textarea>
                     </div>
-                    <button type="submit" class="btn btn-outline btn-block">Kirim Pesan</button>
+                    <button type="submit" class="btn btn-primary btn-block">Kirim Pesan</button>
                 </form>
 
                 @if(session('success'))
@@ -290,114 +413,37 @@
                 @endif
             </div>
 
-            {{-- Form Pencarian --}}
-            <div class="search-form-card">
-                <h3 class="form-card-title">🏡 Cari Rumah Impianmu</h3>
-                <p class="form-card-subtitle">Isi kriteria rumah yang kamu inginkan, sistem akan memberikan rekomendasi terbaik.</p>
-
-                <form action="{{ route('rumah.search') }}" method="POST" id="searchForm">
-                    @csrf
-
-                    <div class="form-group">
-                        <label for="nama">Nama Lengkap *</label>
-                        <input type="text" id="nama" name="nama" placeholder="Nama kamu" value="{{ old('nama') }}" required/>
-                        @error('nama') <span class="form-error">{{ $message }}</span> @enderror
+            {{-- Info Kontak --}}
+            <div class="contact-info-section">
+                <div class="contact-card-item">
+                    <div class="contact-card-icon">📧</div>
+                    <div>
+                        <strong>Email</strong>
+                        <p>info@rumahku.id</p>
                     </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="email">Email *</label>
-                            <input type="email" id="email" name="email" placeholder="email@example.com" value="{{ old('email') }}" required/>
-                        </div>
-                        <div class="form-group">
-                            <label for="phone">No. WhatsApp</label>
-                            <input type="tel" id="phone" name="phone" placeholder="08xxxxxxxxxx" value="{{ old('phone') }}"/>
-                        </div>
+                </div>
+                <div class="contact-card-item">
+                    <div class="contact-card-icon">📞</div>
+                    <div>
+                        <strong>WhatsApp</strong>
+                        <p>+62 812-3456-7890</p>
                     </div>
-
-                    <div class="form-group">
-                        <label for="lokasi">Lokasi/Kota *</label>
-                        <select id="lokasi" name="lokasi" required>
-                            <option value="">Pilih lokasi</option>
-                            @foreach(['Jember','Surabaya','Malang','Banyuwangi','Sidoarjo','Gresik','Mojokerto','Pasuruan'] as $kota)
-                                <option value="{{ $kota }}" {{ old('lokasi') == $kota ? 'selected' : '' }}>{{ $kota }}</option>
-                            @endforeach
-                        </select>
+                </div>
+                <div class="contact-card-item">
+                    <div class="contact-card-icon">📍</div>
+                    <div>
+                        <strong>Lokasi</strong>
+                        <p>Kampus Jember, Jawa Timur</p>
                     </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="budget_min">Budget Minimum</label>
-                            <select id="budget_min" name="budget_min">
-                                <option value="">Tidak dibatasi</option>
-                                <option value="100000000">Rp 100 Juta</option>
-                                <option value="200000000">Rp 200 Juta</option>
-                                <option value="300000000">Rp 300 Juta</option>
-                                <option value="400000000">Rp 400 Juta</option>
-                                <option value="500000000">Rp 500 Juta</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="budget_max">Budget Maximum</label>
-                            <select id="budget_max" name="budget_max">
-                                <option value="">Tidak dibatasi</option>
-                                <option value="300000000">Rp 300 Juta</option>
-                                <option value="500000000">Rp 500 Juta</option>
-                                <option value="750000000">Rp 750 Juta</option>
-                                <option value="1000000000">Rp 1 Miliar</option>
-                                <option value="1500000000">Rp 1.5 Miliar</option>
-                            </select>
-                        </div>
+                </div>
+                <div class="contact-card-item">
+                    <div class="contact-card-icon">⏰</div>
+                    <div>
+                        <strong>Jam Operasional</strong>
+                        <p>Senin - Jumat, 08:00 - 17:00 WIB</p>
                     </div>
-
-                    <div class="form-group">
-                        <label for="tipe">Tipe Rumah</label>
-                        <select id="tipe" name="tipe">
-                            <option value="">Semua tipe</option>
-                            <option value="36">Type 36</option>
-                            <option value="45">Type 45</option>
-                            <option value="60">Type 60</option>
-                            <option value="70">Type 70</option>
-                            <option value="90">Type 90+</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Prioritas Fasilitas</label>
-                        <div class="checkbox-group">
-                            <label class="checkbox-label">
-                                <input type="checkbox" name="fasilitas[]" value="sekolah"/>
-                                <span>Dekat Sekolah</span>
-                            </label>
-                            <label class="checkbox-label">
-                                <input type="checkbox" name="fasilitas[]" value="rs"/>
-                                <span>Dekat Rumah Sakit</span>
-                            </label>
-                            <label class="checkbox-label">
-                                <input type="checkbox" name="fasilitas[]" value="mall"/>
-                                <span>Dekat Mall/Pusat Belanja</span>
-                            </label>
-                            <label class="checkbox-label">
-                                <input type="checkbox" name="fasilitas[]" value="transportasi"/>
-                                <span>Akses Transportasi Umum</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    @if(session('success'))
-                        <div class="form-success">{{ session('success') }}</div>
-                    @endif
-
-                    <button type="submit" class="btn btn-primary btn-block">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="11" cy="11" r="8"/>
-                            <path d="M21 21l-4.35-4.35"/>
-                        </svg>
-                        Cari Rumah Sekarang
-                    </button>
-                </form>
+                </div>
             </div>
-
         </div>
     </div>
 </section>
@@ -417,7 +463,6 @@ document.getElementById('hitungBtn')?.addEventListener('click', function() {
         return;
     }
 
-    // Asumsi: cicilan max 30% dari penghasilan setelah dikurangi cicilan lain
     const maxCicilan = (penghasilan * 0.3) - cicilanLain;
     
     if (maxCicilan <= 0) {
@@ -425,13 +470,11 @@ document.getElementById('hitungBtn')?.addEventListener('click', function() {
         return;
     }
 
-    // Hitung budget rumah (asumsi bunga KPR 8% per tahun)
     const bungaBulanan = 0.08 / 12;
     const jumlahBulan = tenor * 12;
     const pokokPinjaman = maxCicilan * ((1 - Math.pow(1 + bungaBulanan, -jumlahBulan)) / bungaBulanan);
     const budgetRumah = pokokPinjaman + uangMuka;
 
-    // Tampilkan hasil
     document.getElementById('resultBudget').textContent = 'Rp ' + budgetRumah.toLocaleString('id-ID', {maximumFractionDigits: 0});
     document.getElementById('resultCicilan').textContent = 'Rp ' + maxCicilan.toLocaleString('id-ID', {maximumFractionDigits: 0});
     document.getElementById('resultSisa').textContent = 'Rp ' + ((penghasilan - maxCicilan - cicilanLain)).toLocaleString('id-ID', {maximumFractionDigits: 0});
