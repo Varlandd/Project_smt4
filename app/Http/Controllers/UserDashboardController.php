@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Rumah;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 
 class UserDashboardController extends Controller
 {
@@ -13,7 +14,8 @@ class UserDashboardController extends Controller
      */
     private function isFavorited($rumah, string $userId): bool
     {
-        $favs = $rumah->favorited_user_ids ?? [];
+        $favs = $rumah->favorited_user_ids;
+        if (!is_array($favs)) return false;
         foreach ($favs as $fav) {
             if ((string) $fav === $userId) {
                 return true;
@@ -181,7 +183,8 @@ class UserDashboardController extends Controller
     {
         $rumah = Rumah::findOrFail($id);
         $userId = (string) Auth::user()->_id;
-        $currentFavs = $rumah->favorited_user_ids ?? [];
+        $currentFavs = $rumah->favorited_user_ids;
+        if (!is_array($currentFavs)) $currentFavs = [];
 
         // Convert all to string for comparison
         $stringFavs = array_map('strval', $currentFavs);
@@ -263,5 +266,84 @@ class UserDashboardController extends Controller
     {
         $rumahs = Rumah::all();
         return view('pages.bandingkan', compact('rumahs'));
+    }
+
+    /**
+     * ML Predict — proxy to Flask ML service (user-accessible).
+     */
+    public function mlPredict(Request $request)
+    {
+        $validated = $request->validate([
+            'luas_tanah'    => 'required|numeric|min:1',
+            'luas_bangunan' => 'required|numeric|min:1',
+            'kamar_tidur'   => 'required|integer|min:1',
+            'kamar_mandi'   => 'required|integer|min:1',
+            'lokasi'        => 'required|string',
+        ]);
+
+        try {
+            $response = Http::timeout(10)->post('http://127.0.0.1:5000/predict', $validated);
+
+            if ($response->successful()) {
+                return response()->json($response->json());
+            }
+
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'ML Service tidak tersedia',
+            ], 503);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Tidak dapat terhubung ke ML Service (Flask port 5000)',
+            ], 503);
+        }
+    }
+
+    /**
+     * ML Recommend — TOPSIS via Flask ML service (user-accessible).
+     */
+    public function mlRecommend(Request $request)
+    {
+        try {
+            // Ambil semua data rumah dari database
+            $allRumah = Rumah::all()->map(function ($r) {
+                return [
+                    '_id'            => (string) $r->_id,
+                    'nama'           => $r->nama,
+                    'lokasi'         => $r->lokasi,
+                    'harga'          => $r->harga ?? 0,
+                    'luas_tanah'     => $r->luas_tanah ?? 0,
+                    'luas_bangunan'  => $r->luas_bangunan ?? 0,
+                    'kamar_tidur'    => $r->kamar_tidur ?? 0,
+                    'kamar_mandi'    => $r->kamar_mandi ?? 0,
+                    'tipe'           => $r->tipe ?? '',
+                    'foto'           => $r->foto ?? null,
+                ];
+            })->toArray();
+
+            $payload = [
+                'properties'    => array_values($allRumah),
+                'weights'       => $request->input('weights', []),
+                'budget_max'    => $request->input('budget_max', 0),
+                'lokasi_filter' => $request->input('lokasi_filter', ''),
+            ];
+
+            $response = Http::timeout(15)->post('http://127.0.0.1:5000/recommend', $payload);
+
+            if ($response->successful()) {
+                return response()->json($response->json());
+            }
+
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'ML Service tidak tersedia',
+            ], 503);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Tidak dapat terhubung ke ML Service: ' . $e->getMessage(),
+            ], 503);
+        }
     }
 }

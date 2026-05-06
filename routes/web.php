@@ -46,6 +46,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/cari-rumah', [RumahController::class, 'search'])->name('rumah.search');
     Route::post('/kontak', [RumahController::class, 'contact'])->name('kontak.send');
 
+    // ── ML Service Routes (User-accessible) ──
+    Route::post('/ml/predict', [UserDashboardController::class, 'mlPredict'])->name('ml.predict');
+    Route::post('/ml/recommend', [UserDashboardController::class, 'mlRecommend'])->name('ml.recommend');
+
     // ── Admin only ──
     Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');

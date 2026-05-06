@@ -151,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         try {
-            const response = await fetch('{{ route("admin.predict") }}', {
+            const response = await fetch('{{ route("ml.predict") }}', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

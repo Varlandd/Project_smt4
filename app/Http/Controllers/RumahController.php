@@ -34,7 +34,13 @@ class RumahController extends Controller
             $featuredRumah = Rumah::latest()->first();
         }
 
-        return view('pages.landing', compact('totalRumah', 'featuredRumah'));
+        // Ambil 6 properti terbaru untuk showcase
+        $latestRumah = Rumah::latest()->limit(6)->get();
+
+        // Hitung jumlah lokasi unik
+        $totalLokasi = Rumah::distinct('lokasi')->count();
+
+        return view('pages.landing', compact('totalRumah', 'featuredRumah', 'latestRumah', 'totalLokasi'));
     }
 
     

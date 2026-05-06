@@ -88,7 +88,7 @@
     <div class="rekom-container">
         <div class="rekom-header">
             <h1>🎯 Rekomendasi Personal</h1>
-            <p>Atur prioritas kriteria sesuai kebutuhanmu, dan sistem SAW (Simple Additive Weighting) akan memberikan ranking properti terbaik</p>
+            <p>Atur prioritas kriteria sesuai kebutuhanmu, dan sistem TOPSIS (Technique for Order of Preference by Similarity to Ideal Solution) akan memberikan ranking properti terbaik</p>
         </div>
 
         <div class="rekom-card">
@@ -157,7 +157,7 @@
         <div class="rekom-results" id="rekomendasiResults">
             <div class="method-badge">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                Metode SAW (Simple Additive Weighting)
+                Metode TOPSIS — Diproses oleh Flask ML Service
             </div>
             <h2>🏆 Ranking Rekomendasi</h2>
             <div id="rankingList"></div>
@@ -169,9 +169,6 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Raw property data from server
-    const properties = @json($rumahs);
-
     // Slider visual update
     document.querySelectorAll('input[type="range"]').forEach(slider => {
         const valEl = document.getElementById('val_' + slider.id.replace('w_', ''));
@@ -185,72 +182,86 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     const formatRp = (num) => 'Rp ' + Math.round(num).toLocaleString('id-ID');
+    const btn = document.getElementById('rekomendasiBtn');
+    const resultsEl = document.getElementById('rekomendasiResults');
+    const rankingList = document.getElementById('rankingList');
 
-    document.getElementById('rekomendasiBtn').addEventListener('click', function() {
+    btn.addEventListener('click', async function() {
         // Get weights
-        const w = {
-            harga:    parseInt(document.getElementById('w_harga').value),
-            tanah:    parseInt(document.getElementById('w_tanah').value),
-            bangunan: parseInt(document.getElementById('w_bangunan').value),
-            kt:       parseInt(document.getElementById('w_kt').value),
-            km:       parseInt(document.getElementById('w_km').value),
+        const weights = {
+            harga:         parseInt(document.getElementById('w_harga').value),
+            luas_tanah:    parseInt(document.getElementById('w_tanah').value),
+            luas_bangunan: parseInt(document.getElementById('w_bangunan').value),
+            kamar_tidur:   parseInt(document.getElementById('w_kt').value),
+            kamar_mandi:   parseInt(document.getElementById('w_km').value),
         };
 
-        // Normalize weights
-        const totalW = w.harga + w.tanah + w.bangunan + w.kt + w.km;
-        const nw = {
-            harga:    w.harga / totalW,
-            tanah:    w.tanah / totalW,
-            bangunan: w.bangunan / totalW,
-            kt:       w.kt / totalW,
-            km:       w.km / totalW,
-        };
+        const lokasi_filter = document.getElementById('filter_lokasi').value;
+        const budget_max = parseFloat(document.getElementById('filter_budget').value) || 0;
 
-        // Filter properties
-        let data = [...properties];
-        const filterLok = document.getElementById('filter_lokasi').value;
-        const filterBudget = parseFloat(document.getElementById('filter_budget').value) || 0;
+        // Show loading
+        btn.disabled = true;
+        btn.innerHTML = '<div class="spinner" style="width:20px;height:20px;border-width:3px;margin:0 auto;"></div> Memproses TOPSIS...';
 
-        if (filterLok) data = data.filter(p => p.lokasi === filterLok);
-        if (filterBudget > 0) data = data.filter(p => p.harga <= filterBudget);
+        try {
+            const response = await fetch('{{ route("ml.recommend") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({ weights, lokasi_filter, budget_max }),
+            });
 
-        if (data.length === 0) {
-            document.getElementById('rankingList').innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-soft);">Tidak ada properti yang cocok dengan filter.</div>';
-            document.getElementById('rekomendasiResults').classList.add('show');
+            const result = await response.json();
+
+            if (response.ok && result.status === 'success' && result.data.rankings) {
+                renderResults(result.data.rankings);
+            } else {
+                showError('ML Service tidak merespons. Pastikan Flask server berjalan di port 5000.');
+            }
+        } catch (err) {
+            showError('Tidak dapat terhubung ke ML Service (Flask). Pastikan server Flask berjalan dengan perintah: python app.py');
+        }
+
+        btn.disabled = false;
+        btn.innerHTML = '🎯 Dapatkan Rekomendasi';
+    });
+
+    function showError(message) {
+        rankingList.innerHTML = `
+            <div style="text-align:center;padding:2rem;background:#fef2f2;border:1px solid #fecaca;border-radius:16px;color:#dc2626;">
+                <div style="font-size:2rem;margin-bottom:.5rem;">⚠️</div>
+                <strong>Flask ML Service Offline</strong>
+                <p style="margin-top:.5rem;font-size:.9rem;color:#991b1b;">${message}</p>
+                <p style="margin-top:.8rem;font-size:.82rem;color:#b91c1c;">
+                    Jalankan: <code style="background:#fee2e2;padding:.2rem .5rem;border-radius:4px;">cd ml_service && python app.py</code>
+                </p>
+            </div>`;
+        resultsEl.classList.add('show');
+    }
+
+    function renderResults(rankings) {
+        if (rankings.length === 0) {
+            rankingList.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-soft);">Tidak ada properti yang cocok dengan filter.</div>';
+            resultsEl.classList.add('show');
             return;
         }
 
-        // SAW: Find max/min for normalization
-        const maxHarga    = Math.max(...data.map(p => p.harga || 1));
-        const maxTanah    = Math.max(...data.map(p => p.luas_tanah || 1));
-        const maxBangunan = Math.max(...data.map(p => p.luas_bangunan || 1));
-        const maxKT       = Math.max(...data.map(p => p.kamar_tidur || 1));
-        const maxKM       = Math.max(...data.map(p => p.kamar_mandi || 1));
-        const minHarga    = Math.min(...data.map(p => p.harga || 1));
+        // Update method badge
+        const badgeEl = resultsEl.querySelector('.method-badge');
+        if (badgeEl) {
+            badgeEl.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Metode TOPSIS — Diproses oleh Flask ML Service`;
+        }
 
-        // Calculate SAW score
-        data.forEach(p => {
-            // Harga is COST criteria (lower is better) → min/value
-            const nHarga    = minHarga / (p.harga || 1);
-            // Others are BENEFIT criteria (higher is better) → value/max
-            const nTanah    = (p.luas_tanah || 0) / maxTanah;
-            const nBangunan = (p.luas_bangunan || 0) / maxBangunan;
-            const nKT       = (p.kamar_tidur || 0) / maxKT;
-            const nKM       = (p.kamar_mandi || 0) / maxKM;
-
-            p.saw_score = (nw.harga * nHarga) + (nw.tanah * nTanah) + (nw.bangunan * nBangunan) + (nw.kt * nKT) + (nw.km * nKM);
-        });
-
-        // Sort by score desc
-        data.sort((a, b) => b.saw_score - a.saw_score);
-
-        // Render
         let html = '';
-        data.forEach((p, i) => {
-            const rank = i + 1;
+        rankings.forEach((p, i) => {
+            const rank = p.rank || (i + 1);
             const badgeClass = rank <= 3 ? `rank-${rank}` : 'rank-other';
             const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank;
-            const detailUrl = `/properti/${p._id}`;
+            const score = p.topsis_score || 0;
+            const detailUrl = `/properti/${p.id || p._id}`;
 
             html += `
             <a href="${detailUrl}" class="rank-card">
@@ -260,17 +271,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="rank-detail">${p.lokasi} · ${p.luas_tanah || '-'}m² · ${p.kamar_tidur || '-'} KT · ${formatRp(p.harga)}</div>
                 </div>
                 <div class="rank-score-wrap">
-                    <div class="rank-score">${(p.saw_score * 100).toFixed(1)}</div>
-                    <div class="rank-score-label">Skor SAW</div>
+                    <div class="rank-score">${score.toFixed(1)}</div>
+                    <div class="rank-score-label">Skor TOPSIS</div>
                 </div>
             </a>`;
         });
 
-        document.getElementById('rankingList').innerHTML = html;
-        const resultsEl = document.getElementById('rekomendasiResults');
+        rankingList.innerHTML = html;
         resultsEl.classList.add('show');
         resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
+    }
 });
 </script>
 @endpush
+
