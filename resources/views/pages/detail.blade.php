@@ -184,7 +184,7 @@
         {{-- Slides --}}
         @foreach($fotos as $i => $foto)
             <div class="slide" data-index="{{ $i }}" style="display:{{ $i === 0 ? 'block' : 'none' }}; width:100%; height:100%;">
-                <img src="{{ $foto }}" alt="{{ $rumah->nama }}" 
+                <img src="{{ asset($foto) }}" alt="{{ $rumah->nama }}"
                      style="width:100%; height:100%; object-fit:cover; cursor:pointer;"
                      onclick="openLightbox({{ $i }})">
             </div>
@@ -296,7 +296,7 @@
 </div>
 
 <script>
-    const fotos = @json($fotos);
+    const fotos = @json($fotos).map(f => f.startsWith('http') ? f : '{{ asset('') }}' + f);
     let currentSlide = 0;
     let currentLightbox = 0;
 

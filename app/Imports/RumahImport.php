@@ -23,6 +23,9 @@ class RumahImport implements ToCollection, WithHeadingRow
             Rumah::create([
                 'nama'          => $row['nama'],
                 'lokasi'        => $row['lokasi'] ?? null,
+                'kota'          => $row['kota'] ?? null,     
+                'area'          => $row['area'] ?? null,
+                'posisi_kota'   => $row['posisi_kota'] ?? null,
                 'harga'         => isset($row['harga']) ? (int)$row['harga'] : null,
                 'luas_tanah'    => isset($row['luas_tanah']) ? (int)$row['luas_tanah'] : null,
                 'luas_bangunan' => isset($row['luas_bangunan']) ? (int)$row['luas_bangunan'] : null,
