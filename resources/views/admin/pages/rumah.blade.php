@@ -90,8 +90,8 @@
         $fotoUrl = is_array($rumah->foto) ? ($rumah->foto[0] ?? null) : $rumah->foto;
     @endphp
 
-    @if($fotoUrl)
-        <img src="{{ $fotoUrl }}" alt="{{ $rumah->nama }}" style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;">
+   @if($fotoUrl)
+    <img src="{{ asset($fotoUrl) }}" alt="{{ $rumah->nama }}" style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;">
                             @else
                                 <span style="color: #9ca3af; font-size: 0.875rem;">No Image</span>
                             @endif

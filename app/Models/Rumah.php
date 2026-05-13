@@ -16,6 +16,9 @@ class Rumah extends Model
     protected $fillable = [
         'nama',
         'lokasi',
+        'kota',
+        'area',
+        'posisi_kota',
         'harga',
         'luas_tanah',
         'luas_bangunan',
@@ -58,11 +61,10 @@ class Rumah extends Model
     public function setFotoAttribute($value)
     {
         // Jika value string dengan koma, explode
-        if (is_string($value) && str_contains($value, ',')) {
-            // Coba split dengan regex untuk URL
-            preg_match_all('/https?:\/\/[^\s,]+/', $value, $matches);
-            $value = $matches[0] ?? [];
+       if (is_string($value) && str_contains($value, ',')) {
+    $value = array_map('trim', explode(',', $value));
         }
+        
         
         // Jika value string biasa, jadikan array
         if (is_string($value)) {
