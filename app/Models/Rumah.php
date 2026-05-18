@@ -30,6 +30,8 @@ class Rumah extends Model
         'fasilitas',            // embedded array of nama fasilitas
         'fasilitas_ids',        // array of ObjectId fasilitas
         'favorited_user_ids',   // array of user _id yang memfavoritkan
+        'latitude',
+        'longitude',
     ];
 
     protected $casts = [
