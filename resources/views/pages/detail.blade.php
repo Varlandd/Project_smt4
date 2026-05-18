@@ -3,6 +3,7 @@
 @section('title', $rumah->nama . ' — RumahKu')
 
 @push('styles')
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
     .detail-page {
         min-height: 100vh;
@@ -262,6 +263,15 @@
                         <p class="detail-desc-empty">Belum ada deskripsi untuk properti ini.</p>
                     @endif
                 </div>
+
+                {{-- Peta Lokasi --}}
+                @if($rumah->latitude && $rumah->longitude)
+                <div class="detail-desc" style="margin-top: 2rem;">
+                    <h3>📍 Lokasi di Peta</h3>
+                    <div id="peta" style="height: 350px; width: 100%; border-radius: 14px; margin-top: .8rem;"></div>
+                </div>
+                @endif
+
             </div>
         </div>
 
@@ -332,6 +342,21 @@
         if (e.key === 'ArrowLeft') changeLightbox(-1);
         if (e.key === 'ArrowRight') changeLightbox(1);
     });
+</script>
+@endif
+
+{{-- Leaflet Maps --}}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+@if($rumah->latitude && $rumah->longitude)
+<script>
+    var peta = L.map('peta').setView([{{ $rumah->latitude }}, {{ $rumah->longitude }}], 15);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+    }).addTo(peta);
+    L.marker([{{ $rumah->latitude }}, {{ $rumah->longitude }}])
+        .addTo(peta)
+        .bindPopup('<b>{{ $rumah->nama }}</b><br>{{ $rumah->lokasi }}')
+        .openPopup();
 </script>
 @endif
 @endsection

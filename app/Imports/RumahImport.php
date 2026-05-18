@@ -34,6 +34,8 @@ class RumahImport implements ToCollection, WithHeadingRow
                 'tipe'          => $row['tipe'] ?? 'jual',
                 'deskripsi'     => $row['deskripsi'] ?? null,
                 'foto' => isset($row['foto']) ? array_map('trim', explode(',', $row['foto'])) : [],
+                'latitude'      => isset($row['latitude']) ? (float)$row['latitude'] : null,
+                'longitude'     => isset($row['longitude']) ? (float)$row['longitude'] : null,
             ]);
         }
     }
