@@ -244,7 +244,18 @@
         {{-- Row 6: Foto --}}
         <div class="form-group">
             <label for="foto">Foto Properti</label>
-            @if($rumah->foto)
+            @if($rumah->foto && is_array($rumah->foto) && count($rumah->foto) > 0)
+                <div class="current-photo">
+                    @php $fotoUrl = $rumah->foto[0]; @endphp
+                    @if(is_string($fotoUrl) && \Illuminate\Support\Str::startsWith($fotoUrl, 'http'))
+                        <img src="{{ $fotoUrl }}" alt="Foto saat ini">
+                    @elseif(is_string($fotoUrl) && \Illuminate\Support\Str::startsWith($fotoUrl, 'rumah_photos/'))
+                        <img src="{{ asset('storage/' . $fotoUrl) }}" alt="Foto saat ini">
+                    @else
+                        <img src="{{ asset($fotoUrl) }}" alt="Foto saat ini">
+                    @endif
+                </div>
+            @elseif($rumah->foto && is_string($rumah->foto))
                 <div class="current-photo">
                     @if(\Illuminate\Support\Str::startsWith($rumah->foto, 'http'))
                         <img src="{{ $rumah->foto }}" alt="Foto saat ini">

@@ -149,50 +149,57 @@ def recommend_topsis():
 
         criteria = list(w.keys())
 
-        # Step 1: Build decision matrix
-        n = len(properties)
-        m = len(criteria)
-        matrix = np.zeros((n, m))
+        # Step 1: Membangun Matriks Keputusan (Tabel angka dari database)
+        n = len(properties) # Jumlah rumah
+        m = len(criteria)   # Jumlah kriteria (Harga, Luas, dll)
+        matrix = np.zeros((n, m)) # Buat matriks kosong seukuran rumah x kriteria
 
         for i, prop in enumerate(properties):
             for j, crit in enumerate(criteria):
                 val = prop.get(crit, 0)
+                # Ambil nilai kriteria dari tiap rumah dan masukkan ke matriks
                 matrix[i][j] = float(val) if val else 0.0
 
-        # Step 2: Normalize the decision matrix (vector normalization)
+        # Step 2: Normalisasi Matriks (Menyamakan skala semua kriteria agar adil)
+        # Menghitung akar jumlah kuadrat tiap kolom
         col_sums = np.sqrt(np.sum(matrix ** 2, axis=0))
-        col_sums[col_sums == 0] = 1  # prevent division by zero
+        col_sums[col_sums == 0] = 1  # Hindari pembagian dengan nol
         norm_matrix = matrix / col_sums
 
-        # Step 3: Weight normalization
+        # Step 3: Normalisasi Bobot (Menyesuaikan dengan slider user)
         total_weight = sum(w.values())
         norm_weights = np.array([w[c] / total_weight for c in criteria])
 
-        # Step 4: Weighted normalized matrix
+        # Step 4: Matriks Terbobot (Hasil normalisasi dikalikan bobot user)
         weighted_matrix = norm_matrix * norm_weights
 
-        # Step 5: Determine ideal (A+) and anti-ideal (A-) solutions
-        ideal_pos = np.zeros(m)
-        ideal_neg = np.zeros(m)
+        # Step 5: Menentukan Solusi Ideal (A+) dan Anti-Ideal (A-)
+        ideal_pos = np.zeros(m) # Titik terbaik
+        ideal_neg = np.zeros(m) # Titik terburuk
 
         for j, crit in enumerate(criteria):
             if criteria_types[crit] == 'benefit':
+                # Untuk kriteria benefit (Luas/Kamar): Ideal = Terbesar, Anti-ideal = Terkecil
                 ideal_pos[j] = np.max(weighted_matrix[:, j])
                 ideal_neg[j] = np.min(weighted_matrix[:, j])
-            else:  # cost
+            else:  # Kriteria Cost (Harga)
+                # Untuk kriteria cost (Harga): Ideal = Termurah (Min), Anti-ideal = Termahal (Max)
                 ideal_pos[j] = np.min(weighted_matrix[:, j])
                 ideal_neg[j] = np.max(weighted_matrix[:, j])
 
-        # Step 6: Calculate distances to ideal and anti-ideal
+        # Step 6: Menghitung Jarak ke Solusi Ideal dan Anti-Ideal
+        # dist_pos = Jarak rumah ke titik terbaik (inginnya sekecil mungkin)
         dist_pos = np.sqrt(np.sum((weighted_matrix - ideal_pos) ** 2, axis=1))
+        # dist_neg = Jarak rumah ke titik terburuk (inginnya sejauh mungkin)
         dist_neg = np.sqrt(np.sum((weighted_matrix - ideal_neg) ** 2, axis=1))
 
-        # Step 7: Calculate preference score (closeness coefficient)
+        # Step 7: Menghitung Skor Preferensi (Ranking Akhir)
         denom = dist_pos + dist_neg
-        denom[denom == 0] = 1  # prevent division by zero
+        denom[denom == 0] = 1  # Hindari pembagian dengan nol
+        # Rumus TOPSIS: Kedekatan relatif terhadap solusi ideal
         scores = dist_neg / denom
 
-        # Build results
+        # Menyusun Hasil Ranking
         rankings = []
         for i, prop in enumerate(properties):
             rankings.append({
@@ -204,15 +211,15 @@ def recommend_topsis():
                 'luas_bangunan': prop.get('luas_bangunan', 0),
                 'kamar_tidur': prop.get('kamar_tidur', 0),
                 'kamar_mandi': prop.get('kamar_mandi', 0),
-                'topsis_score': round(float(scores[i]) * 100, 2),
+                'topsis_score': round(float(scores[i]) * 100, 2), # Skor diubah ke skala 0-100
                 'dist_ideal': round(float(dist_pos[i]), 6),
                 'dist_anti_ideal': round(float(dist_neg[i]), 6),
             })
 
-        # Sort by score descending
+        # Urutkan berdasarkan skor tertinggi (Descending)
         rankings.sort(key=lambda x: x['topsis_score'], reverse=True)
 
-        # Add rank
+        # Berikan nomor urut ranking
         for idx, r in enumerate(rankings):
             r['rank'] = idx + 1
 

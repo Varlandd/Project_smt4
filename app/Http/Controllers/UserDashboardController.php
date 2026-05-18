@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Rumah;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Hash;
 
 class UserDashboardController extends Controller
 {
@@ -249,6 +250,12 @@ class UserDashboardController extends Controller
         return view('pages.rekomendasi', compact('rumahs', 'lokasiList'));
     }
 
+    public function profile()
+    {
+        $user = Auth::user();
+        return view('pages.profile', compact('user'));
+    }
+
     public function wizard()
     {
         $rumahs = Rumah::all();
@@ -345,5 +352,87 @@ class UserDashboardController extends Controller
                 'message' => 'Tidak dapat terhubung ke ML Service: ' . $e->getMessage(),
             ], 503);
         }
+    }
+
+    /**
+     * Profile Info page — show user profile information.
+     */
+    public function profileInfo()
+    {
+        $user = Auth::user();
+        return view('pages.profile', compact('user'))->with('currentSection', 'info');
+    }
+
+    /**
+     * Profile Edit page — show edit form.
+     */
+    public function profileEdit()
+    {
+        $user = Auth::user();
+        return view('pages.profile', compact('user'))->with('currentSection', 'edit');
+    }
+
+    /**
+     * Update profile information.
+     */
+    public function profileUpdate(Request $request)
+    {
+        $user = Auth::user();
+
+        $validated = $request->validate([
+            'name'  => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email,' . $user->_id . ',_id',
+        ]);
+
+        $user->update($validated);
+
+        return redirect()->route('profile.info')->with('success', 'Profil berhasil diperbarui!');
+    }
+
+    /**
+     * Profile Security page — show security settings.
+     */
+    public function profileSecurity()
+    {
+        $user = Auth::user();
+        return view('pages.profile', compact('user'))->with('currentSection', 'security');
+    }
+
+    /**
+     * Update user password.
+     */
+    public function updatePassword(Request $request)
+    {
+        $validated = $request->validate([
+            'current_password' => 'required',
+            'password'         => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = Auth::user();
+
+        // Check current password
+        if (!Hash::check($validated['current_password'], $user->password)) {
+            return redirect()->back()->with('error', 'Password saat ini tidak sesuai!');
+        }
+
+        // Update password
+        $user->password = Hash::make($validated['password']);
+        $user->save();
+
+        return redirect()->route('profile.security')->with('success', 'Password berhasil diperbarui!');
+    }
+
+    /**
+     * Profile Orders/History page.
+     */
+    public function profileOrders()
+    {
+        $user = Auth::user();
+        
+        // Get user's orders if orders table exists
+        // For now, return empty array until orders feature is implemented
+        $orders = [];
+
+        return view('pages.profile', compact('user', 'orders'))->with('currentSection', 'orders');
     }
 }

@@ -18,17 +18,28 @@
         {{-- Auth Links --}}
         @auth
             <div class="nav-user" id="navUser">
-                <button class="nav-user-btn" id="userDropdownBtn" type="button">
-                    <div class="nav-avatar">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</div>
-                    <span class="nav-user-name">{{ Auth::user()->name }}</span>
-                    @if(Auth::user()->isAdmin())
-                        <span class="admin-badge">Admin</span>
-                    @endif
-                    <svg class="nav-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <polyline points="6 9 12 15 18 9"/>
-                    </svg>
-                </button>
+                <div class="nav-user-wrapper">
+                    <a href="{{ route('profile') }}" class="nav-user-link">
+                        <div class="nav-avatar">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</div>
+                        <span class="nav-user-name">{{ Auth::user()->name }}</span>
+                        @if(Auth::user()->isAdmin())
+                            <span class="admin-badge">Admin</span>
+                        @endif
+                    </a>
+                    <button class="nav-user-btn" id="userDropdownBtn" type="button" aria-label="Buka menu pengguna">
+                        <svg class="nav-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polyline points="6 9 12 15 18 9"/>
+                        </svg>
+                    </button>
+                </div>
                 <div class="dropdown-menu" id="userDropdownMenu">
+                    <a href="{{ route('profile') }}" class="dropdown-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z"/>
+                            <path d="M6 20v-1c0-2.21 3.58-4 6-4s6 1.79 6 4v1"/>
+                        </svg>
+                        Profil Saya
+                    </a>
                     @if(Auth::user()->isAdmin())
                         <a href="{{ route('admin.dashboard') }}" class="dropdown-item">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -118,6 +129,7 @@
 
     @auth
         <div class="mobile-divider"></div>
+        <a href="{{ route('profile') }}">👤 Profil Saya</a>
         @if(Auth::user()->isAdmin())
             <a href="{{ route('admin.dashboard') }}">🛡️ Admin Panel</a>
         @endif

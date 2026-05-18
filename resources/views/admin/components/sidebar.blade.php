@@ -81,12 +81,7 @@
             Statistik
         </a>
 
-        <a href="{{ route('admin.analitik') }}" class="sidebar-link {{ request()->routeIs('admin.analitik') ? 'active' : '' }}">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-            </svg>
-            Analitik Prediksi
-        </a>
+
 
         <a href="{{ url('/') }}" class="sidebar-link">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
