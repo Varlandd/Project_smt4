@@ -326,11 +326,15 @@ body {
 
 /* ── NAV USER DROPDOWN ── */
 .nav-user { position: relative; }
-.nav-user-btn { display: flex; align-items: center; gap: .5rem; background: none; border: 2px solid var(--border); border-radius: 12px; padding: .4rem .8rem .4rem .4rem; cursor: pointer; font-family: inherit; transition: all .2s; }
-.nav-user-btn:hover { border-color: var(--primary); background: var(--primary-light); }
+.nav-user-wrapper { display: flex; align-items: center; gap: .5rem; background: none; border: 2px solid var(--border); border-radius: 12px; padding: .4rem .8rem .4rem .4rem; transition: all .2s; }
+.nav-user-wrapper:hover { border-color: var(--primary); background: var(--primary-light); }
+.nav-user-link { display: flex; align-items: center; gap: .5rem; text-decoration: none; color: inherit; }
+.nav-user-link:hover .nav-user-name { color: var(--text-dark); }
+.nav-user-btn { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; border: none; background: transparent; color: var(--text-soft); cursor: pointer; transition: background .2s; }
+.nav-user-btn:hover { background: rgba(15,118,110,.08); }
 .nav-avatar { width: 34px; height: 34px; border-radius: 9px; background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: .85rem; }
 .nav-user-name { font-weight: 600; font-size: .88rem; color: var(--text-dark); max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.nav-chevron { transition: transform .2s; color: var(--text-soft); }
+.nav-chevron { transition: transform .2s; }
 .nav-user.open .nav-chevron { transform: rotate(180deg); }
 .admin-badge { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #92400e; padding: .15rem .55rem; border-radius: 6px; font-size: .7rem; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; }
 
@@ -342,6 +346,24 @@ body {
 .dropdown-divider { height: 1px; background: var(--border); margin: .4rem .5rem; }
 .dropdown-item-danger { color: #dc2626; }
 .dropdown-item-danger:hover { background: #fef2f2; color: #dc2626; }
+
+.profile-page { max-width: 1040px; margin: 3.5rem auto 4rem; padding: 0 1.5rem; }
+.profile-page .page-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1.5rem; margin-bottom: 2rem; }
+.profile-page .page-overline { text-transform: uppercase; letter-spacing: .24em; font-size: .78rem; color: var(--primary); margin-bottom: .35rem; }
+.profile-page h1 { font-size: 2.2rem; margin-bottom: .5rem; }
+.profile-page .page-intro { max-width: 560px; color: var(--text-soft); font-size: 1rem; }
+.profile-card { background: white; border-radius: 24px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); padding: 2rem; }
+.profile-card-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.8rem; }
+.profile-avatar { width: 64px; height: 64px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: 900; color: white; background: linear-gradient(135deg, var(--primary), var(--accent)); }
+.profile-card-header h2 { font-size: 1.6rem; margin-bottom: .25rem; }
+.profile-role { color: var(--text-soft); font-weight: 700; font-size: .95rem; }
+.profile-details { display: grid; grid-template-columns: repeat(3, minmax(200px, 1fr)); gap: 1rem; }
+.profile-detail-item { background: #f8fafc; border-radius: 18px; padding: 1.15rem 1.25rem; border: 1px solid var(--border); }
+.profile-detail-item span { display: block; color: var(--text-soft); font-size: .85rem; margin-bottom: .5rem; }
+.profile-detail-item strong { display: block; font-size: 1rem; color: var(--text-dark); }
+.button { display: inline-flex; align-items: center; justify-content: center; padding: .75rem 1.25rem; border-radius: 12px; font-weight: 700; text-decoration: none; border: 2px solid transparent; transition: all .2s ease; }
+.button-secondary { background: white; color: var(--text-dark); border-color: var(--border); }
+.button-secondary:hover { background: var(--primary-light); border-color: var(--primary); color: var(--text-dark); }
 
 /* ── AUTH PAGE ── */
 .auth-page { min-height: 100vh; padding: 8rem 2rem 4rem; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #f0fdfa 0%, #ffffff 50%, #ecfdf5 100%); }

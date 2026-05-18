@@ -27,6 +27,15 @@ Route::middleware('auth')->group(function () {
 
     // ── User Dashboard ──
     Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/profile', [UserDashboardController::class, 'profile'])->name('profile');
+
+    // ── Profile Menu Routes ──
+    Route::get('/profile/info', [UserDashboardController::class, 'profileInfo'])->name('profile.info');
+    Route::get('/profile/edit', [UserDashboardController::class, 'profileEdit'])->name('profile.edit');
+    Route::put('/profile/update', [UserDashboardController::class, 'profileUpdate'])->name('profile.update');
+    Route::get('/profile/security', [UserDashboardController::class, 'profileSecurity'])->name('profile.security');
+    Route::put('/profile/password', [UserDashboardController::class, 'updatePassword'])->name('profile.password.update');
+    Route::get('/profile/orders', [UserDashboardController::class, 'profileOrders'])->name('profile.orders');
 
     // ── Browse Properti ──
     Route::get('/properti', [UserDashboardController::class, 'browse'])->name('properti.browse');
