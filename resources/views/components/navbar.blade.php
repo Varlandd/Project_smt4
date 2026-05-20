@@ -64,6 +64,7 @@
                         </svg>
                         Favorit Saya
                     </a>
+                    {{-- HIDDEN: Prediksi Harga, Rekomendasi, Bandingkan dropdown items
                     <a href="{{ route('prediksi') }}" class="dropdown-item">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
@@ -83,6 +84,7 @@
                         </svg>
                         Bandingkan
                     </a>
+                    --}}
                     <a href="{{ route('dashboard') }}" class="dropdown-item">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>

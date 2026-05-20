@@ -75,5 +75,8 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/analitik', [\App\Http\Controllers\Admin\AnalitikController::class, 'index'])->name('analitik');
         Route::post('/analitik/predict', [\App\Http\Controllers\Admin\AnalitikController::class, 'predict'])->name('predict');
+
+        Route::get('/api-monitoring', [\App\Http\Controllers\Admin\ApiMonitoringController::class, 'index'])->name('api-monitoring');
+        Route::post('/api-monitoring/test', [\App\Http\Controllers\Admin\ApiMonitoringController::class, 'testEndpoint'])->name('api-monitoring.test');
     });
 });
