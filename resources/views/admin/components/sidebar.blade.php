@@ -81,7 +81,14 @@
             Statistik
         </a>
 
+        <div class="sidebar-section-label">Monitoring</div>
 
+        <a href="{{ route('admin.api-monitoring') }}" class="sidebar-link {{ request()->routeIs('admin.api-monitoring') ? 'active' : '' }}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+            </svg>
+            API Monitoring
+        </a>
 
         <a href="{{ url('/') }}" class="sidebar-link">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
