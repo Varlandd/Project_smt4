@@ -188,14 +188,6 @@
 <section class="user-dashboard">
     <div class="dash-container">
 
-<<<<<<<<< Temporary merge branch 1
-            {{-- ═══ WELCOME BANNER ═══ --}}
-            <div class="welcome-banner">
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem;">
-                    <div>
-                        <h1>Selamat Datang, {{ Auth::user()->name }} 👋</h1>
-                        <p>Temukan rumah impian kamu dengan sistem rekomendasi cerdas RumahKu.</p>
-=========
         {{-- ═══ WELCOME BANNER ═══ --}}
         <div class="welcome-banner">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem;">
@@ -203,111 +195,13 @@
                     <h1>Selamat Datang, {{ Auth::user()->name }} 👋</h1>
                     <p>Temukan rumah impian kamu dengan sistem rekomendasi cerdas RumahKu.</p>
                 </div>
-                {{-- HIDDEN: Temukan Rumah Impian (4 Langkah) button
-                <a href="{{ route('rekomendasi.wizard') }}" class="btn btn-white" style="border-radius: 12px; padding: .8rem 1.8rem;">
-                    🎯 Temukan Rumah Impian (4 Langkah)
-                </a>
-                --}}
             </div>
             <div class="welcome-nav" style="margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 1.5rem;">
                 <a href="{{ route('properti.browse') }}">🏠 Jelajahi Properti</a>
                 <a href="{{ route('favorit.index') }}">❤️ Favorit Saya</a>
-                {{-- HIDDEN: Prediksi Harga, Rekomendasi, Bandingkan buttons
-                <a href="{{ route('prediksi') }}">📊 Prediksi Harga</a>
-                <a href="{{ route('rekomendasi') }}">🎯 Rekomendasi</a>
-                <a href="{{ route('bandingkan') }}">⚖️ Bandingkan</a>
-                --}}
+                <a href="{{ route('ml.test') }}">🧪 Test ML</a>
             </div>
         </div>
-
-        {{-- ═══ SUCCESS/FLASH ═══ --}}
-        @if(session('success'))
-            <div class="form-success">{{ session('success') }}</div>
-        @endif
-
-        {{-- ═══ STATS ═══ --}}
-        <div class="user-stats-grid">
-            <div class="user-stat-card">
-                <div class="user-stat-icon" style="background: linear-gradient(135deg, #dbeafe, #bfdbfe);">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2">
-                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                        <polyline points="9 22 9 12 15 12 15 22"/>
-                    </svg>
-                </div>
-                <div>
-                    <div class="user-stat-number">{{ number_format($totalRumah) }}</div>
-                    <div class="user-stat-label">Total Properti</div>
-                </div>
-            </div>
-
-            <div class="user-stat-card">
-                <div class="user-stat-icon" style="background: linear-gradient(135deg, #fce7f3, #fbcfe8);">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#be185d" stroke-width="2">
-                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-                    </svg>
-                </div>
-                <div>
-                    <div class="user-stat-number">{{ $totalFavorit }}</div>
-                    <div class="user-stat-label">Favorit Saya</div>
-                </div>
-            </div>
-
-            <div class="user-stat-card">
-                <div class="user-stat-icon" style="background: linear-gradient(135deg, #dcfce7, #bbf7d0);">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#15803d" stroke-width="2">
-                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                        <circle cx="12" cy="10" r="3"/>
-                    </svg>
-                </div>
-                <div>
-                    <div class="user-stat-number">{{ $totalLokasi }}</div>
-                    <div class="user-stat-label">Wilayah Tersedia</div>
-                </div>
-            </div>
-
-            <div class="user-stat-card">
-                <div class="user-stat-icon" style="background: linear-gradient(135deg, #fef3c7, #fde68a);">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#92400e" stroke-width="2">
-                        <line x1="12" y1="1" x2="12" y2="23"/>
-                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-                    </svg>
-                </div>
-                <div>
-                    <div class="user-stat-number">Rp {{ number_format($avgHarga / 1000000, 0, ',', '.') }} Jt</div>
-                    <div class="user-stat-label">Rata-rata Harga</div>
-                </div>
-            </div>
-        </div>
-
-        {{-- ═══ PROPERTI TERBARU ═══ --}}
-        <div class="dash-section">
-            <div class="dash-section-header">
-                <h2>🏠 Properti Terbaru</h2>
-                <a href="{{ route('properti.browse') }}">Lihat Semua →</a>
-            </div>
-
-            <div class="property-grid">
-                @forelse($latestRumah as $rumah)
-                    @include('components.property-card', ['rumah' => $rumah])
-                @empty
-                    <div class="empty-card">
-                        <div class="empty-card-icon">🏗️</div>
-                        <h3>Belum Ada Properti</h3>
-                        <p>Properti akan segera ditambahkan oleh admin.</p>
->>>>>>>>> Temporary merge branch 2
-                    </div>
-                    <a href="{{ route('rekomendasi.wizard') }}" class="btn btn-white" style="border-radius: 12px; padding: .8rem 1.8rem;">
-                        🎯 Temukan Rumah Impian (4 Langkah)
-                    </a>
-                </div>
-                <div class="welcome-nav" style="margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 1.5rem;">
-                    <a href="{{ route('properti.browse') }}">🏠 Jelajahi Properti</a>
-                    <a href="{{ route('favorit.index') }}">❤️ Favorit Saya</a>
-                    <a href="{{ route('prediksi') }}">📊 Prediksi Harga</a>
-                    <a href="{{ route('rekomendasi') }}">🎯 Rekomendasi</a>
-                    <a href="{{ route('bandingkan') }}">⚖️ Bandingkan</a>
-                </div>
-            </div>
 
             {{-- ═══ SUCCESS/FLASH ═══ --}}
             @if(session('success'))

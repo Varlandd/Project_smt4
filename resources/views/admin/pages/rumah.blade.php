@@ -73,6 +73,10 @@
                         <th style="padding: 12px;">Foto</th>
                         <th style="padding: 12px;">Nama</th>
                         <th style="padding: 12px;">Lokasi</th>
+                        <th style="padding: 12px;">Kota</th>
+                        <th style="padding: 12px;">Luas (T/B)</th>
+                        <th style="padding: 12px;">Kamar (T/M)</th>
+                        <th style="padding: 12px;">Kategori (Cluster)</th>
                         <th style="padding: 12px;">Harga</th>
                         <th style="padding: 12px;">Tipe</th>
                         <th style="padding: 12px; text-align: center;">Aksi</th>
@@ -98,6 +102,18 @@
                         </td>
                         <td style="padding: 12px; font-weight: 500;">{{ $rumah->nama }}</td>
                         <td style="padding: 12px; color: #6b7280;">{{ $rumah->lokasi }}</td>
+                        <td style="padding: 12px; color: #6b7280;">{{ $rumah->kota ?? '-' }}</td>
+                        <td style="padding: 12px; color: #4b5563;">{{ $rumah->luas_tanah ?? 0 }}m² / {{ $rumah->luas_bangunan ?? 0 }}m²</td>
+                        <td style="padding: 12px; color: #4b5563;">{{ $rumah->kamar_tidur ?? 0 }} / {{ $rumah->kamar_mandi ?? 0 }}</td>
+                        <td style="padding: 12px;">
+                            @if($rumah->kategori_harga)
+                                <span style="background: #e0e7ff; color: #4338ca; padding: 4px 8px; border-radius: 4px; font-size: 0.875rem; white-space: nowrap;">
+                                    {{ $rumah->kategori_harga }} (C-{{ $rumah->cluster_harga }})
+                                </span>
+                            @else
+                                <span style="color: #9ca3af;">-</span>
+                            @endif
+                        </td>
                         <td style="padding: 12px; color: #10b981; font-weight: 600;">Rp {{ number_format($rumah->harga, 0, ',', '.') }}</td>
                         <td style="padding: 12px;">
                             <span style="background: #f3f4f6; padding: 4px 8px; border-radius: 4px; font-size: 0.875rem;">{{ ucfirst($rumah->tipe) }}</span>
@@ -110,7 +126,7 @@
                         </td>
                     </tr>
                     @empty
-                    <tr><td colspan="8" class="empty-state" style="padding: 20px; text-align: center; color: #6b7280;">Belum ada data rumah.</td></tr>
+                    <tr><td colspan="12" class="empty-state" style="padding: 20px; text-align: center; color: #6b7280;">Belum ada data rumah.</td></tr>
                     @endforelse
                 </tbody>
             </table>

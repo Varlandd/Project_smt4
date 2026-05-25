@@ -435,4 +435,124 @@ class UserDashboardController extends Controller
 
         return view('pages.profile', compact('user', 'orders'))->with('currentSection', 'orders');
     }
+
+    /**
+     * ML Test page — test KNN clustering model.
+     */
+    public function mlTestPage()
+    {
+        return view('pages.ml-test');
+    }
+
+    /**
+     * ML Test Predict — proxy to Flask /predict endpoint for KNN clustering.
+     */
+    public function mlTestPredict(Request $request)
+    {
+        $validated = $request->validate([
+            'harga'          => 'required|numeric|min:0',
+            'luas_tanah'     => 'required|numeric|min:1',
+            'luas_bangunan'  => 'required|numeric|min:1',
+            'kamar_tidur'    => 'required|integer|min:1',
+            'kamar_mandi'    => 'required|integer|min:1',
+            'kota'           => 'required|string',
+            'posisi_kota'    => 'required|string',
+        ]);
+
+        try {
+            $response = Http::timeout(10)->post('http://127.0.0.1:5000/predict', $validated);
+
+            if ($response->successful()) {
+                $result = $response->json();
+                
+                // Ambil rekomendasi berdasarkan cluster
+                $clusterId = $result['predicted_cluster'] ?? null;
+                if ($clusterId !== null) {
+                    $reqKota = $validated['kota'] ?? '';
+                    $reqHarga = (float)($validated['harga'] ?? 0);
+                    
+                    // Rentang harga: 50% - 200% dari harga input
+                    $hargaMin = (int)($reqHarga * 0.5);
+                    $hargaMax = (int)($reqHarga * 2.0);
+                    
+                    // Prioritaskan: cluster + kota + rentang harga
+                    $recommendations = Rumah::where('cluster_harga', (int)$clusterId)
+                                            ->where('kota', $reqKota)
+                                            ->where('harga', '>=', $hargaMin)
+                                            ->where('harga', '<=', $hargaMax)
+                                            ->take(12)
+                                            ->get();
+                    
+                    // Sort by closest price in PHP
+                    $recommendations = $recommendations->sortBy(function($r) use ($reqHarga) {
+                        return abs(($r->harga ?? 0) - $reqHarga);
+                    })->take(6)->values();
+                                            
+                    $isFallback = false;
+                    
+                    // Fallback 1: cluster + kota tanpa filter harga
+                    if ($recommendations->count() === 0) {
+                        $recommendations = Rumah::where('cluster_harga', (int)$clusterId)
+                                     ->where('kota', $reqKota)
+                                     ->take(12)
+                                     ->get()
+                                     ->sortBy(function($r) use ($reqHarga) {
+                                         return abs(($r->harga ?? 0) - $reqHarga);
+                                     })->take(6)->values();
+                    }
+                    
+                    // Fallback 2: cluster saja (semua kota)
+                    if ($recommendations->count() === 0) {
+                        $isFallback = true;
+                        $recommendations = Rumah::where('cluster_harga', (int)$clusterId)
+                                     ->take(12)
+                                     ->get()
+                                     ->sortBy(function($r) use ($reqHarga) {
+                                         return abs(($r->harga ?? 0) - $reqHarga);
+                                     })->take(6)->values();
+                    }
+                                            
+                    if ($userId = Auth::id()) {
+                        $recommendations->transform(function ($item) use ($userId) {
+                            $item->is_favorit = $this->isFavorited($item, (string)$userId);
+                            return $item;
+                        });
+                    }
+                                            
+                    $html = '';
+                    foreach($recommendations as $rumah) {
+                        $html .= view('components.property-card', ['rumah' => $rumah])->render();
+                    }
+                    $result['recommendations_html'] = $html;
+                    $result['is_fallback'] = $isFallback;
+                    $result['req_kota'] = $reqKota;
+                }
+
+                return response()->json($result);
+            }
+
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'ML Service mengembalikan error: ' . ($response->json()['message'] ?? 'Unknown error'),
+            ], 503);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Tidak dapat terhubung ke ML Service (Flask port 5000). Pastikan Flask server berjalan.',
+            ], 503);
+        }
+    }
+
+    /**
+     * ML Test Check — check if Flask ML service is online.
+     */
+    public function mlTestCheck()
+    {
+        try {
+            $response = Http::timeout(3)->get('http://127.0.0.1:5000/');
+            return response()->json(['status' => 'online']);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'offline']);
+        }
+    }
 }
