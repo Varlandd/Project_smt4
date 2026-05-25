@@ -62,7 +62,7 @@ class UserDashboardController extends Controller
 
         // Lokasi unik
         $lokasiList = Rumah::raw(function ($collection) {
-            return $collection->distinct('lokasi');
+            return $collection->distinct('kota');
         });
         $totalLokasi = is_array($lokasiList) ? count($lokasiList) : 0;
 
@@ -104,13 +104,13 @@ class UserDashboardController extends Controller
 
         // Filter lokasi
         if ($request->filled('lokasi')) {
-            $query->where('lokasi', $request->lokasi);
+            $query->where('kota', $request->lokasi);
         }
 
-        // Filter tipe
-        if ($request->filled('tipe')) {
-            $query->where('tipe', $request->tipe);
-        }
+        // Filter tipe (Diabaikan karena di database semua tipe isinya 'jual', bukan jenis bangunan 'Rumah')
+        // if ($request->filled('tipe')) {
+        //     $query->where('tipe', $request->tipe);
+        // }
 
         // Filter harga
         if ($request->filled('harga_min')) {
@@ -143,7 +143,7 @@ class UserDashboardController extends Controller
 
         // Lokasi list
         $lokasiList = Rumah::raw(function ($collection) {
-            return $collection->distinct('lokasi');
+            return $collection->distinct('kota');
         });
 
         return view('pages.browse', compact('rumahs', 'lokasiList'));
