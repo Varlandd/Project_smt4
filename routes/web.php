@@ -59,6 +59,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/ml/predict', [UserDashboardController::class, 'mlPredict'])->name('ml.predict');
     Route::post('/ml/recommend', [UserDashboardController::class, 'mlRecommend'])->name('ml.recommend');
 
+    // ── ML Test Page ──
+    Route::get('/ml-test', [UserDashboardController::class, 'mlTestPage'])->name('ml.test');
+    Route::post('/ml-test/predict', [UserDashboardController::class, 'mlTestPredict'])->name('ml.test.predict');
+    Route::post('/ml-test/check', [UserDashboardController::class, 'mlTestCheck'])->name('ml.test.check');
+
     // ── Admin only ──
     Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
