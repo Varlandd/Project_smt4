@@ -211,7 +211,7 @@
                     <label>Tipe</label>
                     <select name="tipe">
                         <option value="">Semua Tipe</option>
-                        @foreach(['Rumah','Apartemen','Ruko','Villa','Tanah'] as $t)
+                        @foreach(['Rumah'] as $t)
                             <option value="{{ $t }}" {{ request('tipe') == $t ? 'selected' : '' }}>{{ $t }}</option>
                         @endforeach
                     </select>
