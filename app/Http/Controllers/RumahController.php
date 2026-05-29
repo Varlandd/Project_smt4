@@ -11,37 +11,22 @@ class RumahController extends Controller
      * Tampilkan landing page dengan data dinamis.
      */
     public function index()
-    {
-        // Total data properti
-        $totalRumah = Rumah::count();
-        
-        // Ambil salah satu rumah terfavorit untuk ditampilkan di hero section
-        // (Berdasarkan jumlah array favorited_user_ids terbanyak)
-        $featuredRumah = Rumah::raw(function ($collection) {
-            return $collection->aggregate([
-                ['$addFields' => ['fav_count' => ['$cond' => [
-                    ['$isArray' => '$favorited_user_ids'],
-                    ['$size' => '$favorited_user_ids'],
-                    0
-                ]]]],
-                ['$sort'      => ['fav_count' => -1]],
-                ['$limit'     => 1],
-            ]);
-        })->map(fn($d) => new Rumah((array) $d))->first();
+{
+    // Total data properti (dari database)
+    $totalRumah = Rumah::count();
 
-        // Jika tidak ada Featured, ambil rumah terbaru saja
-        if (!$featuredRumah) {
-            $featuredRumah = Rumah::latest()->first();
-        }
+    // Hitung jumlah lokasi unik (dari database)
+    $totalLokasi = Rumah::pluck('kota')->unique()->count();
 
-        // Ambil 6 properti terbaru untuk showcase
-        $latestRumah = Rumah::latest()->limit(6)->get();
+    // Ambil 6 properti TERMAHAL untuk ditampilkan di section properti
+    $mostExpensiveRumah = Rumah::orderBy('harga', 'desc')->limit(6)->get();
 
-        // Hitung jumlah lokasi unik
-        $totalLokasi = Rumah::distinct('lokasi')->count();
-
-        return view('pages.landing', compact('totalRumah', 'featuredRumah', 'latestRumah', 'totalLokasi'));
-    }
+    return view('pages.landing', compact(
+        'totalRumah',
+        'totalLokasi',
+        'mostExpensiveRumah'
+    ));
+}
 
     
     public function search(Request $request)

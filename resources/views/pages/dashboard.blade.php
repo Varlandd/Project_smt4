@@ -181,6 +181,77 @@
         .property-grid { grid-template-columns: 1fr; }
         .user-stats-grid { grid-template-columns: 1fr 1fr; }
     }
+    
+.calculator-form .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+.calculator-form .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+.calculator-form .form-group label {
+    font-size: .85rem;
+    font-weight: 600;
+    color: var(--text-soft);
+}
+.calculator-form .input-with-icon {
+    position: relative;
+}
+.calculator-form .input-prefix {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: .85rem;
+    color: var(--text-soft);
+    font-weight: 500;
+}
+.calculator-form input,
+.calculator-form select {
+    width: 100%;
+    padding: 11px 14px 11px 36px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-size: .9rem;
+    outline: none;
+    transition: border-color .2s;
+    font-family: inherit;
+}
+.calculator-form select { padding-left: 14px; }
+.calculator-form input:focus,
+.calculator-form select:focus { border-color: var(--primary); }
+
+.calculator-result {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    background: var(--primary-light);
+    border-radius: 14px;
+}
+.result-header h3 { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; color: var(--primary); }
+.result-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+.result-item {
+    background: white;
+    border-radius: 10px;
+    padding: 1rem;
+    text-align: center;
+}
+.result-label { font-size: .75rem; color: var(--text-soft); margin-bottom: .4rem; }
+.result-value { font-size: 1rem; font-weight: 800; color: var(--primary); }
+.result-action { text-align: center; }
+
+@media (max-width: 768px) {
+    .calculator-form .form-grid { grid-template-columns: 1fr; }
+    .result-grid { grid-template-columns: 1fr; }
+}
 </style>
 @endpush
 
