@@ -52,6 +52,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/prediksi', [UserDashboardController::class, 'prediksi'])->name('prediksi');
     Route::get('/rekomendasi', [UserDashboardController::class, 'rekomendasi'])->name('rekomendasi');
     Route::get('/rekomendasi/wizard', [UserDashboardController::class, 'wizard'])->name('rekomendasi.wizard');
+    Route::get('/rekomendasi-finansial', [UserDashboardController::class, 'rekomendasiFinansial'])->name('rekomendasi.finansial');
+    Route::post('/rekomendasi-finansial/hitung', [UserDashboardController::class, 'hitungFinansial'])->name('rekomendasi.finansial.hitung');
     Route::get('/bandingkan', [UserDashboardController::class, 'bandingkan'])->name('bandingkan');
 
     // ── Form Pencarian Rumah ──

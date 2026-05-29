@@ -270,7 +270,8 @@
             <div class="welcome-nav" style="margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 1.5rem;">
                 <a href="{{ route('properti.browse') }}">🏠 Jelajahi Properti</a>
                 <a href="{{ route('favorit.index') }}">❤️ Favorit Saya</a>
-                <a href="{{ route('ml.test') }}">🧪 Test ML</a>
+                <a href="{{ route('rekomendasi.finansial') }}">💰 Rekomendasi Finansial</a>
+                <a href="{{ route('ml.test') }}">🧪 rekomendasi</a>
             </div>
         </div>
 
