@@ -42,9 +42,17 @@ def predict_cluster():
         data_scaled = scaler.transform(input_data)
         hasil_prediksi = knn_model.predict(data_scaled)
 
+        label_map = {
+            0: 'Ekonimis',
+            1: 'Premium',
+        }
+
+        cluster = int (hasil_prediksi[0])
+
         return jsonify({
             'status': 'success',
-            'predicted_cluster': int(hasil_prediksi[0])
+            'predicted_cluster': cluster,
+            'kategori' : label_map[cluster]
         }), 200
 
     except Exception as e:
