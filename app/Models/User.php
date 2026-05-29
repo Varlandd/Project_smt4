@@ -24,6 +24,9 @@ class User extends Authenticatable
         'phone',
         'avatar',
         'role',
+        'otp_code',        
+        'otp_expires_at',  
+        'is_verified',
     ];
 
     protected $hidden = [
@@ -34,6 +37,8 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password'          => 'hashed',
+        'otp_expires_at'    => 'datetime',
+        'is_verified'       => 'boolean',
     ];
 
     public function isAdmin(): bool
