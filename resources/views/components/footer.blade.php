@@ -13,7 +13,7 @@
                     <span class="logo-text" style="color: white;">Rumah<strong style="color: #14b8a6;">Ku</strong></span>
                 </a>
                 <p class="footer-desc">
-                    Sistem Pendukung Keputusan berbasis AI yang membantu menemukan hunian impian dengan algoritma MLR & SAW/TOPSIS.
+                    Sistem Pendukung Keputusan berbasis AI yang membantu menemukan hunian impian dengan algoritma K-Nearest Neighbors (KNN).
                 </p>
                 <div class="footer-social">
                     <a href="#" class="social-link">IG</a>
@@ -41,12 +41,12 @@
                 <ul class="footer-links">
                     @auth
                     <li><a href="{{ route('prediksi') }}">Prediksi Harga</a></li>
-                    <li><a href="{{ route('rekomendasi') }}">Rekomendasi SAW</a></li>
+                    <li><a href="{{ route('rekomendasi') }}">Rekomendasi KNN</a></li>
                     <li><a href="{{ route('bandingkan') }}">Bandingkan Properti</a></li>
                     <li><a href="{{ route('properti.browse') }}">Katalog Rumah</a></li>
                     @else
                     <li><a href="{{ route('login') }}">Prediksi Harga</a></li>
-                    <li><a href="{{ route('login') }}">Rekomendasi SAW</a></li>
+                    <li><a href="{{ route('login') }}">Rekomendasi KNN</a></li>
                     <li><a href="{{ route('login') }}">Bandingkan Properti</a></li>
                     <li><a href="{{ route('register') }}">Daftar Akun</a></li>
                     @endauth
@@ -59,15 +59,15 @@
                 <ul class="footer-contact">
                     <li>
                         <span>📍</span>
-                        <span>Kampus Jember, Jawa Timur</span>
+                        <span>Mastrip, Jember, Jawa Timur</span>
                     </li>
                     <li>
                         <span>📧</span>
-                        <span>info@rumahku.id</span>
+                        <span>support@rumahku.id</span>
                     </li>
                     <li>
                         <span>📞</span>
-                        <span>+62 812-3456-7890</span>
+                        <span>+62 812-0011-2234</span>
                     </li>
                     <li>
                         <span>⏰</span>

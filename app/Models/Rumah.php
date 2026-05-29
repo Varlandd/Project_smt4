@@ -14,42 +14,31 @@ class Rumah extends Model
     protected $collection = 'rumah';
 
     protected $fillable = [
-        'nama',
-        'lokasi',
-        'kota',
-        'area',
-        'posisi_kota',
-        'harga',
-        'luas_tanah',
-        'luas_bangunan',
-        'kamar_tidur',
-        'kamar_mandi',
-        'harga_per_m2_tanah',
-        'harga_per_m2_bangunan',
-        'cluster_harga',
-        'kategori_harga',
-        'tipe',
-        'foto',
-        'deskripsi',
-        'fasilitas',            // embedded array of nama fasilitas
-        'fasilitas_ids',        // array of ObjectId fasilitas
-        'favorited_user_ids',   // array of user _id yang memfavoritkan
-        'latitude',
-        'longitude',
-    ];
+    'nama', 'lokasi', 'kota', 'area', 'posisi_kota',
+    'harga',                  // ← bersih tanpa (rp)
+    'luas_tanah',             // ← bersih tanpa (m2)
+    'luas_bangunan',          // ← bersih tanpa (m2)
+    'kamar_tidur', 'kamar_mandi',
+    'harga_per_m2_tanah',     // ← bersih tanpa (rp)
+    'harga_per_m2_bangunan',  // ← bersih tanpa (rp)
+    'cluster_harga', 'kategori_harga',
+    'tipe', 'foto', 'deskripsi',
+    'fasilitas', 'fasilitas_ids', 'favorited_user_ids',
+    'latitude', 'longitude',
+];
 
-    protected $casts = [
-        'harga'               => 'integer',
-        'luas_tanah'          => 'integer',
-        'luas_bangunan'       => 'integer',
-        'kamar_tidur'         => 'integer',
-        'kamar_mandi'         => 'integer',
-        // Jangan cast 'array' untuk MongoDB — field sudah native array
-        // 'fasilitas'        => 'array',
-        // 'fasilitas_ids'    => 'array',
-        // 'favorited_user_ids' => 'array',
-        // 'foto'             => 'array',
-    ];
+protected $casts = [
+    'harga'                 => 'integer',
+    'luas_tanah'            => 'integer',
+    'luas_bangunan'         => 'integer',
+    'kamar_tidur'           => 'integer',
+    'kamar_mandi'           => 'integer',
+    'harga_per_m2_tanah'    => 'float',
+    'harga_per_m2_bangunan' => 'float',
+    'cluster_harga'         => 'integer',
+    'latitude'              => 'float',
+    'longitude'             => 'float',
+];
 
      public function getFotoAttribute($value)
     {
