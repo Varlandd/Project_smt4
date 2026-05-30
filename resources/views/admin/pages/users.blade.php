@@ -13,6 +13,25 @@
         </div>
     </div>
     
+{{-- SEARCH BAR --}}
+<form action="{{ route('admin.users.index') }}" method="GET" style="margin-bottom: 20px;">
+    <div style="display: flex; gap: 10px; align-items: center;">
+        <div style="position: relative; flex: 1; max-width: 350px;">
+            <span style="position:absolute; left:10px; top:50%; transform:translateY(-50%); color:#9ca3af;">🔍</span>
+            <input type="text" name="search" value="{{ request('search') }}"
+                   placeholder="Cari nama pengguna..."
+                   style="width:100%; padding:9px 12px 9px 34px; border-radius:8px;
+                          border:1.5px solid #e5e7eb; font-size:.875rem; outline:none; box-sizing:border-box;">
+        </div>
+        <button type="submit" style="padding:9px 18px; background:#4f46e5; color:white; border:none;
+                border-radius:8px; font-weight:600; font-size:.875rem; cursor:pointer;">Cari</button>
+        @if(request('search'))
+        <a href="{{ route('admin.users.index') }}" style="padding:9px 14px; background:white; color:#6b7280;
+           border-radius:8px; font-size:.875rem; text-decoration:none; border:1.5px solid #e5e7eb;">Reset</a>
+        @endif
+    </div>
+</form>
+
     @if(session('success'))
         <div style="background-color: #d1fae5; color: #065f46; padding: 12px; border-radius: 6px; margin-bottom: 20px;">
             {{ session('success') }}

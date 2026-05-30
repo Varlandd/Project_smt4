@@ -815,7 +815,7 @@
                         </label>
                         <div class="input-wrapper">
                             <span class="prefix">Rp</span>
-                            <input type="number" id="pendapatan" name="pendapatan" class="has-prefix" placeholder="10000000" step="100000" required min="0" />
+                            <input type="text" id="pendapatan" name="pendapatan" class="has-prefix" placeholder="10.000.000" required oninput="formatRupiahFin(this)" />
                         </div>
                         <span class="input-hint">Total gaji/pendapatan seluruh keluarga per bulan</span>
                     </div>
@@ -827,7 +827,7 @@
                         </label>
                         <div class="input-wrapper">
                             <span class="prefix">Rp</span>
-                            <input type="number" id="pengeluaran" name="pengeluaran" class="has-prefix" placeholder="5000000" step="100000" required min="0" />
+                            <input type="text" id="pengeluaran" name="pengeluaran" class="has-prefix" placeholder="5.000.000" required oninput="formatRupiahFin(this)" />
                         </div>
                         <span class="input-hint">Kebutuhan pokok, cicilan, dll (tanpa biaya sewa)</span>
                     </div>
@@ -1136,6 +1136,10 @@
 
 @push('scripts')
 <script>
+function formatRupiahFin(input) {
+    let raw = input.value.replace(/\D/g, '');
+    input.value = raw ? parseInt(raw).toLocaleString('id-ID') : '';
+}
 document.addEventListener('DOMContentLoaded', function() {
 
     const form          = document.getElementById('finansialForm');
@@ -1199,8 +1203,8 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         errorAlert.classList.remove('show');
 
-        const pendapatan    = parseFloat(document.getElementById('pendapatan').value)    || 0;
-        const pengeluaran   = parseFloat(document.getElementById('pengeluaran').value)   || 0;
+        const pendapatan  = parseFloat(document.getElementById('pendapatan').value.replace(/\./g, ''))  || 0;
+        const pengeluaran = parseFloat(document.getElementById('pengeluaran').value.replace(/\./g, '')) || 0;
         const kamar_tidur   = parseInt(document.getElementById('kamar_tidur').value)     || 0;
         const kamar_mandi   = parseInt(document.getElementById('kamar_mandi').value)     || 0;
         const luas_tanah    = parseFloat(document.getElementById('luas_tanah').value)    || 0;

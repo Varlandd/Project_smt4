@@ -17,11 +17,37 @@ class RumahController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-    {
-        $perPage = $request->input('per_page', 10);
-        $rumahs = Rumah::latest()->paginate($perPage)->appends(request()->query());
-        return view('admin.pages.rumah', compact('rumahs', 'perPage'));
+{
+    $perPage = $request->get('per_page', 10);
+    $query   = Rumah::query();
+
+    if ($request->filled('search')) {
+        $search = $request->search;
+        $query->where(function($q) use ($search) {
+            $q->where('nama', 'like', "%{$search}%")
+              ->orWhere('lokasi', 'like', "%{$search}%")
+              ->orWhere('kota', 'like', "%{$search}%");
+        });
     }
+
+    if ($request->filled('harga_min')) {
+    $hargaMin = (float) str_replace('.', '', $request->harga_min);
+    $query->where('harga', '>=', $hargaMin);
+}
+
+    if ($request->filled('harga_max')) {
+    $hargaMax = (float) str_replace('.', '', $request->harga_max);
+    $query->where('harga', '<=', $hargaMax);
+}
+
+    if ($request->filled('kamar_tidur')) {
+        $query->where('kamar_tidur', $request->kamar_tidur);
+    }
+
+    $rumahs = $query->paginate($perPage)->appends($request->except('page'));
+
+    return view('admin.pages.rumah', compact('rumahs', 'perPage'));
+}
 
     public function import(Request $request)
     {

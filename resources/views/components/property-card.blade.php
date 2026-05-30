@@ -32,6 +32,10 @@
                     {{ $rumah->luas_tanah ?? '-' }} m²
                 </span>
                 <span class="spec-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    {{ $rumah->luas_bangunan ?? '-' }} m²
+                </span>
+                <span class="spec-item">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v11a2 2 0 002 2h14a2 2 0 002-2V7"/><path d="M3 7h18l-2-4H5z"/></svg>
                     {{ $rumah->kamar_tidur ?? '-' }} KT
                 </span>

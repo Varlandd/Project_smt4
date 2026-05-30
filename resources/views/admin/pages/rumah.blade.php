@@ -29,7 +29,70 @@
             <a href="{{ route('admin.rumah.create') }}" class="btn btn-primary" style="padding: 8px 15px; background: #4f46e5; color: white; border-radius: 6px; text-decoration: none; font-weight: 500;">+ Tambah Properti</a>
         </div>
     </div>
-    
+
+    {{-- ═══ SEARCH BAR ═══ --}}
+<form action="{{ route('admin.rumah.index') }}" method="GET" style="margin-bottom: 20px;">
+    <input type="hidden" name="per_page" value="{{ $perPage ?? 10 }}">
+    <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+                background: #f9fafb; padding: 16px; border-radius: 10px; border: 1.5px solid #e5e7eb;">
+        <div style="flex: 2; min-width: 200px; position: relative;">
+            <span style="position:absolute; left:10px; top:50%; transform:translateY(-50%); color:#9ca3af; font-size:.9rem;">🔍</span>
+            <input type="text" name="search" value="{{ request('search') }}"
+                   placeholder="Cari nama, lokasi, kota..."
+                   style="width:100%; padding:9px 12px 9px 34px; border-radius:8px;
+                          border:1.5px solid #e5e7eb; background:white; color:#111827;
+                          font-size:.875rem; outline:none; box-sizing:border-box;">
+        </div>
+        <div style="flex: 1; min-width: 130px; position: relative;">
+    <span style="position:absolute; left:10px; top:50%; transform:translateY(-50%);
+                 font-size:.83rem; color:#9ca3af; font-weight:500; pointer-events:none;">Rp</span>
+    <input type="text" name="harga_min" value="{{ request('harga_min') }}"
+           placeholder="Harga Min" oninput="formatRupiahAdmin(this)"
+           style="width:100%; padding:9px 12px 9px 30px; border-radius:8px;
+                  border:1.5px solid #e5e7eb; background:white; color:#111827;
+                  font-size:.875rem; outline:none; box-sizing:border-box;">
+</div>
+<div style="flex: 1; min-width: 130px; position: relative;">
+    <span style="position:absolute; left:10px; top:50%; transform:translateY(-50%);
+                 font-size:.83rem; color:#9ca3af; font-weight:500; pointer-events:none;">Rp</span>
+    <input type="text" name="harga_max" value="{{ request('harga_max') }}"
+           placeholder="Harga Max" oninput="formatRupiahAdmin(this)"
+           style="width:100%; padding:9px 12px 9px 30px; border-radius:8px;
+                  border:1.5px solid #e5e7eb; background:white; color:#111827;
+                  font-size:.875rem; outline:none; box-sizing:border-box;">
+</div>
+        <div style="flex: 1; min-width: 130px;">
+            <input type="number" name="kamar_tidur" value="{{ request('kamar_tidur') }}"
+                   placeholder="Kamar Tidur"
+                   style="width:100%; padding:9px 12px; border-radius:8px;
+                          border:1.5px solid #e5e7eb; background:white; color:#111827;
+                          font-size:.875rem; outline:none; box-sizing:border-box;">
+        </div>
+        <div style="display:flex; gap:8px;">
+            <button type="submit"
+                    style="padding:9px 18px; background:#4f46e5; color:white; border:none;
+                           border-radius:8px; font-weight:600; font-size:.875rem; cursor:pointer;">
+                🔍 Cari
+            </button>
+            <a href="{{ route('admin.rumah.index') }}"
+               style="padding:9px 14px; background:white; color:#6b7280; border-radius:8px;
+                      font-size:.875rem; text-decoration:none; font-weight:500;
+                      border:1.5px solid #e5e7eb;">
+                Reset
+            </a>
+        </div>
+    </div>
+    @if(request('search') || request('harga_min') || request('harga_max') || request('kamar_tidur'))
+    <div style="margin-top:8px; font-size:.82rem; color:#6b7280;">
+        Filter aktif:
+        @if(request('search')) <span style="background:#ede9fe;color:#5b21b6;padding:2px 8px;border-radius:4px;margin-right:4px;">Kata kunci: "{{ request('search') }}"</span> @endif
+        @if(request('harga_min')) <span style="background:#dcfce7;color:#15803d;padding:2px 8px;border-radius:4px;margin-right:4px;">Harga Min: Rp {{ number_format((float) str_replace('.', '', request('harga_min')),0,',','.') }}</span> @endif
+        @if(request('harga_max')) <span style="background:#dcfce7;color:#15803d;padding:2px 8px;border-radius:4px;margin-right:4px;">Harga Max: Rp {{ number_format((float) str_replace('.', '', request('harga_max')),0,',','.') }}</span> @endif
+        @if(request('kamar_tidur')) <span style="background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:4px;">KT: {{ request('kamar_tidur') }}</span> @endif
+    </div>
+    @endif
+</form>
+
     @if(session('success'))
         <div style="background-color: #d1fae5; color: #065f46; padding: 12px; border-radius: 6px; margin-bottom: 20px;">
             {{ session('success') }}
@@ -181,6 +244,20 @@
                 form.submit();
             }
         }
+
+        function formatRupiahAdmin(input) {
+    let raw = input.value.replace(/\D/g, '');
+    input.value = raw ? parseInt(raw).toLocaleString('id-ID') : '';
+}
+
+// Hapus titik sebelum submit
+document.querySelector('form[action="{{ route('admin.rumah.index') }}"]')
+    ?.addEventListener('submit', function() {
+        ['harga_min', 'harga_max'].forEach(function(name) {
+            const el = document.querySelector('[name="' + name + '"]');
+            if (el) el.value = el.value.replace(/\./g, '');
+        });
+    });
     </script>
     
     @if($rumahs->hasPages())

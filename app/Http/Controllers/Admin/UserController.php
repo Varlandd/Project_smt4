@@ -10,11 +10,18 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $users = \App\Models\User::latest()->paginate(20);
-        return view('admin.pages.users', compact('users'));
+    public function index(Request $request)
+{
+    $query = \App\Models\User::query();
+
+    if ($request->filled('search')) {
+        $query->where('name', 'like', '%' . $request->search . '%');
     }
+
+    $users = $query->paginate(10)->appends($request->only('search'));
+
+    return view('admin.pages.users', compact('users'));
+}
 
     /**
      * Show the form for creating a new resource.
