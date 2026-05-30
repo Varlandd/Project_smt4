@@ -176,6 +176,39 @@
         .filter-form { flex-direction: column; }
         .property-grid { grid-template-columns: 1fr; }
     }
+
+    /* ── Input Rupiah dengan prefix Rp ── */
+.filter-group:has(.input-rupiah) {
+    position: relative;
+}
+.filter-group:has(.input-rupiah) label {
+    position: relative;
+    z-index: 1;
+}
+.filter-group:has(.input-rupiah)::after {
+    content: 'Rp';
+    position: absolute;
+    bottom: 11px;
+    left: 10px;
+    font-size: .83rem;
+    color: var(--text-soft);
+    font-weight: 500;
+    pointer-events: none;
+    z-index: 1;
+}
+.input-rupiah {
+    padding-left: 30px !important;
+}
+
+/* ── Samakan tinggi tombol Cari & Reset ── */
+.btn-filter,
+.btn-reset {
+    height: 40px;
+    padding: 0 1.3rem !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
 </style>
 @endpush
 
@@ -217,13 +250,19 @@
                     </select>
                 </div>
                 <div class="filter-group" style="min-width:130px;">
-                    <label>Harga Min</label>
-                    <input type="number" name="harga_min" value="{{ request('harga_min') }}" placeholder="Min">
-                </div>
-                <div class="filter-group" style="min-width:130px;">
-                    <label>Harga Max</label>
-                    <input type="number" name="harga_max" value="{{ request('harga_max') }}" placeholder="Max">
-                </div>
+    <label>Harga Min</label>
+    <input type="text" name="harga_min"
+           value="{{ request('harga_min') ? number_format(request('harga_min'), 0, ',', '.') : '' }}"
+           placeholder="Min" oninput="formatRupiah(this)"
+           class="input-rupiah">
+</div>
+<div class="filter-group" style="min-width:130px;">
+    <label>Harga Max</label>
+    <input type="text" name="harga_max"
+           value="{{ request('harga_max') ? number_format(request('harga_max'), 0, ',', '.') : '' }}"
+           placeholder="Max" oninput="formatRupiah(this)"
+           class="input-rupiah">
+</div>
                 <div class="filter-actions">
                     <button type="submit" class="btn-filter">🔍 Cari</button>
                     <a href="{{ route('properti.browse') }}" class="btn-reset">Reset</a>
@@ -285,3 +324,21 @@
     </div>
 </section>
 @endsection
+
+@push('scripts')
+<script>
+function formatRupiah(input) {
+    let raw = input.value.replace(/\D/g, '');
+    input.value = raw ? parseInt(raw).toLocaleString('id-ID') : '';
+}
+
+// Hapus titik sebelum form submit
+document.querySelector('.filter-form').addEventListener('submit', function() {
+    ['harga_min', 'harga_max'].forEach(function(name) {
+        const el = document.querySelector('[name="' + name + '"]');
+        if (el) el.value = el.value.replace(/\./g, '');
+    });
+});
+
+</script>
+@endpush

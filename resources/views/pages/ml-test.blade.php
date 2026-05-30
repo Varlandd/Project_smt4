@@ -344,7 +344,7 @@
                         <label><span class="label-icon">💰</span> Harga (Rp)</label>
                         <div class="harga-input-wrap">
                             <span class="prefix">Rp</span>
-                            <input type="number" id="ml_harga" name="harga" placeholder="500000000" required min="0" step="1000000">
+                            <input type="text" id="ml_harga" name="harga" placeholder="500.000.000" required oninput="formatRupiahML(this)">
                         </div>
                         <div class="input-hint">Contoh: 500000000 untuk Rp 500 Juta</div>
                     </div>
@@ -500,6 +500,10 @@
 
 @push('scripts')
 <script>
+function formatRupiahML(input) {
+    let raw = input.value.replace(/\D/g, '');
+    input.value = raw ? parseInt(raw).toLocaleString('id-ID') : '';
+}
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('mlTestForm');
     const resultEl = document.getElementById('mlResult');
@@ -580,7 +584,7 @@ document.addEventListener('DOMContentLoaded', function() {
         submitBtn.disabled = true;
 
         const data = {
-            harga: parseFloat(document.getElementById('ml_harga').value),
+            harga: parseFloat(document.getElementById('ml_harga').value.replace(/\./g, '')),
             luas_tanah: parseFloat(document.getElementById('ml_luas_tanah').value),
             luas_bangunan: parseFloat(document.getElementById('ml_luas_bangunan').value),
             kamar_tidur: parseInt(document.getElementById('ml_kamar_tidur').value),

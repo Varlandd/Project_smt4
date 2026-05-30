@@ -13,7 +13,11 @@
         <a href="{{ url('/#features') }}">Fitur</a>
         <a href="{{ url('/#how') }}">Cara Kerja</a>
         <a href="{{ url('/#calculator') }}">Kalkulator</a>
-        <a href="{{ url('/#contact') }}" class="nav-cta">Cari Rumah</a>
+        @auth
+        <a href="{{ route('properti.browse') }}" class="nav-cta">Cari Rumah</a>
+        @else
+        <a href="{{ route('login') }}" class="nav-cta">Cari Rumah</a>
+        @endauth
 
         {{-- Auth Links --}}
         @auth
@@ -141,7 +145,11 @@
     <a href="{{ url('/#features') }}">Fitur</a>
     <a href="{{ url('/#how') }}">Cara Kerja</a>
     <a href="{{ url('/#calculator') }}">Kalkulator</a>
-    <a href="{{ url('/#contact') }}">Cari Rumah</a>
+    @auth
+    <a href="{{ route('properti.browse') }}">Cari Rumah</a>
+    @else
+    <a href="{{ route('login') }}">Cari Rumah</a>
+    @endauth
 
     @auth
         <div class="mobile-divider"></div>

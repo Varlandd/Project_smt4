@@ -768,14 +768,14 @@ body { font-family: var(--font); color: var(--text); background: var(--white); }
                         <label>Penghasilan Bulanan</label>
                         <div class="lp-input-wrap">
                             <span class="lp-input-prefix">Rp</span>
-                            <input type="number" id="lp_penghasilan" placeholder="10.000.000" step="100000"/>
+                            <input type="text" id="lp_penghasilan" placeholder="10.000.000" step="100000" oninput="formatRupiah(this)"/>
                         </div>
                     </div>
                     <div class="lp-form-group">
                         <label>Uang Muka (DP)</label>
                         <div class="lp-input-wrap">
                             <span class="lp-input-prefix">Rp</span>
-                            <input type="number" id="lp_dp" placeholder="50.000.000" step="1000000"/>
+                            <input type="text" id="lp_dp" placeholder="50.000.000" step="1000000" oninput="formatRupiah(this)"/>
                         </div>
                     </div>
                 </div>
@@ -945,9 +945,14 @@ body { font-family: var(--font); color: var(--text); background: var(--white); }
 
 @push('scripts')
 <script>
+    function formatRupiah(input) {
+    let raw = input.value.replace(/\D/g, '');
+    input.value = raw ? parseInt(raw).toLocaleString('id-ID') : '';
+}
+
 document.getElementById('lp_hitungBtn')?.addEventListener('click', function() {
-    const penghasilan = parseFloat(document.getElementById('lp_penghasilan').value) || 0;
-    const dp          = parseFloat(document.getElementById('lp_dp').value) || 0;
+    const penghasilan = parseFloat(document.getElementById('lp_penghasilan').value.replace(/\./g, '')) || 0;
+    const dp          = parseFloat(document.getElementById('lp_dp').value.replace(/\./g, '')) || 0;
     const tenor       = parseInt(document.getElementById('lp_tenor').value) || 15;
     const bunga       = parseFloat(document.getElementById('lp_bunga').value) || 8;
 
