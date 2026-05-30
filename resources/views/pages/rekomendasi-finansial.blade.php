@@ -431,6 +431,226 @@
     }
     .error-alert.show { display: flex; }
 
+    /* ── KPR Simulation Card ── */
+    .kpr-section {
+        margin-top: 2.5rem;
+        display: none;
+        animation: fadeInUp .5s ease;
+    }
+    .kpr-section.show { display: block; }
+    .kpr-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2.5rem;
+        border: 1px solid var(--border);
+        box-shadow: 0 4px 24px rgba(0,0,0,.04);
+        position: relative;
+        overflow: hidden;
+    }
+    .kpr-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #f59e0b, #d97706, #b45309);
+    }
+    .kpr-card-header {
+        display: flex; align-items: center; gap: .8rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1.5px solid var(--border);
+    }
+    .kpr-card-header .kpr-icon-box {
+        width: 48px; height: 48px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.5rem;
+    }
+    .kpr-card-header h2 { font-size: 1.3rem; font-weight: 800; color: var(--text-dark); }
+    .kpr-card-header p { font-size: .85rem; color: var(--text-soft); margin-top: .2rem; }
+    .kpr-card-header .kpr-optional {
+        margin-left: auto;
+        background: #fef3c7;
+        color: #92400e;
+        padding: .3rem .8rem;
+        border-radius: 8px;
+        font-size: .75rem;
+        font-weight: 700;
+        border: 1px solid #fde68a;
+    }
+    .kpr-info-box {
+        background: linear-gradient(135deg, #fefce8, #fef9c3);
+        border: 1px solid #fde68a;
+        border-radius: 14px;
+        padding: 1.25rem 1.5rem;
+        margin-bottom: 1.5rem;
+        display: flex; align-items: flex-start; gap: .8rem;
+    }
+    .kpr-info-box .info-icon { font-size: 1.2rem; flex-shrink: 0; }
+    .kpr-info-box .info-content h4 { font-size: .88rem; font-weight: 700; color: #92400e; margin-bottom: .3rem; }
+    .kpr-info-box .info-content p { font-size: .8rem; color: #a16207; line-height: 1.5; }
+    .kpr-form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.25rem;
+        margin-bottom: 1.5rem;
+    }
+    .btn-kpr {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, #d97706, #b45309);
+        color: white;
+        border: none;
+        border-radius: 14px;
+        font-size: 1rem;
+        font-weight: 700;
+        font-family: inherit;
+        cursor: pointer;
+        display: flex; align-items: center; justify-content: center; gap: .6rem;
+        transition: all .3s;
+        box-shadow: 0 4px 14px rgba(217, 119, 6, .3);
+    }
+    .btn-kpr:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(217, 119, 6, .4);
+    }
+
+    /* ── KPR Result ── */
+    .kpr-result {
+        display: none;
+        margin-top: 2rem;
+        animation: fadeInUp .4s ease;
+    }
+    .kpr-result.show { display: block; }
+    .kpr-verdict {
+        border-radius: 18px;
+        padding: 2rem;
+        text-align: center;
+        margin-bottom: 1.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+    .kpr-verdict::before {
+        content: '';
+        position: absolute;
+        top: -40%; right: -15%;
+        width: 250px; height: 250px;
+        background: radial-gradient(circle, rgba(255,255,255,.15), transparent 70%);
+        border-radius: 50%;
+    }
+    .kpr-verdict.layak {
+        background: linear-gradient(135deg, #059669, #047857, #065f46);
+        color: white;
+    }
+    .kpr-verdict.tidak-layak {
+        background: linear-gradient(135deg, #dc2626, #b91c1c, #991b1b);
+        color: white;
+    }
+    .kpr-verdict .verdict-icon {
+        font-size: 3.5rem;
+        margin-bottom: .6rem;
+        position: relative; z-index: 1;
+    }
+    .kpr-verdict .verdict-title {
+        font-size: 1.6rem;
+        font-weight: 800;
+        margin-bottom: .4rem;
+        position: relative; z-index: 1;
+    }
+    .kpr-verdict .verdict-desc {
+        font-size: .92rem;
+        opacity: .9;
+        max-width: 500px;
+        margin: 0 auto;
+        line-height: 1.6;
+        position: relative; z-index: 1;
+    }
+    .kpr-detail-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    .kpr-detail-card {
+        background: white;
+        border-radius: 14px;
+        padding: 1.25rem;
+        border: 1px solid var(--border);
+        text-align: center;
+        transition: all .25s;
+    }
+    .kpr-detail-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .kpr-detail-card .kpr-d-icon { font-size: 1.3rem; margin-bottom: .4rem; }
+    .kpr-detail-card .kpr-d-label {
+        font-size: .75rem; color: var(--text-soft); font-weight: 600;
+        margin-bottom: .25rem;
+    }
+    .kpr-detail-card .kpr-d-value {
+        font-size: 1rem; font-weight: 800; color: var(--text-dark);
+    }
+    .kpr-detail-card .kpr-d-value.danger { color: #dc2626; }
+    .kpr-detail-card .kpr-d-value.success { color: #059669; }
+    .kpr-detail-card .kpr-d-value.warning { color: #d97706; }
+
+    /* ── DSR Gauge ── */
+    .dsr-gauge {
+        background: white;
+        border-radius: 16px;
+        padding: 1.5rem;
+        border: 1px solid var(--border);
+        margin-bottom: 1.5rem;
+    }
+    .dsr-gauge h4 {
+        font-size: .9rem; font-weight: 700; margin-bottom: 1rem;
+        display: flex; align-items: center; gap: .4rem;
+    }
+    .dsr-bar-wrap {
+        background: #f1f5f9;
+        border-radius: 10px;
+        height: 32px;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: .6rem;
+    }
+    .dsr-bar-fill {
+        height: 100%;
+        border-radius: 10px;
+        transition: width .8s ease;
+        display: flex; align-items: center; justify-content: flex-end;
+        padding-right: .8rem;
+        font-size: .78rem; font-weight: 800; color: white;
+        min-width: 60px;
+    }
+    .dsr-bar-fill.safe { background: linear-gradient(90deg, #22c55e, #16a34a); }
+    .dsr-bar-fill.warning { background: linear-gradient(90deg, #f59e0b, #d97706); }
+    .dsr-bar-fill.danger { background: linear-gradient(90deg, #ef4444, #dc2626); }
+    .dsr-bar-limit {
+        position: absolute;
+        top: 0; bottom: 0;
+        left: 30%;
+        width: 2px;
+        background: #1e293b;
+        z-index: 2;
+    }
+    .dsr-bar-limit-label {
+        position: absolute;
+        top: -22px; left: 30%;
+        transform: translateX(-50%);
+        font-size: .7rem; font-weight: 700;
+        color: #1e293b;
+        background: #f1f5f9;
+        padding: .1rem .4rem;
+        border-radius: 4px;
+    }
+    .dsr-legend {
+        display: flex; gap: 1.5rem; font-size: .78rem; color: var(--text-soft); font-weight: 600;
+    }
+    .dsr-legend span { display: flex; align-items: center; gap: .3rem; }
+    .dsr-dot {
+        width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+    }
+
     /* ── Responsive ── */
     @media (max-width: 768px) {
         .finansial-page { padding: 5rem 1rem 3rem; }
@@ -446,6 +666,10 @@
         .step-item:last-child { border-radius: 0 0 14px 14px; }
         .property-grid { grid-template-columns: 1fr; }
         .cluster-badge-section { flex-direction: column; align-items: flex-start; }
+        .kpr-card { padding: 1.5rem; }
+        .kpr-form-grid { grid-template-columns: 1fr; }
+        .kpr-detail-grid { grid-template-columns: 1fr 1fr; }
+        .kpr-card-header .kpr-optional { display: none; }
     }
 
     /* ── Property Card Styles ── */
@@ -534,7 +758,7 @@
         <div class="steps-bar">
             <div class="step-item active" id="step1">
                 <span class="step-num">1</span>
-                <span>Isi Data Keuangan & Kriteria</span>
+                <span>Isi Data & Kriteria</span>
             </div>
             <div class="step-item" id="step2">
                 <span class="step-num">2</span>
@@ -542,7 +766,11 @@
             </div>
             <div class="step-item" id="step3">
                 <span class="step-num">3</span>
-                <span>Lihat Rekomendasi</span>
+                <span>Rekomendasi</span>
+            </div>
+            <div class="step-item" id="step4">
+                <span class="step-num">4</span>
+                <span>Simulasi KPR</span>
             </div>
         </div>
 
@@ -555,7 +783,6 @@
         {{-- ═══ FORM CARD ═══ --}}
         <div class="form-card" id="formCard">
 
-            {{-- ── Section 1: Data Keuangan ── --}}
             <div class="form-card-header">
                 <div class="icon-box" style="background: linear-gradient(135deg, #fef3c7, #fde68a);">💵</div>
                 <div>
@@ -564,7 +791,6 @@
                 </div>
             </div>
 
-            {{-- ── Info Box ── --}}
             <div class="info-box">
                 <span class="info-icon">ℹ️</span>
                 <div class="info-content">
@@ -752,12 +978,156 @@
                 <p>Maaf, saat ini belum ada properti yang sesuai dengan budget dan kriteria kamu. Coba ubah kriteria atau tingkatkan pendapatan untuk melihat lebih banyak pilihan.</p>
             </div>
 
+            {{-- ═══ STEP 4: SIMULASI KPR (Opsional) ═══ --}}
+            <div class="kpr-section" id="kprSection">
+                <div class="kpr-card">
+                    <div class="kpr-card-header">
+                        <div class="kpr-icon-box">🏦</div>
+                        <div>
+                            <h2>Simulasi KPR (Kredit Pemilikan Rumah)</h2>
+                            <p>Cek apakah kamu layak mengajukan KPR berdasarkan standar OJK/BI</p>
+                        </div>
+                        <span class="kpr-optional">Opsional</span>
+                    </div>
+
+                    <div class="kpr-info-box">
+                        <span class="info-icon">📋</span>
+                        <div class="info-content">
+                            <h4>Standar Kelayakan KPR (OJK/BI)</h4>
+                            <p><strong>• LTV (Loan to Value):</strong> Minimal DP 20% dari harga rumah untuk rumah pertama.<br>
+                            <strong>• DSR (Debt Service Ratio):</strong> Total cicilan maksimal 30% dari pendapatan kotor bulanan.<br>
+                            <strong>• Suku Bunga:</strong> Rata-rata bunga KPR fixed ~8.5% per tahun (bisa disesuaikan).<br>
+                            <strong>• Rumus Cicilan:</strong> PMT = P × [r(1+r)ⁿ] / [(1+r)ⁿ - 1]</p>
+                        </div>
+                    </div>
+
+                    <form id="kprForm">
+                        <div class="kpr-form-grid">
+                            <div class="fin-form-group">
+                                <label><span class="label-icon">🏠</span> Harga Rumah yang Dipilih</label>
+                                <div class="input-wrapper">
+                                    <span class="prefix">Rp</span>
+                                    <input type="number" id="kpr_harga" class="has-prefix" placeholder="500000000" step="1000000" required min="0" />
+                                </div>
+                                <span class="input-hint">Masukkan harga rumah yang ingin kamu KPR-kan</span>
+                            </div>
+
+                            <div class="fin-form-group">
+                                <label><span class="label-icon">💵</span> Uang Muka (DP) %</label>
+                                <select id="kpr_dp" required>
+                                    <option value="20">20% (Minimum OJK)</option>
+                                    <option value="25">25%</option>
+                                    <option value="30" selected>30%</option>
+                                    <option value="35">35%</option>
+                                    <option value="40">40%</option>
+                                    <option value="50">50%</option>
+                                </select>
+                                <span class="input-hint">Minimal 20% sesuai ketentuan OJK untuk rumah pertama</span>
+                            </div>
+
+                            <div class="fin-form-group">
+                                <label><span class="label-icon">📅</span> Tenor KPR (Tahun)</label>
+                                <select id="kpr_tenor" required>
+                                    <option value="5">5 Tahun (60 bulan)</option>
+                                    <option value="10">10 Tahun (120 bulan)</option>
+                                    <option value="15" selected>15 Tahun (180 bulan)</option>
+                                    <option value="20">20 Tahun (240 bulan)</option>
+                                    <option value="25">25 Tahun (300 bulan)</option>
+                                    <option value="30">30 Tahun (360 bulan)</option>
+                                </select>
+                                <span class="input-hint">Jangka waktu cicilan KPR</span>
+                            </div>
+
+                            <div class="fin-form-group">
+                                <label><span class="label-icon">📊</span> Suku Bunga (% / Tahun)</label>
+                                <input type="number" id="kpr_bunga" value="8.5" step="0.1" min="1" max="20" required />
+                                <span class="input-hint">Rata-rata bunga KPR bank ~7-10% per tahun</span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-kpr" id="btnKpr">
+                            🧮 Hitung Kelayakan KPR
+                        </button>
+                    </form>
+
+                    {{-- KPR Result --}}
+                    <div class="kpr-result" id="kprResult">
+
+                        {{-- Verdict --}}
+                        <div class="kpr-verdict" id="kprVerdict">
+                            <div class="verdict-icon" id="kprVerdictIcon">-</div>
+                            <div class="verdict-title" id="kprVerdictTitle">-</div>
+                            <div class="verdict-desc" id="kprVerdictDesc">-</div>
+                        </div>
+
+                        {{-- Detail Cards --}}
+                        <div class="kpr-detail-grid">
+                            <div class="kpr-detail-card">
+                                <div class="kpr-d-icon">🏠</div>
+                                <div class="kpr-d-label">Harga Rumah</div>
+                                <div class="kpr-d-value" id="kprHargaRumah">-</div>
+                            </div>
+                            <div class="kpr-detail-card">
+                                <div class="kpr-d-icon">💵</div>
+                                <div class="kpr-d-label">Uang Muka (DP)</div>
+                                <div class="kpr-d-value" id="kprDpAmount">-</div>
+                            </div>
+                            <div class="kpr-detail-card">
+                                <div class="kpr-d-icon">💳</div>
+                                <div class="kpr-d-label">Pokok Pinjaman</div>
+                                <div class="kpr-d-value" id="kprPinjaman">-</div>
+                            </div>
+                            <div class="kpr-detail-card">
+                                <div class="kpr-d-icon">📅</div>
+                                <div class="kpr-d-label">Cicilan / Bulan</div>
+                                <div class="kpr-d-value" id="kprCicilan">-</div>
+                            </div>
+                            <div class="kpr-detail-card">
+                                <div class="kpr-d-icon">📊</div>
+                                <div class="kpr-d-label">DSR (Debt Service Ratio)</div>
+                                <div class="kpr-d-value" id="kprDsr">-</div>
+                            </div>
+                            <div class="kpr-detail-card">
+                                <div class="kpr-d-icon">💰</div>
+                                <div class="kpr-d-label">Total Bayar (Pokok + Bunga)</div>
+                                <div class="kpr-d-value" id="kprTotalBayar">-</div>
+                            </div>
+                        </div>
+
+                        {{-- DSR Gauge --}}
+                        <div class="dsr-gauge">
+                            <h4>📊 Rasio Cicilan terhadap Pendapatan (DSR)</h4>
+                            <div style="position: relative; margin-bottom: .5rem;">
+                                <span class="dsr-bar-limit-label">Batas 30%</span>
+                                <div class="dsr-bar-wrap">
+                                    <div class="dsr-bar-fill" id="dsrBarFill" style="width: 0%;">0%</div>
+                                    <div class="dsr-bar-limit"></div>
+                                </div>
+                            </div>
+                            <div class="dsr-legend">
+                                <span><span class="dsr-dot" style="background: #22c55e;"></span> Aman (&lt;25%)</span>
+                                <span><span class="dsr-dot" style="background: #f59e0b;"></span> Mendekati Batas (25-30%)</span>
+                                <span><span class="dsr-dot" style="background: #ef4444;"></span> Melebihi Batas (&gt;30%)</span>
+                            </div>
+                        </div>
+
+                        {{-- Sisa Pendapatan --}}
+                        <div class="criteria-summary">
+                            <h4>💡 Rincian Keuangan Setelah KPR</h4>
+                            <div class="criteria-chips" id="kprRincian"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
             {{-- Button Hitung Ulang --}}
             <div style="text-align: center; margin-top: 2rem;">
                 <button type="button" class="btn-calculate" id="btnReset" style="max-width: 400px; margin: 0 auto; background: linear-gradient(135deg, #6366f1, #4f46e5);">
                     🔄 Hitung Ulang dengan Kriteria Baru
                 </button>
             </div>
+
         </div>
 
     </div>
@@ -767,21 +1137,24 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('finansialForm');
-    const btnHitung = document.getElementById('btnHitung');
-    const btnReset = document.getElementById('btnReset');
+
+    const form          = document.getElementById('finansialForm');
+    const btnHitung     = document.getElementById('btnHitung');
+    const btnReset      = document.getElementById('btnReset');
     const resultSection = document.getElementById('resultSection');
-    const formCard = document.getElementById('formCard');
-    const errorAlert = document.getElementById('errorAlert');
-    const errorMessage = document.getElementById('errorMessage');
-    const propertyGrid = document.getElementById('propertyGrid');
-    const emptyResult = document.getElementById('emptyResult');
+    const formCard      = document.getElementById('formCard');
+    const errorAlert    = document.getElementById('errorAlert');
+    const errorMessage  = document.getElementById('errorMessage');
+    const propertyGrid  = document.getElementById('propertyGrid');
+    const emptyResult   = document.getElementById('emptyResult');
 
     // Steps
     const step1 = document.getElementById('step1');
     const step2 = document.getElementById('step2');
     const step3 = document.getElementById('step3');
+    const step4 = document.getElementById('step4');
 
+    // ── Helper: Format Rupiah singkat (juta/miliar) ──
     function formatRupiah(num) {
         if (num >= 1000000000) {
             return 'Rp ' + (num / 1000000000).toFixed(1).replace('.0', '') + ' Miliar';
@@ -792,10 +1165,12 @@ document.addEventListener('DOMContentLoaded', function() {
         return 'Rp ' + num.toLocaleString('id-ID');
     }
 
+    // ── Helper: Format Rupiah lengkap ──
     function formatRupiahFull(num) {
         return 'Rp ' + Math.round(num).toLocaleString('id-ID');
     }
 
+    // ── Loading state tombol Hitung ──
     function setLoading(loading) {
         if (loading) {
             btnHitung.disabled = true;
@@ -810,24 +1185,28 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // ── Tampilkan error sementara ──
     function showError(msg) {
         errorMessage.textContent = msg;
         errorAlert.classList.add('show');
         setTimeout(() => errorAlert.classList.remove('show'), 5000);
     }
 
+    // ══════════════════════════════════════════
+    // STEP 1–3: SUBMIT FORM FINANSIAL
+    // ══════════════════════════════════════════
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
         errorAlert.classList.remove('show');
 
-        const pendapatan = parseFloat(document.getElementById('pendapatan').value) || 0;
-        const pengeluaran = parseFloat(document.getElementById('pengeluaran').value) || 0;
-        const kamar_tidur = parseInt(document.getElementById('kamar_tidur').value) || 0;
-        const kamar_mandi = parseInt(document.getElementById('kamar_mandi').value) || 0;
-        const luas_tanah = parseFloat(document.getElementById('luas_tanah').value) || 0;
+        const pendapatan    = parseFloat(document.getElementById('pendapatan').value)    || 0;
+        const pengeluaran   = parseFloat(document.getElementById('pengeluaran').value)   || 0;
+        const kamar_tidur   = parseInt(document.getElementById('kamar_tidur').value)     || 0;
+        const kamar_mandi   = parseInt(document.getElementById('kamar_mandi').value)     || 0;
+        const luas_tanah    = parseFloat(document.getElementById('luas_tanah').value)    || 0;
         const luas_bangunan = parseFloat(document.getElementById('luas_bangunan').value) || 0;
-        const kota = document.getElementById('kota').value;
-        const posisi_kota = document.getElementById('posisi_kota').value;
+        const kota          = document.getElementById('kota').value;
+        const posisi_kota   = document.getElementById('posisi_kota').value;
 
         if (pendapatan <= 0) {
             showError('Pendapatan harus lebih dari 0.');
@@ -848,7 +1227,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         setLoading(true);
 
-        // Update steps
+        // Update steps → Step 2 aktif
         step1.classList.remove('active');
         step1.classList.add('done');
         step2.classList.add('active');
@@ -880,28 +1259,28 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            // Update steps
+            // Update steps → Step 3 aktif
             step2.classList.remove('active');
             step2.classList.add('done');
             step3.classList.add('active');
 
-            // Fill budget summary
-            document.getElementById('budgetAmount').textContent = formatRupiahFull(data.budget);
-            document.getElementById('detailBersih').textContent = formatRupiah(data.pendapatan_bersih);
+            // ── Budget Summary ──
+            document.getElementById('budgetAmount').textContent  = formatRupiahFull(data.budget);
+            document.getElementById('detailBersih').textContent  = formatRupiah(data.pendapatan_bersih);
             document.getElementById('detailTahunan').textContent = formatRupiah(data.pendapatan_bersih * 12);
-            document.getElementById('detailRumus').textContent = '3 × ' + formatRupiah(data.pendapatan_bersih * 12);
+            document.getElementById('detailRumus').textContent   = '3 × ' + formatRupiah(data.pendapatan_bersih * 12);
 
-            // Show ML Cluster info
+            // ── ML Cluster Badge ──
             const clusterSection = document.getElementById('clusterSection');
             if (data.ml_status === 'online' && data.predicted_cluster !== null) {
                 clusterSection.style.display = 'flex';
-                const badge = document.getElementById('clusterBadge');
+                const badge      = document.getElementById('clusterBadge');
                 const isEkonomis = data.predicted_cluster === 0;
 
                 badge.className = 'cluster-badge ' + (isEkonomis ? 'ekonomis' : 'premium');
-                document.getElementById('clusterIcon').textContent = isEkonomis ? '🏡' : '🏰';
-                document.getElementById('clusterText').textContent = 'Cluster ' + data.predicted_cluster + ' — ' + (data.kategori || (isEkonomis ? 'Ekonomis' : 'Premium'));
-                document.getElementById('clusterTitle').textContent = 'Analisis AI: Kategori ' + (data.kategori || (isEkonomis ? 'Ekonomis' : 'Premium'));
+                document.getElementById('clusterIcon').textContent        = isEkonomis ? '🏡' : '🏰';
+                document.getElementById('clusterText').textContent        = 'Cluster ' + data.predicted_cluster + ' — ' + (data.kategori || (isEkonomis ? 'Ekonomis' : 'Premium'));
+                document.getElementById('clusterTitle').textContent       = 'Analisis AI: Kategori ' + (data.kategori || (isEkonomis ? 'Ekonomis' : 'Premium'));
                 document.getElementById('clusterDescription').textContent = isEkonomis
                     ? 'Berdasarkan budget dan kriteria kamu, model KNN merekomendasikan properti kategori Ekonomis — rumah dengan harga terjangkau dan efisien.'
                     : 'Berdasarkan budget dan kriteria kamu, model KNN merekomendasikan properti kategori Premium — rumah dengan lokasi strategis dan spesifikasi tinggi.';
@@ -909,9 +1288,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 clusterSection.style.display = 'none';
             }
 
-            // Fill criteria chips
-            const criteriaChips = document.getElementById('criteriaChips');
-            criteriaChips.innerHTML = `
+            // ── Criteria Chips ──
+            document.getElementById('criteriaChips').innerHTML = `
                 <div class="criteria-chip"><span class="chip-icon">🛏️</span> <span class="chip-label">KT:</span> ${kamar_tidur}</div>
                 <div class="criteria-chip"><span class="chip-icon">🚿</span> <span class="chip-label">KM:</span> ${kamar_mandi}</div>
                 <div class="criteria-chip"><span class="chip-icon">📐</span> <span class="chip-label">L. Tanah:</span> ${luas_tanah} m²</div>
@@ -921,32 +1299,40 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="criteria-chip"><span class="chip-icon">💰</span> <span class="chip-label">Budget:</span> ${formatRupiah(data.budget)}</div>
             `;
 
-            // Fallback note
+            // ── Fallback Note ──
             const fallbackNote = document.getElementById('fallbackNote');
             if (data.is_fallback && data.req_kota) {
                 fallbackNote.style.display = 'block';
-                fallbackNote.textContent = '⚠️ Belum ada properti yang cocok di ' + data.req_kota + ' dengan kriteria tersebut. Menampilkan properti dari kota lain yang sesuai budget.';
+                fallbackNote.textContent   = '⚠️ Belum ada properti yang cocok di ' + data.req_kota + ' dengan kriteria tersebut. Menampilkan properti dari kota lain yang sesuai budget.';
             } else {
                 fallbackNote.style.display = 'none';
             }
 
-            // Fill property grid
+            // ── Property Grid ──
             document.getElementById('resultsCount').textContent = data.total_rumah + ' Properti';
 
             if (data.total_rumah > 0) {
-                propertyGrid.innerHTML = data.html;
+                propertyGrid.innerHTML     = data.html;
                 propertyGrid.style.display = 'grid';
-                emptyResult.style.display = 'none';
+                emptyResult.style.display  = 'none';
             } else {
                 propertyGrid.style.display = 'none';
-                emptyResult.style.display = 'block';
+                emptyResult.style.display  = 'block';
             }
 
-            // Show result, hide form
+            // ── Tampilkan KPR Section ──
+            document.getElementById('kprSection').classList.add('show');
+
+            // Simpan data finansial untuk kalkulasi KPR
+            window._finansialData = {
+                pendapatan:  pendapatan,
+                pengeluaran: pengeluaran,
+                budget:      data.budget,
+            };
+
+            // Sembunyikan form, tampilkan hasil
             formCard.style.display = 'none';
             resultSection.classList.add('show');
-
-            // Scroll to result
             resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
         } catch (err) {
@@ -959,24 +1345,132 @@ document.addEventListener('DOMContentLoaded', function() {
         setLoading(false);
     });
 
-    // Reset button
+    // ══════════════════════════════════════════
+    // STEP 4: SIMULASI KPR (OJK/BI Standard)
+    // ══════════════════════════════════════════
+    const kprForm   = document.getElementById('kprForm');
+    const kprResult = document.getElementById('kprResult');
+
+    kprForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const hargaRumah   = parseFloat(document.getElementById('kpr_harga').value) || 0;
+        const dpPersen     = parseFloat(document.getElementById('kpr_dp').value)    || 30;
+        const tenorTahun   = parseInt(document.getElementById('kpr_tenor').value)   || 15;
+        const bungaTahunan = parseFloat(document.getElementById('kpr_bunga').value) || 8.5;
+
+        if (hargaRumah <= 0) {
+            alert('Masukkan harga rumah yang valid.');
+            return;
+        }
+
+        const finansialData       = window._finansialData || {};
+        const pendapatanBulanan   = finansialData.pendapatan || 0;
+        const pengeluaranBulanan  = finansialData.pengeluaran || 0;
+
+        if (pendapatanBulanan <= 0) {
+            alert('Data pendapatan tidak ditemukan. Silakan hitung ulang dari awal.');
+            return;
+        }
+
+        // ── Perhitungan KPR ──
+        const dpAmount      = hargaRumah * (dpPersen / 100);
+        const pokokPinjaman = hargaRumah - dpAmount;
+        const tenorBulan    = tenorTahun * 12;
+        const bungaBulanan  = (bungaTahunan / 100) / 12;
+
+        // Rumus PMT: P × [r(1+r)^n] / [(1+r)^n - 1]
+        let cicilanBulanan;
+        if (bungaBulanan === 0) {
+            cicilanBulanan = pokokPinjaman / tenorBulan;
+        } else {
+            const factor   = Math.pow(1 + bungaBulanan, tenorBulan);
+            cicilanBulanan = pokokPinjaman * (bungaBulanan * factor) / (factor - 1);
+        }
+
+        const totalBayar  = cicilanBulanan * tenorBulan;
+        const totalBunga  = totalBayar - pokokPinjaman;
+        const dsr         = (cicilanBulanan / pendapatanBulanan) * 100;
+        const isLayak     = dsr <= 30;
+        const sisaPendapatan = pendapatanBulanan - pengeluaranBulanan - cicilanBulanan;
+
+        // ── Update Steps ──
+        step3.classList.remove('active');
+        step3.classList.add('done');
+        step4.classList.remove('active', 'done');
+        step4.classList.add(isLayak ? 'done' : 'active');
+
+        // ── Verdict ──
+        const verdict = document.getElementById('kprVerdict');
+        verdict.className = 'kpr-verdict ' + (isLayak ? 'layak' : 'tidak-layak');
+        document.getElementById('kprVerdictIcon').textContent  = isLayak ? '✅' : '❌';
+        document.getElementById('kprVerdictTitle').textContent = isLayak ? 'LAYAK KPR' : 'TIDAK LAYAK KPR';
+        document.getElementById('kprVerdictDesc').textContent  = isLayak
+            ? `Selamat! DSR kamu ${dsr.toFixed(1)}% (di bawah batas 30%). Kamu memenuhi syarat kelayakan KPR berdasarkan standar OJK/BI.`
+            : `Maaf, DSR kamu ${dsr.toFixed(1)}% (melebihi batas 30%). Berdasarkan standar OJK/BI, cicilan terlalu besar dibandingkan pendapatan. Coba tambah DP atau perpanjang tenor.`;
+
+        // ── Detail Cards ──
+        document.getElementById('kprHargaRumah').textContent = formatRupiahFull(hargaRumah);
+        document.getElementById('kprDpAmount').textContent   = formatRupiahFull(dpAmount) + ` (${dpPersen}%)`;
+        document.getElementById('kprPinjaman').textContent   = formatRupiahFull(pokokPinjaman);
+
+        const cicilanEl   = document.getElementById('kprCicilan');
+        cicilanEl.textContent = formatRupiahFull(cicilanBulanan);
+        cicilanEl.className   = 'kpr-d-value ' + (isLayak ? 'success' : 'danger');
+
+        const dsrEl       = document.getElementById('kprDsr');
+        dsrEl.textContent = dsr.toFixed(1) + '%';
+        dsrEl.className   = 'kpr-d-value ' + (dsr <= 25 ? 'success' : dsr <= 30 ? 'warning' : 'danger');
+
+        document.getElementById('kprTotalBayar').textContent = formatRupiahFull(totalBayar);
+
+        // ── DSR Gauge ──
+        const dsrBar      = document.getElementById('dsrBarFill');
+        const dsrWidth    = Math.min(dsr, 100);
+        dsrBar.style.width = dsrWidth + '%';
+        dsrBar.textContent = dsr.toFixed(1) + '%';
+        dsrBar.className   = 'dsr-bar-fill ' + (dsr <= 25 ? 'safe' : dsr <= 30 ? 'warning' : 'danger');
+
+        // ── Rincian Keuangan Setelah KPR ──
+        document.getElementById('kprRincian').innerHTML = `
+            <div class="criteria-chip"><span class="chip-icon">💰</span> <span class="chip-label">Pendapatan:</span> ${formatRupiahFull(pendapatanBulanan)}</div>
+            <div class="criteria-chip"><span class="chip-icon">📋</span> <span class="chip-label">Pengeluaran:</span> ${formatRupiahFull(pengeluaranBulanan)}</div>
+            <div class="criteria-chip"><span class="chip-icon">🏦</span> <span class="chip-label">Cicilan KPR:</span> ${formatRupiahFull(cicilanBulanan)}</div>
+            <div class="criteria-chip"><span class="chip-icon">${sisaPendapatan >= 0 ? '✅' : '⚠️'}</span> <span class="chip-label">Sisa:</span> ${formatRupiahFull(Math.abs(sisaPendapatan))}${sisaPendapatan < 0 ? ' (MINUS!)' : ''}</div>
+            <div class="criteria-chip"><span class="chip-icon">📊</span> <span class="chip-label">Bunga/Tahun:</span> ${bungaTahunan}%</div>
+            <div class="criteria-chip"><span class="chip-icon">📅</span> <span class="chip-label">Tenor:</span> ${tenorTahun} Tahun</div>
+            <div class="criteria-chip"><span class="chip-icon">💸</span> <span class="chip-label">Total Bunga:</span> ${formatRupiah(totalBunga)}</div>
+        `;
+
+        // Tampilkan hasil KPR
+        kprResult.classList.add('show');
+        kprResult.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    // ══════════════════════════════════════════
+    // RESET / HITUNG ULANG
+    // ══════════════════════════════════════════
     btnReset.addEventListener('click', function() {
         resultSection.classList.remove('show');
         formCard.style.display = 'block';
         propertyGrid.innerHTML = '';
         emptyResult.style.display = 'none';
         document.getElementById('clusterSection').style.display = 'none';
-        document.getElementById('fallbackNote').style.display = 'none';
+        document.getElementById('fallbackNote').style.display   = 'none';
+        document.getElementById('kprSection').classList.remove('show');
+        kprResult.classList.remove('show');
+        document.getElementById('kpr_harga').value = '';
 
         // Reset steps
         step1.classList.add('active');
         step1.classList.remove('done');
         step2.classList.remove('active', 'done');
         step3.classList.remove('active', 'done');
+        step4.classList.remove('active', 'done');
 
-        // Scroll to form
         formCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
+
 });
 </script>
 @endpush

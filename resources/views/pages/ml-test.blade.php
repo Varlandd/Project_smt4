@@ -322,7 +322,7 @@
                 </svg>
                 KNN Clustering Model
             </div>
-            <h1>🧪 Test Machine Learning</h1>
+            <h1>🧪 Rekomendasi Rumah</h1>
             <p>Uji model KNN (K-Nearest Neighbors) untuk mengklasifikasi properti ke dalam cluster berdasarkan spesifikasi rumah yang kamu masukkan.</p>
         </div>
 
