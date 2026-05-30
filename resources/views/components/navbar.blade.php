@@ -89,7 +89,15 @@
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
                         </svg>
-                        Test ML
+                        Rekomendasi
+                    </a>
+                    <a href="{{ route('rekomendasi.finansial') }}" class="dropdown-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="6" width="20" height="12" rx="2"/>
+                            <circle cx="12" cy="12" r="2"/>
+                            <path d="M6 12h.01M18 12h.01"/>
+                        </svg>
+                        Rekomendasi Finansial
                     </a>
                     <a href="{{ route('dashboard') }}" class="dropdown-item">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -141,7 +149,8 @@
         @if(Auth::user()->isAdmin())
             <a href="{{ route('admin.dashboard') }}">🛡️ Admin Panel</a>
         @endif
-        <a href="{{ route('ml.test') }}">🧪 Test ML</a>
+        <a href="{{ route('ml.test') }}">🧪 Rekomendasi</a>
+        <a href="{{ route('rekomendasi.finansial') }}">💰 Rekomendasi Finansial</a>
         <a href="{{ route('dashboard') }}">📊 Dashboard</a>
         <form action="{{ route('logout') }}" method="POST" style="margin:0;padding:0;">
             @csrf

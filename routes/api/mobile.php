@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\FasilitasController;
 use App\Http\Controllers\Api\ProfileApiController;
 use App\Http\Controllers\Api\AnalitikApiController;
 use App\Http\Controllers\Api\ImageProxyController;
+use App\Http\Controllers\Api\RekomendasiFinansialController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,6 +39,7 @@ Route::get('/rumah/{id}', [RumahApiController::class, 'show']);
 Route::post('/predict', [AnalitikApiController::class, 'predict']);
 Route::post('/recommend', [AnalitikApiController::class, 'recommend']);
 Route::post('/kalkulator', [KalkulatorController::class, 'hitung']);
+Route::post('/rekomendasi-finansial', [RekomendasiFinansialController::class, 'hitung']);
 
 // ── Protected Routes (butuh Sanctum token) ──
 Route::middleware('auth:sanctum')->group(function () {
