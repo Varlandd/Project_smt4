@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Models\User;
 
 class ApiMonitoringController extends Controller
 {
@@ -17,9 +18,10 @@ class ApiMonitoringController extends Controller
     }
 
     /**
-     * Test endpoint API secara internal (tanpa HTTP request keluar).
-     * Menggunakan Laravel internal dispatcher agar tidak deadlock
-     * pada single-threaded php artisan serve.
+     * Test endpoint API secara internal.
+     * 
+     * Menggunakan Laravel internal dispatcher dengan Sanctum auth yang proper.
+     * Protected endpoints mendapat Bearer token sehingga auth:sanctum middleware lolos.
      */
     public function testEndpoint(Request $request)
     {
@@ -36,27 +38,54 @@ class ApiMonitoringController extends Controller
         try {
             $startTime = microtime(true);
 
-            // Buat internal request dengan format JSON body yang benar
+            // Simpan user admin saat ini
+            $originalUser = auth()->user();
+
+            // Buat server params
             $server = [
                 'CONTENT_TYPE' => 'application/json',
                 'HTTP_ACCEPT'  => 'application/json',
             ];
+
+            // Buat internal request
             $internalRequest = Request::create($path, $method, [], [], [], $server, json_encode($body));
 
-            // Copy session & auth dari request admin yang sedang login
-            $internalRequest->setLaravelSession($request->session());
+            // Cek apakah route ini protected oleh Sanctum
+            $isProtected = false;
+            try {
+                $route = Route::getRoutes()->match($internalRequest);
+                if ($route) {
+                    $middleware = $route->gatherMiddleware();
+                    $isProtected = in_array('auth:sanctum', $middleware);
+                }
+            } catch (\Throwable $e) {
+                // Fallback jika matching gagal (misal route parameter)
+                $protectedPaths = ['/api/logout', '/api/favorit', '/api/user', '/api/rumah/search'];
+                foreach ($protectedPaths as $p) {
+                    if (str_contains($path, $p)) {
+                        $isProtected = true;
+                        break;
+                    }
+                }
+            }
 
-            // Untuk endpoint yang butuh Sanctum auth, buat token sementara
+            // Force authentication untuk internal request menggunakan Sanctum::actingAs jika protected
+            if ($isProtected && $originalUser) {
+                \Laravel\Sanctum\Sanctum::actingAs($originalUser, ['*']);
+            }
 
-            // Simpan session admin saat ini agar tidak ter-overwrite oleh endpoint login/register
-            $originalUser = auth()->user();
+            // Copy session dari request admin
+            if ($request->hasSession()) {
+                $internalRequest->setLaravelSession($request->session());
+            }
 
-            // Dispatch request secara internal melalui Laravel router
+            // Dispatch request secara internal melalui Laravel kernel
+            /** @var \Illuminate\Http\Response $response */
             $response = app()->handle($internalRequest);
 
-            // Kembalikan session admin
+            // Kembalikan auth admin (agar tidak ter-overwrite oleh login/register endpoint)
             if ($originalUser) {
-                auth()->login($originalUser);
+                auth('web')->login($originalUser);
             }
 
             $endTime = microtime(true);
@@ -69,8 +98,8 @@ class ApiMonitoringController extends Controller
             }
 
             // Hapus token sementara setelah test
-            if ($user) {
-                $user->tokens()->where('name', 'api-monitoring-test')->delete();
+            if ($originalUser && method_exists($originalUser, 'tokens')) {
+                $originalUser->tokens()->where('name', 'api-monitoring-test')->delete();
             }
 
             return response()->json([
@@ -79,11 +108,24 @@ class ApiMonitoringController extends Controller
                 'response_time' => $duration,
                 'response_body' => $responseBody,
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
+            $endTime = microtime(true);
+            $duration = round(($endTime - ($startTime ?? $endTime)) * 1000);
+
+            // Cleanup token sementara jika ada error
+            if (isset($originalUser) && $originalUser && method_exists($originalUser, 'tokens')) {
+                $originalUser->tokens()->where('name', 'api-monitoring-test')->delete();
+            }
+
+            // Kembalikan auth admin
+            if (isset($originalUser) && $originalUser) {
+                auth('web')->login($originalUser);
+            }
+
             return response()->json([
                 'success'       => false,
                 'status_code'   => 500,
-                'response_time' => 0,
+                'response_time' => $duration,
                 'response_body' => ['error' => $e->getMessage()],
                 'error_message' => $e->getMessage(),
             ]);
