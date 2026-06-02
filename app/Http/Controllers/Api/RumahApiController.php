@@ -68,8 +68,12 @@ class RumahApiController extends Controller
     {
         $query = Rumah::query();
 
+        if ($request->filled('search')) {
+            $query->where('nama', 'regex', new \MongoDB\BSON\Regex($request->search, 'i'));
+        }
+
         if ($request->filled('lokasi')) {
-            $query->where('lokasi', 'regex', new \MongoDB\BSON\Regex($request->lokasi, 'i'));
+            $query->where('kota', $request->lokasi);
         }
 
         if ($request->filled('budget_min')) {
@@ -89,7 +93,20 @@ class RumahApiController extends Controller
             $query->where('fasilitas', 'all', $request->fasilitas);
         }
 
-        $rumah = $query->latest()->paginate($request->get('per_page', 10));
+        // Sort
+        $sort = $request->get('sort', 'terbaru');
+        switch ($sort) {
+            case 'termurah':
+                $query->orderBy('harga', 'asc');
+                break;
+            case 'termahal':
+                $query->orderBy('harga', 'desc');
+                break;
+            default:
+                $query->latest();
+        }
+
+        $rumah = $query->paginate($request->get('per_page', 10));
 
         // Tambahkan is_favorit
         $user = Auth::user();

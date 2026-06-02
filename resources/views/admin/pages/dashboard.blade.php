@@ -7,9 +7,9 @@
 <style>
     /* ── Welcome Banner ── */
     .welcome-banner {
-        background: linear-gradient(135deg, #0f766e, #14b8a6);
-        border-radius: 16px;
-        padding: 28px 32px;
+        background: linear-gradient(135deg, #0f766e 0%, #14b8a6 50%, #2dd4bf 100%);
+        border-radius: 18px;
+        padding: 32px 36px;
         color: white;
         display: flex;
         align-items: center;
@@ -21,27 +21,23 @@
     .welcome-banner::after {
         content: '';
         position: absolute;
-        right: -20px;
-        top: -30px;
-        width: 180px;
-        height: 180px;
+        right: -30px; top: -40px;
+        width: 200px; height: 200px;
         border-radius: 50%;
-        background: rgba(255,255,255,0.08);
+        background: rgba(255,255,255,0.07);
     }
     .welcome-banner::before {
         content: '';
         position: absolute;
-        right: 60px;
-        bottom: -40px;
-        width: 120px;
-        height: 120px;
+        right: 80px; bottom: -50px;
+        width: 140px; height: 140px;
         border-radius: 50%;
-        background: rgba(255,255,255,0.05);
+        background: rgba(255,255,255,0.04);
     }
     .welcome-text h2 {
         margin: 0 0 6px;
-        font-size: 1.4rem;
-        font-weight: 700;
+        font-size: 1.45rem;
+        font-weight: 800;
     }
     .welcome-text p {
         margin: 0;
@@ -50,29 +46,30 @@
     }
     .welcome-meta {
         display: flex;
-        gap: 16px;
-        margin-top: 14px;
+        gap: 12px;
+        margin-top: 16px;
         z-index: 1;
+        flex-wrap: wrap;
     }
-    .welcome-meta .wm-item {
+    .wm-item {
         display: flex;
         align-items: center;
         gap: 6px;
         background: rgba(255,255,255,0.15);
-        padding: 6px 14px;
-        border-radius: 8px;
+        backdrop-filter: blur(8px);
+        padding: 7px 16px;
+        border-radius: 10px;
         font-size: 0.8rem;
         font-weight: 600;
     }
-    .welcome-meta .wm-dot {
-        width: 8px;
-        height: 8px;
+    .wm-dot {
+        width: 8px; height: 8px;
         border-radius: 50%;
     }
-    .wm-dot.online { background: #4ade80; }
-    .wm-dot.offline { background: #f87171; }
+    .wm-dot.online { background: #4ade80; box-shadow: 0 0 6px rgba(74,222,128,0.6); }
+    .wm-dot.offline { background: #f87171; box-shadow: 0 0 6px rgba(248,113,113,0.6); }
 
-    /* ── Quick Price Stats ── */
+    /* ── Price Stats Strip ── */
     .price-strip {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -81,25 +78,24 @@
     }
     .price-item {
         background: #fff;
-        border-radius: 12px;
-        padding: 18px 20px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        border-radius: 14px;
+        padding: 20px 22px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.06);
         display: flex;
         align-items: center;
         gap: 14px;
+        transition: transform 0.2s;
     }
+    .price-item:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
     .price-item .pi-icon {
-        width: 44px;
-        height: 44px;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.3rem;
+        width: 48px; height: 48px;
+        border-radius: 14px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.4rem;
         flex-shrink: 0;
     }
     .price-item .pi-value {
-        font-size: 1.1rem;
+        font-size: 1.05rem;
         font-weight: 800;
         color: #0f172a;
         line-height: 1.2;
@@ -114,18 +110,24 @@
     .dash-grid {
         display: grid;
         grid-template-columns: 2fr 1fr;
-        gap: 24px;
-        margin-bottom: 24px;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+    .dash-grid-equal {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 20px;
     }
     .dash-card {
         background: #fff;
         border-radius: 14px;
         padding: 24px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        box-shadow: 0 1px 4px rgba(0,0,0,0.06);
     }
     .dash-card h3 {
-        margin: 0 0 18px;
-        font-size: 1rem;
+        margin: 0 0 16px;
+        font-size: 0.95rem;
         font-weight: 700;
         color: #1e293b;
         display: flex;
@@ -163,17 +165,17 @@
         border-bottom: 1px solid #f8fafc;
     }
     .dash-table tbody tr:hover { background: #f8fafc; }
-    .dash-table .fav-heart {
+    .fav-heart {
         color: #ef4444;
         font-weight: 700;
         font-size: 0.82rem;
     }
-    .dash-table .price-col {
+    .price-col {
         font-weight: 700;
         color: #0f766e;
         white-space: nowrap;
     }
-    .dash-table .time-col {
+    .time-col {
         color: #94a3b8;
         font-size: 0.78rem;
         white-space: nowrap;
@@ -186,11 +188,8 @@
         font-weight: 700;
         text-transform: capitalize;
     }
-    .tipe-rumah { background: #dbeafe; color: #1e40af; }
-    .tipe-apartemen { background: #ede9fe; color: #6d28d9; }
-    .tipe-ruko { background: #fef3c7; color: #92400e; }
-    .tipe-villa { background: #dcfce7; color: #15803d; }
-    .tipe-subsidi { background: #fce7f3; color: #be185d; }
+    .tipe-jual { background: #dbeafe; color: #1e40af; }
+    .tipe-sewa { background: #ede9fe; color: #6d28d9; }
     .tipe-default { background: #f1f5f9; color: #64748b; }
 
     /* ── Quick Actions ── */
@@ -220,39 +219,27 @@
         color: #0f766e;
     }
     .qa-btn .qa-icon {
-        width: 36px;
-        height: 36px;
+        width: 36px; height: 36px;
         border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        display: flex; align-items: center; justify-content: center;
         font-size: 1.1rem;
         flex-shrink: 0;
     }
 
-    /* ── Two-col bottom ── */
-    .dash-grid-equal {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 24px;
-    }
-
+    /* ── User Row ── */
     .user-row {
         display: flex;
         align-items: center;
         gap: 10px;
     }
     .user-avatar-sm {
-        width: 30px;
-        height: 30px;
-        border-radius: 8px;
+        width: 32px; height: 32px;
+        border-radius: 9px;
         background: linear-gradient(135deg, #0f766e, #14b8a6);
         color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        display: flex; align-items: center; justify-content: center;
         font-weight: 800;
-        font-size: 0.7rem;
+        font-size: 0.72rem;
         flex-shrink: 0;
     }
     .role-badge-sm {
@@ -272,46 +259,21 @@
     }
 
     /* ── Dark Mode ── */
-    .dark-mode .welcome-banner {
-        background: linear-gradient(135deg, #134e4a, #0f766e);
-    }
-    .dark-mode .price-item {
-        background: #1e293b;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-    }
+    .dark-mode .welcome-banner { background: linear-gradient(135deg, #134e4a 0%, #0f766e 50%, #115e59 100%); }
+    .dark-mode .price-item { background: #1e293b; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
     .dark-mode .price-item .pi-value { color: #f1f5f9; }
     .dark-mode .price-item .pi-label { color: #94a3b8; }
-    .dark-mode .dash-card {
-        background: #1e293b;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-    }
+    .dark-mode .dash-card { background: #1e293b; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
     .dark-mode .dash-card h3 { color: #f1f5f9; }
     .dark-mode .dash-card h3 a { color: #5eead4; }
-    .dark-mode .dash-table thead th {
-        color: #94a3b8;
-        border-bottom-color: #334155;
-    }
-    .dark-mode .dash-table tbody td {
-        color: #cbd5e1;
-        border-bottom-color: #334155;
-    }
+    .dark-mode .dash-table thead th { color: #94a3b8; border-bottom-color: #334155; }
+    .dark-mode .dash-table tbody td { color: #cbd5e1; border-bottom-color: #334155; }
     .dark-mode .dash-table tbody tr:hover { background: #0f172a; }
-    .dark-mode .dash-table .price-col { color: #5eead4; }
-    .dark-mode .qa-btn {
-        background: #0f172a;
-        border-color: #334155;
-        color: #cbd5e1;
-    }
-    .dark-mode .qa-btn:hover {
-        border-color: #14b8a6;
-        color: #5eead4;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    }
-    .dark-mode .tipe-rumah { background: rgba(219,234,254,0.12); color: #93c5fd; }
-    .dark-mode .tipe-apartemen { background: rgba(237,233,254,0.12); color: #a78bfa; }
-    .dark-mode .tipe-ruko { background: rgba(254,243,199,0.12); color: #fcd34d; }
-    .dark-mode .tipe-villa { background: rgba(220,252,231,0.12); color: #86efac; }
-    .dark-mode .tipe-subsidi { background: rgba(252,231,243,0.12); color: #f9a8d4; }
+    .dark-mode .price-col { color: #5eead4; }
+    .dark-mode .qa-btn { background: #0f172a; border-color: #334155; color: #cbd5e1; }
+    .dark-mode .qa-btn:hover { border-color: #14b8a6; color: #5eead4; }
+    .dark-mode .tipe-jual { background: rgba(219,234,254,0.12); color: #93c5fd; }
+    .dark-mode .tipe-sewa { background: rgba(237,233,254,0.12); color: #a78bfa; }
     .dark-mode .tipe-default { background: rgba(241,245,249,0.08); color: #94a3b8; }
     .dark-mode .role-admin-sm { background: rgba(254,243,199,0.15); color: #fcd34d; }
     .dark-mode .role-user-sm  { background: rgba(219,234,254,0.1); color: #93c5fd; }
@@ -327,7 +289,7 @@
 
 @section('content')
 
-{{-- Welcome Banner --}}
+{{-- ═══ Welcome Banner ═══ --}}
 <div class="welcome-banner">
     <div class="welcome-text">
         <h2>👋 Selamat Datang, {{ auth()->user()->name }}!</h2>
@@ -337,13 +299,18 @@
                 <span class="wm-dot {{ $mlStatus }}"></span>
                 ML Engine {{ $mlStatus === 'online' ? 'Aktif' : 'Offline' }}
             </div>
-            <div class="wm-item">🏠 {{ $totalRumah }} Properti</div>
-            <div class="wm-item">👥 {{ $totalUser }} Pengguna</div>
+            <div class="wm-item">🏠 {{ number_format($totalRumah) }} Properti</div>
+            <div class="wm-item">👥 {{ number_format($totalUser) }} Pengguna</div>
+            @if($unreadPesan > 0)
+            <div class="wm-item" style="background: rgba(239,68,68,0.25);">
+                ✉️ {{ $unreadPesan }} Pesan Baru
+            </div>
+            @endif
         </div>
     </div>
 </div>
 
-{{-- Stat Cards --}}
+{{-- ═══ Stat Cards ═══ --}}
 <div class="admin-stats-grid">
     <div class="admin-stat-card">
         <div class="admin-stat-icon" style="background: linear-gradient(135deg, #dbeafe, #93c5fd);">
@@ -353,8 +320,8 @@
             </svg>
         </div>
         <div class="admin-stat-info">
-            <span class="admin-stat-number">{{ $totalRumah }}</span>
-            <span class="admin-stat-label">Total Rumah</span>
+            <span class="admin-stat-number">{{ number_format($totalRumah) }}</span>
+            <span class="admin-stat-label">Total Properti</span>
         </div>
     </div>
     <div class="admin-stat-card">
@@ -366,7 +333,7 @@
             </svg>
         </div>
         <div class="admin-stat-info">
-            <span class="admin-stat-number">{{ $totalUser }}</span>
+            <span class="admin-stat-number">{{ number_format($totalUser) }}</span>
             <span class="admin-stat-label">Total Pengguna</span>
         </div>
     </div>
@@ -377,7 +344,7 @@
             </svg>
         </div>
         <div class="admin-stat-info">
-            <span class="admin-stat-number">{{ $totalFavorit }}</span>
+            <span class="admin-stat-number">{{ number_format($totalFavorit) }}</span>
             <span class="admin-stat-label">Total Favorit</span>
         </div>
     </div>
@@ -388,7 +355,7 @@
             </svg>
         </div>
         <div class="admin-stat-info">
-            <span class="admin-stat-number">{{ $totalAdmin }}</span>
+            <span class="admin-stat-number">{{ number_format($totalAdmin) }}</span>
             <span class="admin-stat-label">Total Admin</span>
         </div>
     </div>
@@ -400,13 +367,13 @@
             </svg>
         </div>
         <div class="admin-stat-info">
-            <span class="admin-stat-number">{{ $totalPesan }}</span>
+            <span class="admin-stat-number">{{ number_format($totalPesan) }}</span>
             <span class="admin-stat-label">Pesan Masuk @if($unreadPesan > 0) <small style="color: #dc2626;">({{ $unreadPesan }} Baru)</small> @endif</span>
         </div>
     </div>
 </div>
 
-{{-- Price Stats Strip --}}
+{{-- ═══ Price Stats Strip ═══ --}}
 <div class="price-strip">
     <div class="price-item">
         <div class="pi-icon" style="background: #dcfce7;">📈</div>
@@ -431,12 +398,11 @@
     </div>
 </div>
 
-{{-- Main Grid: Chart + Quick Actions --}}
+{{-- ═══ Main Grid: Chart + Quick Actions ═══ --}}
 <div class="dash-grid">
     <div class="dash-card">
         <h3>
-            📈 Tren Rata-rata Harga
-            <a href="{{ route('admin.analitik') }}">Lihat Detail →</a>
+            📈 Penambahan Properti Baru
         </h3>
         <canvas id="miniTrend" height="120"></canvas>
     </div>
@@ -451,9 +417,9 @@
                 <div class="qa-icon" style="background: #dbeafe;">👥</div>
                 <span>Kelola User</span>
             </a>
-            <a href="{{ route('admin.analitik') }}" class="qa-btn">
-                <div class="qa-icon" style="background: #fef3c7;">🔮</div>
-                <span>Prediksi Harga</span>
+            <a href="{{ route('admin.pesan.index') }}" class="qa-btn">
+                <div class="qa-icon" style="background: #fef3c7;">✉️</div>
+                <span>Pesan Masuk</span>
             </a>
             <a href="{{ route('admin.statistik') }}" class="qa-btn">
                 <div class="qa-icon" style="background: #ede9fe;">📊</div>
@@ -463,23 +429,23 @@
     </div>
 </div>
 
-{{-- Top Favorit + Properti Terbaru --}}
+{{-- ═══ Top Favorit + Properti Terbaru ═══ --}}
 <div class="dash-grid-equal">
     <div class="dash-card">
         <h3>
-            🏆 Rumah Terpopuler
+            🏆 Properti Terpopuler
             <a href="{{ route('admin.rumah.index') }}">Semua →</a>
         </h3>
         @if($topFavorit->where('favorited_by_count', '>', 0)->count() > 0)
         <table class="dash-table">
             <thead>
-                <tr><th>Properti</th><th>Lokasi</th><th>❤️</th></tr>
+                <tr><th>Properti</th><th>Kota</th><th>❤️</th></tr>
             </thead>
             <tbody>
                 @foreach($topFavorit->where('favorited_by_count', '>', 0)->take(5) as $r)
                 <tr>
                     <td><strong>{{ Str::limit($r->nama, 22) }}</strong></td>
-                    <td>{{ $r->lokasi }}</td>
+                    <td>{{ $r->kota ?? '-' }}</td>
                     <td><span class="fav-heart">♥ {{ $r->favorited_by_count }}</span></td>
                 </tr>
                 @endforeach
@@ -507,9 +473,8 @@
                     <td>
                         @php
                             $tc = match(strtolower($r->tipe ?? '')) {
-                                'rumah' => 'tipe-rumah', 'apartemen' => 'tipe-apartemen',
-                                'ruko' => 'tipe-ruko', 'villa' => 'tipe-villa',
-                                'subsidi' => 'tipe-subsidi', default => 'tipe-default'
+                                'jual' => 'tipe-jual', 'sewa' => 'tipe-sewa',
+                                default => 'tipe-default'
                             };
                         @endphp
                         <span class="tipe-badge-sm {{ $tc }}">{{ $r->tipe ?? '-' }}</span>
@@ -525,8 +490,8 @@
     </div>
 </div>
 
-{{-- Pengguna Terbaru --}}
-<div class="dash-grid" style="margin-top: 24px;">
+{{-- ═══ Pengguna Terbaru + Distribusi Kota ═══ --}}
+<div class="dash-grid" style="margin-top: 4px;">
     <div class="dash-card">
         <h3>
             👥 Pengguna Terbaru
@@ -554,7 +519,7 @@
         </table>
     </div>
     <div class="dash-card">
-        <h3>📍 Distribusi Lokasi</h3>
+        <h3>📍 Distribusi Kota</h3>
         <canvas id="miniPie" height="200"></canvas>
     </div>
 </div>
@@ -567,6 +532,9 @@
 document.addEventListener("DOMContentLoaded", function () {
     const trendData = {!! json_encode($trendData) !!};
     const lokasiData = {!! json_encode($perLokasi) !!};
+    const isDark = document.body.classList.contains('dark-mode');
+    const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)';
+    const textColor = isDark ? '#94a3b8' : '#64748b';
 
     // Mini Trend Line
     new Chart(document.getElementById('miniTrend').getContext('2d'), {
@@ -574,7 +542,7 @@ document.addEventListener("DOMContentLoaded", function () {
         data: {
             labels: trendData.labels,
             datasets: [{
-                label: 'Rata-rata (Jt)',
+                label: 'Properti Ditambahkan',
                 data: trendData.data,
                 borderColor: '#0f766e',
                 backgroundColor: 'rgba(15,118,110,0.08)',
@@ -583,7 +551,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 fill: true,
                 pointBackgroundColor: '#0f766e',
                 pointRadius: 5,
-                pointHoverRadius: 7
+                pointHoverRadius: 8
             }]
         },
         options: {
@@ -591,15 +559,16 @@ document.addEventListener("DOMContentLoaded", function () {
             plugins: { legend: { display: false } },
             scales: {
                 y: {
-                    ticks: { callback: v => 'Rp ' + v + 'Jt' },
-                    grid: { color: 'rgba(0,0,0,0.04)' }
+                    beginAtZero: true,
+                    ticks: { stepSize: 1, color: textColor },
+                    grid: { color: gridColor }
                 },
-                x: { grid: { display: false } }
+                x: { grid: { display: false }, ticks: { color: textColor } }
             }
         }
     });
 
-    // Mini Pie (Distribusi Lokasi)
+    // Mini Pie (Distribusi Kota)
     const pieColors = ['#0f766e','#3b82f6','#f59e0b','#ef4444','#8b5cf6','#ec4899'];
     new Chart(document.getElementById('miniPie').getContext('2d'), {
         type: 'doughnut',
@@ -608,15 +577,19 @@ document.addEventListener("DOMContentLoaded", function () {
             datasets: [{
                 data: lokasiData.map(i => i.jumlah),
                 backgroundColor: pieColors.slice(0, lokasiData.length),
-                hoverOffset: 6,
-                borderWidth: 0
+                hoverOffset: 8,
+                borderWidth: 2,
+                borderColor: isDark ? '#1e293b' : '#fff'
             }]
         },
         options: {
             responsive: true,
-            cutout: '60%',
+            cutout: '55%',
             plugins: {
-                legend: { position: 'bottom', labels: { usePointStyle: true, padding: 12, font: { size: 11 } } }
+                legend: {
+                    position: 'bottom',
+                    labels: { usePointStyle: true, padding: 14, font: { size: 12 }, color: textColor }
+                }
             }
         }
     });

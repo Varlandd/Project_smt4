@@ -39,8 +39,8 @@ body {
 .logo-text { color: var(--text-dark); font-weight: 600; }
 .logo-text strong { color: var(--primary); font-weight: 800; }
 .nav-icon { width: 40px; height: 40px; background: var(--primary); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
-.nav-links { display: flex; align-items: center; gap: 2.5rem; }
-.nav-links a { text-decoration: none; color: var(--text-soft); font-size: .95rem; font-weight: 600; transition: color .2s; }
+.nav-links { display: flex; align-items: center; gap: 1.5rem; }
+.nav-links a { text-decoration: none; color: var(--text-soft); font-size: .88rem; font-weight: 600; transition: color .2s; white-space: nowrap; }
 .nav-links a:hover { color: var(--primary); }
 .nav-cta { background: var(--primary) !important; color: white !important; padding: .6rem 1.4rem; border-radius: 10px; }
 .nav-hamburger { display: none; background: none; border: none; cursor: pointer; }

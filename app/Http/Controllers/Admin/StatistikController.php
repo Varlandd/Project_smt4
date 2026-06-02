@@ -23,14 +23,31 @@ class StatistikController extends Controller
             $totalFavorit += is_array($favs) ? count($favs) : 0;
         }
 
-        // ── Distribusi Rumah per Lokasi (Bar Chart) ──
+        // ── Distribusi Rumah per Kota (Bar Chart) ──
         $perLokasiRaw = Rumah::raw(function ($collection) {
             return $collection->aggregate([
-                ['$group' => ['_id' => '$lokasi', 'jumlah' => ['$sum' => 1]]],
+                ['$group' => ['_id' => '$kota', 'jumlah' => ['$sum' => 1]]],
                 ['$sort'  => ['jumlah' => -1]],
             ]);
         });
-        $perLokasi = $perLokasiRaw->map(fn($d) => (object)['lokasi' => $d['_id'], 'jumlah' => $d['jumlah']]);
+        $perLokasi = $perLokasiRaw->map(fn($d) => (object)['lokasi' => $d['_id'] ?? 'Lainnya', 'jumlah' => $d['jumlah']]);
+
+        // ── Rata-rata Harga per Kota (Bar Chart) ──
+        $perKotaHargaRaw = Rumah::raw(function ($collection) {
+            return $collection->aggregate([
+                ['$group' => [
+                    '_id'       => '$kota',
+                    'avg_harga' => ['$avg' => '$harga'],
+                    'jumlah'    => ['$sum' => 1],
+                ]],
+                ['$sort' => ['avg_harga' => -1]],
+            ]);
+        });
+        $perKotaHarga = $perKotaHargaRaw->map(fn($d) => (object)[
+            'kota'      => $d['_id'] ?? 'Lainnya',
+            'avg_harga' => $d['avg_harga'],
+            'jumlah'    => $d['jumlah'],
+        ]);
 
         // ── Rata-rata Harga per Tipe (Bar Chart) ──
         $perTipeRaw = Rumah::raw(function ($collection) {
@@ -57,12 +74,12 @@ class StatistikController extends Controller
             'Mewah (> 2M)'          => Rumah::where('harga', '>', 2000000000)->count(),
         ];
 
-        // ── Top 5 Rumah Paling Difavoritkan ──
+        // ── Top 10 Rumah Paling Difavoritkan ──
         $allRumahForFav = Rumah::all()->map(function ($r) {
             $favs = $r->favorited_user_ids;
             $r->favorited_by_count = is_array($favs) ? count($favs) : 0;
             return $r;
-        })->sortByDesc('favorited_by_count')->take(5)->values();
+        })->sortByDesc('favorited_by_count')->take(10)->values();
         $topFavorit = $allRumahForFav;
 
         // ── Aktivitas Pendaftaran User per Bulan (Line Chart) ──
@@ -78,8 +95,20 @@ class StatistikController extends Controller
         });
         $userPerBulan = $userPerBulanRaw->map(fn($d) => (object)['bulan' => $d['_id'], 'jumlah' => $d['jumlah']]);
 
+        // ── Distribusi Kamar Tidur ──
+        $kamarTidurRaw = Rumah::raw(function ($collection) {
+            return $collection->aggregate([
+                ['$group' => ['_id' => '$kamar_tidur', 'jumlah' => ['$sum' => 1]]],
+                ['$sort'  => ['_id' => 1]],
+            ]);
+        });
+        $kamarTidur = $kamarTidurRaw->map(fn($d) => (object)['kamar' => $d['_id'] ?? 0, 'jumlah' => $d['jumlah']]);
+
         // ── 5 Properti Terbaru ──
         $rumahTerbaru = Rumah::latest()->limit(5)->get();
+
+        // ── 5 Properti Termahal ──
+        $rumahTermahal = Rumah::orderBy('harga', 'desc')->limit(5)->get();
 
         // ── Statistik Tambahan ──
         $hargaTertinggi  = Rumah::max('harga');
@@ -87,13 +116,19 @@ class StatistikController extends Controller
         $avgHarga        = Rumah::avg('harga');
         $avgLuasTanah    = Rumah::avg('luas_tanah');
         $avgLuasBangunan = Rumah::avg('luas_bangunan');
+        $avgKamarTidur   = Rumah::avg('kamar_tidur');
+        $avgKamarMandi   = Rumah::avg('kamar_mandi');
+        $totalKota       = Rumah::raw(function ($collection) {
+            return $collection->distinct('kota');
+        });
+        $totalKota = is_array($totalKota) ? count($totalKota) : 0;
 
         return view('admin.pages.statistik', compact(
-            'totalRumah', 'totalUser', 'totalAdmin', 'totalFavorit',
-            'perLokasi', 'perTipe', 'segmenHarga',
-            'topFavorit', 'userPerBulan', 'rumahTerbaru',
+            'totalRumah', 'totalUser', 'totalAdmin', 'totalFavorit', 'totalKota',
+            'perLokasi', 'perKotaHarga', 'perTipe', 'segmenHarga', 'kamarTidur',
+            'topFavorit', 'userPerBulan', 'rumahTerbaru', 'rumahTermahal',
             'hargaTertinggi', 'hargaTerendah', 'avgHarga',
-            'avgLuasTanah', 'avgLuasBangunan'
+            'avgLuasTanah', 'avgLuasBangunan', 'avgKamarTidur', 'avgKamarMandi'
         ));
     }
 }
