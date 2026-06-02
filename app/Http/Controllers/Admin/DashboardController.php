@@ -38,17 +38,11 @@ class DashboardController extends Controller
         $avgHarga       = Rumah::avg('harga');
 
         // ── Top 5 Rumah Terfavorit ──
-        $topFavorit = Rumah::raw(function ($collection) {
-            return $collection->aggregate([
-                ['$addFields' => ['fav_count' => ['$cond' => [
-                    ['$isArray' => '$favorited_user_ids'],
-                    ['$size' => '$favorited_user_ids'],
-                    0
-                ]]]],
-                ['$sort'      => ['fav_count' => -1]],
-                ['$limit'     => 5],
-            ]);
-        })->map(fn($d) => new Rumah((array) $d));
+        $topFavorit = Rumah::all()->map(function ($r) {
+            $favs = $r->favorited_user_ids;
+            $r->favorited_by_count = is_array($favs) ? count($favs) : 0;
+            return $r;
+        })->sortByDesc('favorited_by_count')->take(5)->values();
 
         // ── 5 Properti Terbaru ──
         $rumahTerbaru = Rumah::latest()->limit(5)->get();
@@ -72,25 +66,25 @@ class DashboardController extends Controller
         if ($trendRaw->count() < 2) {
             $trendData = [
                 'labels' => ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun'],
-                'data'   => [300, 305, 312, 310, 320, 325],
+                'data'   => [5, 12, 8, 15, 20, 18],
             ];
         } else {
             $trendData = [
                 'labels' => $trendRaw->pluck('_id')->toArray(),
-                'data'   => $trendRaw->map(fn($v) => round($v['rata_rata'] / 1_000_000))->toArray(),
+                'data'   => $trendRaw->pluck('jumlah')->toArray(),
             ];
         }
 
-        // ── Distribusi per Lokasi ──
+        // ── Distribusi per Kota ──
         $perLokasiRaw = Rumah::raw(function ($collection) {
             return $collection->aggregate([
-                ['$group' => ['_id' => '$lokasi', 'jumlah' => ['$sum' => 1]]],
+                ['$group' => ['_id' => '$kota', 'jumlah' => ['$sum' => 1]]],
                 ['$sort'  => ['jumlah' => -1]],
-                ['$limit' => 5],
+                ['$limit' => 6],
             ]);
         });
 
-        $perLokasi = $perLokasiRaw->map(fn($d) => (object)['lokasi' => $d['_id'], 'jumlah' => $d['jumlah']]);
+        $perLokasi = $perLokasiRaw->map(fn($d) => (object)['lokasi' => $d['_id'] ?? 'Lainnya', 'jumlah' => $d['jumlah']]);
 
         // ── ML Status ──
         $mlStatus = 'offline';

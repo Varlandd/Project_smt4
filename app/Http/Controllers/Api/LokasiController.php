@@ -10,7 +10,7 @@ class LokasiController extends Controller
     public function index()
     {
         $lokasi = Rumah::raw(function ($collection) {
-            return collect($collection->distinct('lokasi'))->sort()->values();
+            return collect($collection->distinct('kota'))->sort()->values();
         });
 
         return response()->json([

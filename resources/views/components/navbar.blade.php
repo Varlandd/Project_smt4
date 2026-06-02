@@ -10,12 +10,16 @@
     </a>
 
     <div class="nav-links">
+        @auth
+        <a href="{{ route('properti.browse') }}">Jelajahi Properti</a>
+        <a href="{{ route('favorit.index') }}">Favorit Saya</a>
+        <a href="{{ route('ml.test') }}">Rekomendasi</a>
+        <a href="{{ route('rekomendasi.finansial') }}">Rekomendasi Finansial</a>
+        <a href="{{ route('dashboard') }}">Dashboard</a>
+        @else
         <a href="{{ url('/#features') }}">Fitur</a>
         <a href="{{ url('/#how') }}">Cara Kerja</a>
         <a href="{{ url('/#calculator') }}">Kalkulator</a>
-        @auth
-        <a href="{{ route('properti.browse') }}" class="nav-cta">Cari Rumah</a>
-        @else
         <a href="{{ route('login') }}" class="nav-cta">Cari Rumah</a>
         @endauth
 
@@ -55,61 +59,6 @@
                             Admin Panel
                         </a>
                     @endif
-                    <a href="{{ route('properti.browse') }}" class="dropdown-item">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="11" cy="11" r="8"/>
-                            <path d="M21 21l-4.35-4.35"/>
-                        </svg>
-                        Jelajahi Properti
-                    </a>
-                    <a href="{{ route('favorit.index') }}" class="dropdown-item">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-                        </svg>
-                        Favorit Saya
-                    </a>
-                    {{-- HIDDEN: Prediksi Harga, Rekomendasi, Bandingkan dropdown items
-                    <a href="{{ route('prediksi') }}" class="dropdown-item">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-                        </svg>
-                        Prediksi Harga
-                    </a>
-                    <a href="{{ route('rekomendasi') }}" class="dropdown-item">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"/>
-                            <polyline points="12 6 12 12 16 14"/>
-                        </svg>
-                        Rekomendasi
-                    </a>
-                    <a href="{{ route('bandingkan') }}" class="dropdown-item">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
-                        </svg>
-                        Bandingkan
-                    </a>
-                    --}}
-                    <a href="{{ route('ml.test') }}" class="dropdown-item">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-                        </svg>
-                        Rekomendasi
-                    </a>
-                    <a href="{{ route('rekomendasi.finansial') }}" class="dropdown-item">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="2" y="6" width="20" height="12" rx="2"/>
-                            <circle cx="12" cy="12" r="2"/>
-                            <path d="M6 12h.01M18 12h.01"/>
-                        </svg>
-                        Rekomendasi Finansial
-                    </a>
-                    <a href="{{ route('dashboard') }}" class="dropdown-item">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                            <polyline points="9 22 9 12 15 12 15 22"/>
-                        </svg>
-                        Dashboard
-                    </a>
                     <div class="dropdown-divider"></div>
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
@@ -142,31 +91,28 @@
 </nav>
 
 <div class="mobile-menu" id="mobileMenu">
+    @auth
+    <a href="{{ route('properti.browse') }}">🔍 Jelajahi Properti</a>
+    <a href="{{ route('favorit.index') }}">❤️ Favorit Saya</a>
+    <a href="{{ route('ml.test') }}">🧪 Rekomendasi</a>
+    <a href="{{ route('rekomendasi.finansial') }}">💰 Rekomendasi Finansial</a>
+    <a href="{{ route('dashboard') }}">📊 Dashboard</a>
+    <div class="mobile-divider"></div>
+    <a href="{{ route('profile') }}">👤 Profil Saya</a>
+    @if(Auth::user()->isAdmin())
+        <a href="{{ route('admin.dashboard') }}">🛡️ Admin Panel</a>
+    @endif
+    <form action="{{ route('logout') }}" method="POST" style="margin:0;padding:0;">
+        @csrf
+        <button type="submit" class="mobile-logout-btn">🚪 Keluar</button>
+    </form>
+    @else
     <a href="{{ url('/#features') }}">Fitur</a>
     <a href="{{ url('/#how') }}">Cara Kerja</a>
     <a href="{{ url('/#calculator') }}">Kalkulator</a>
-    @auth
-    <a href="{{ route('properti.browse') }}">Cari Rumah</a>
-    @else
     <a href="{{ route('login') }}">Cari Rumah</a>
-    @endauth
-
-    @auth
-        <div class="mobile-divider"></div>
-        <a href="{{ route('profile') }}">👤 Profil Saya</a>
-        @if(Auth::user()->isAdmin())
-            <a href="{{ route('admin.dashboard') }}">🛡️ Admin Panel</a>
-        @endif
-        <a href="{{ route('ml.test') }}">🧪 Rekomendasi</a>
-        <a href="{{ route('rekomendasi.finansial') }}">💰 Rekomendasi Finansial</a>
-        <a href="{{ route('dashboard') }}">📊 Dashboard</a>
-        <form action="{{ route('logout') }}" method="POST" style="margin:0;padding:0;">
-            @csrf
-            <button type="submit" class="mobile-logout-btn">🚪 Keluar</button>
-        </form>
-    @else
-        <div class="mobile-divider"></div>
-        <a href="{{ route('login') }}">Masuk</a>
-        <a href="{{ route('register') }}" class="mobile-register">Daftar</a>
+    <div class="mobile-divider"></div>
+    <a href="{{ route('login') }}">Masuk</a>
+    <a href="{{ route('register') }}" class="mobile-register">Daftar</a>
     @endauth
 </div>
